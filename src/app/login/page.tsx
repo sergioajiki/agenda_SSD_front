@@ -1,81 +1,94 @@
-'use client'
+"use client";
+
 import { createUser } from "@/services/userService";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { User } from "@/models/User";
+import { UserRequest, UserResponse } from "@/models/User";
 
 export default function Login() {
-    const [formData, setFormData] = useState<User>({
-        name: '',
-        email: '',
-        password: '',
-        matricula: '',
-        role: 'USER'
+  const [formData, setFormData] = useState<UserRequest>({
+    name: "",
+    email: "",
+    password: "",
+    matricula: "",
+    role: "USER",
+  });
+
+  const [message, setMessage] = useState<string>(""); // inicia com string vazia
+  const [isError, setIsError] = useState<boolean>(false);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
+  };
 
-    const [message, setMessage] = useState<string | null>(null);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const userCreated: UserResponse = await createUser(formData);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+      if (userCreated?.id) {
+        setMessage(`✅ Usuário ${userCreated.name} cadastrado com sucesso!`);
+        setIsError(false);
+      } else {
+        setMessage("⚠️ Não foi possível confirmar o cadastro");
+        setIsError(true);
+      }
+      console.log("Resposta da API", userCreated);
+    } catch (error) {
+      setMessage("❌ Erro ao cadastrar usuário");
+      setIsError(true);
+      console.error("Erro ao cadastrar usuário", error);
     }
+  };
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const userCreated = await createUser(formData);
+  return (
+    <div>
+      <h1>Cadastro</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Nome"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Senha"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="matricula"
+          placeholder="Matrícula"
+          value={formData.matricula}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit">Cadastrar</button>
+      </form>
 
-            if (userCreated?.id) {
-                setMessage(`✅ Usuário ${userCreated.name} cadastrado com sucesso!`);
-            } else {
-                setMessage("⚠️ Não foi possível confirmar o cadastro");
-            }
-            console.log("Resposta da API", userCreated);
-        } catch (error) {
-            setMessage("Erro ao cadastrar usuário");
-            console.error("Erro ao cadastrar usuário", error);
-        }
-    }
-
-    return (
-        <main>
-            <div>
-                <h1>Cadastro</h1>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Nome"
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Senha"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="matricula"
-                        name="matricula"
-                        placeholder="Matricula"
-                        value={formData.matricula}
-                        onChange={handleChange}
-                    />
-                    <button type="submit">Cadastrar</button>
-                </form>
-                {message && <p>{message}</p>}
-            </div>
-        </main>
-    )
+      {/* Renderiza apenas se houver mensagem */}
+      {message && (
+        <p suppressHydrationWarning className={isError ? "text-red-600" : "text-green-600"}>
+          {message}
+        </p>
+      )}
+    </div>
+  );
 }
