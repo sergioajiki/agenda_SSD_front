@@ -48,6 +48,7 @@ export default function Login() {
     <div>
       <h1>Cadastro</h1>
       <form onSubmit={handleSubmit}>
+        Nome:  
         <input
           type="text"
           name="name"
@@ -56,6 +57,8 @@ export default function Login() {
           onChange={handleChange}
           required
         />
+        <br/>
+        Email:  
         <input
           type="email"
           name="email"
@@ -64,6 +67,8 @@ export default function Login() {
           onChange={handleChange}
           required
         />
+        <br/>
+        Senha:  
         <input
           type="password"
           name="password"
@@ -72,6 +77,8 @@ export default function Login() {
           onChange={handleChange}
           required
         />
+        <br/>
+        Matrícula:  
         <input
           type="text"
           name="matricula"
@@ -80,7 +87,11 @@ export default function Login() {
           onChange={handleChange}
           required
         />
+        <br/>
+        <br/>
         <button type="submit">Cadastrar</button>
+        <br/>
+        <br/>
       </form>
 
       {/* Renderiza apenas se houver mensagem */}

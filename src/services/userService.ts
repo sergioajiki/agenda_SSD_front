@@ -1,4 +1,4 @@
-import { User, UserRequest, UserResponse } from "@/models/User";
+import { UserRequest, UserResponse } from "@/models/User";
 import api from "./api";
 
 export const createUser = async (user: UserRequest): Promise<UserResponse> => {
