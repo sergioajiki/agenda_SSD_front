@@ -1,8 +1,10 @@
 "use client";
 
+import { ApiErrorResponse } from "@/models/ApiErrorResponse";
 import { MeetingRequest, MeetingResponse } from "@/models/Meetings";
 import { createMeeting } from "@/services/meetingService";
-import { formatDateToDDMMYYYY, formatDateToYYYYMMDD } from "@/utils/Utils";
+import { formatDateToYYYYMMDD } from "@/utils/Utils";
+import axios from "axios";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 export default function MeetingForm() {
@@ -52,8 +54,19 @@ export default function MeetingForm() {
                 userId: "",
             });
 
-        } catch (error: any) {
-            setMessage(error.message || "Erro ao enviar o formulário");
+        } catch (error: unknown) {
+            let errorMessage = "Erro ao enviar o formulário";
+
+            if (axios.isAxiosError<ApiErrorResponse>(error)) {
+                errorMessage =
+                    error.response?.data?.detail ||
+                    error.response?.data?.message ||
+                    error.message;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            setMessage(errorMessage);
             setIsError(true);
         }
     };
