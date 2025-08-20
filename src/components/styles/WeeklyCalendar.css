@@ -1,0 +1,54 @@
+.weekly-agenda {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.agenda-header button {
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.agenda-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.agenda-day {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  background: #f9f9f9;
+  min-height: 150px;
+}
+
+.agenda-day h3 {
+  font-size: 14px;
+  margin-bottom: 6px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+}
+
+.meeting-item {
+  background: #e6f2ff;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.no-meetings {
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  margin-top: 10px;
+}
