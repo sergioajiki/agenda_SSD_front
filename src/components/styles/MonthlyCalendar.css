@@ -1,0 +1,75 @@
+.calendar-container {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.calendar-header button {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 6px;
+  background-color: #f0f0f0;
+}
+
+.calendar-cell {
+  border: 1px solid #ddd;
+  min-height: 120px;
+  max-height: 120px;
+  padding: 4px;
+  vertical-align: top;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-cell.empty {
+  background-color: #fafafa;
+}
+
+.calendar-day-number {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.meeting-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.meeting-item {
+  background-color: #e6f0ff;
+  color: #003366;
+  padding: 2px 4px;
+  margin-bottom: 2px;
+  font-size: 0.85em;
+  border-radius: 3px;
+  word-break: break-word; /* força quebra de linha */
+  white-space: normal;    /* permite múltiplas linhas */
+}

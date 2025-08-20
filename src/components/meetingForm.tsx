@@ -2,8 +2,8 @@
 
 import { ApiErrorResponse } from "@/models/ApiErrorResponse";
 import { MeetingRequest, MeetingResponse } from "@/models/Meetings";
-import { createMeeting } from "@/services/meetingService";
-import { formatDateToYYYYMMDD } from "@/utils/Utils";
+import { createMeeting, getMeetings } from "@/services/meetingService";
+import { formatDateToYYYYMMDD, parseDDMMYYYYtoDate } from "@/utils/Utils";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useState } from "react";
 
@@ -20,6 +20,7 @@ export default function MeetingForm() {
 
     const [message, setMessage] = useState<string>("");
     const [isError, setIsError] = useState<boolean>(false);
+    const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -32,9 +33,10 @@ export default function MeetingForm() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            const parsedDate = parseDDMMYYYYtoDate(formData.meetingDate);
             const payload: MeetingRequest = {
                 title: formData.title,
-                meetingDate: formatDateToYYYYMMDD(new Date(formData.meetingDate)),
+                meetingDate: formatDateToYYYYMMDD(parsedDate),
                 timeStart: formData.timeStart,
                 timeEnd: formData.timeEnd,
                 meetingRoom: formData.meetingRoom,
@@ -45,6 +47,8 @@ export default function MeetingForm() {
 
             setMessage(`✅ Reunião ${meetingCreated.id} cadastrada com sucesso!`);
             setIsError(false);
+
+            // limpa formulário
             setFormData({
                 title: "",
                 meetingDate: "",
@@ -53,6 +57,10 @@ export default function MeetingForm() {
                 meetingRoom: "",
                 userId: "",
             });
+
+            // Atualiza lista automaticamente
+            const updatedMeetings = await getMeetings();
+            setMeetings(updatedMeetings);
 
         } catch (error: unknown) {
             let errorMessage = "Erro ao enviar o formulário";
@@ -70,7 +78,7 @@ export default function MeetingForm() {
             setIsError(true);
         }
     };
-    
+
     return (
         <div>
             <h1>Cadastro de Reunião</h1>

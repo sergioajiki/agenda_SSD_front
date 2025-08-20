@@ -24,4 +24,28 @@ export const createMeeting = async (meeting: MeetingRequest): Promise<MeetingRes
 
         throw new Error("Erro desconhecido ao cadastrar reunião");
     }
+
+
+};
+
+export const getMeetings = async (): Promise<MeetingResponse[]> => {
+    try {
+        const response = await api.get<MeetingResponse[]>('/api/meeting');
+        return response.data;
+    } catch (error: unknown) {
+        if (axios.isAxiosError<ApiErrorResponse>(error)) {
+            const apiDetail = error.response?.data?.detail;
+            const apiMessage = error.response?.data?.message;
+
+            console.error("Erro ao carregar reuniões", error.response?.data || error.message);
+
+            throw new Error(apiDetail || apiMessage || "Erro desconhecido ao carregar reuniões");
+        }
+
+        if (error instanceof Error) {
+            throw new Error(error.message || "Erro inesperado ao carregar reuniões");
+        }
+
+        throw new Error("Erro desconhecido ao carregar reuniões");
+    }
 };

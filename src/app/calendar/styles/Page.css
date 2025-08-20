@@ -1,0 +1,19 @@
+.calendar-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.calendar-layout {
+  display: flex;
+  align-items: flex-start; /* alinha pelo topo */
+  gap: 20px; /* espaçamento entre colunas */
+}
+
+.calendar-form {
+  flex: 1;
+  max-width: 350px; /* largura fixa do formulário */
+}
+
+.calendar-month {
+  flex: 3; /* ocupa mais espaço para o calendário */
+}
