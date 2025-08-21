@@ -86,6 +86,14 @@ export default function WeeklyCalendar2v() {
 
   const prevWeek = () => setCurrentWeekStart((p) => addDays(p, -7));
   const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
+  const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
+
+  const getMeetingCells = (meeting: MeetingResponse) => {
+    const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
+    const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
+    const durationCells = (end - start) / (30 * 60 * 1000); // 30 min por célula
+    return durationCells;
+  };
 
   return (
     <div className="weekly-calendar2v">
@@ -93,6 +101,7 @@ export default function WeeklyCalendar2v() {
         <button onClick={prevWeek}>← Semana Anterior</button>
         <span className="calendar-range2v">{weekRangeText}</span>
         <button onClick={nextWeek}>Próxima Semana →</button>
+        <button onClick={goToCurrentWeek}>Semana Atual</button>
       </div>
 
       {/* Cabeçalho: horas na horizontal */}
@@ -120,7 +129,14 @@ export default function WeeklyCalendar2v() {
               const busy = isCellBusy(dayIndex, t);
               return (
                 <div key={`${dayIndex}-${t}`} className={`calendar-cell2v ${busy ? "busy2v" : ""}`}>
-                  {meeting && <span className="meeting-title2v">{meeting.title}</span>}
+                  {meeting && (
+                    <span
+                      className="meeting-title2v"
+                      style={{ gridColumn: `span ${getMeetingCells(meeting)}` }}
+                    >
+                      {meeting.title}
+                    </span>
+                  )}
                 </div>
               );
             })}

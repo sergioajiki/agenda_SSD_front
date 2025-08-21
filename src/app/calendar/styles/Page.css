@@ -3,6 +3,10 @@
   font-family: Arial, sans-serif;
 }
 
+.calendar-navy {
+    display: inline;
+}
+
 .calendar-layout {
   display: flex;
   align-items: flex-start; /* alinha pelo topo */

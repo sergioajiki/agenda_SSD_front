@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import MeetingForm from "@/components/MeetingForm" ;
+import MeetingForm from "@/components/MeetingForm";
 import MonthlyCalendar from "@/components/MonthlyCalendar";
 import WeeklyCalendar from "@/components/WeeklyCalendar"; // importar o semanal
 import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
@@ -12,23 +12,23 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
-      <h1>Calendário</h1>
-
-      <div className="calendar-toggle">
-        <button
-          className={view === "monthly" ? "active" : ""}
-          onClick={() => setView("monthly")}
-        >
-          Calendário Mensal
-        </button>
-        <button
-          className={view === "weekly" ? "active" : ""}
-          onClick={() => setView("weekly")}
-        >
-          Agenda Semanal
-        </button>
-      </div>
-
+      <span className="calendar-navy">
+        <div className="calendar-toggle">
+          <button
+            className={view === "monthly" ? "active" : ""}
+            onClick={() => setView("monthly")}
+          >
+            Calendário Mensal
+          </button>
+          <button
+            className={view === "weekly" ? "active" : ""}
+            onClick={() => setView("weekly")}
+          >
+            Agenda Semanal
+          </button>
+        </div>
+      </span>
+      <br/>
       <div className="calendar-layout">
         {/* Lado esquerdo: Formulário */}
         <div className="calendar-form">

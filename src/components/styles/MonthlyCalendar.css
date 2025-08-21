@@ -2,6 +2,12 @@
   max-width: 900px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
+  max-height: 100vh;    
+  max-width: 100vh;     /* altura limitada */
+  overflow-y: auto;
+  overflow-x: auto;         /* rolagem vertical */
+  border: 1px solid #ddd;
+  background: #fff;
 }
 
 .calendar-header {
@@ -38,10 +44,10 @@
 
 .calendar-cell {
   border: 1px solid #ddd;
-  min-height: 120px;
-  max-height: 120px;
-  min-width: 120px;
-  max-width: 120px;
+  min-height: 115px;
+  max-height: 115px;
+  min-width: 115px;
+  max-width: 115px;
   padding: 4px;
   vertical-align: top;
   display: flex;
