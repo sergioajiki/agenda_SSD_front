@@ -1,0 +1,90 @@
+.weekly-calendar2v {
+  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+/* Controles */
+.calendar-controls2v {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0 12px;
+}
+.calendar-controls2v button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.calendar-controls2v button:hover {
+  background: #0056b3;
+}
+.calendar-range2v {
+  font-weight: 600;
+}
+
+/* Cabeçalho com horas */
+.calendar-header2v {
+  display: grid;
+  grid-template-columns: 100px repeat(48, 1fr); /* 24h / 30min */
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-weight: bold;
+}
+.calendar-hour-col2v {
+  border-left: 1px solid #ccc;
+  padding: 4px;
+  font-size: 11px;
+  background: #fafafa;
+}
+
+/* Coluna fixa dos dias */
+.calendar-day-col2v {
+  width: 100px;
+  padding: 6px;
+  border-right: 1px solid #ccc;
+  font-weight: bold;
+  background: #fafafa;
+  text-align: right;
+}
+
+/* Corpo */
+.calendar-body2v {
+  display: flex;
+  flex-direction: column;
+}
+.calendar-row2v {
+  display: grid;
+  grid-template-columns: 100px repeat(48, 1fr);
+  border-bottom: 1px solid #eee;
+  min-height: 30px;
+}
+
+/* Células de 30min */
+.calendar-cell2v {
+  border-left: 1px solid #eee;
+  position: relative;
+  padding: 2px;
+}
+
+/* Célula ocupada (vermelho) */
+.calendar-cell2v.busy2v {
+  background-color: #ffd6d6;        /* vermelho claro */
+  border-left-color: #ff9b9b;
+}
+
+/* Título da reunião (só na 1ª célula) */
+.meeting-title2v {
+  font-size: 11px;
+  font-weight: bold;
+  color: #a40000;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

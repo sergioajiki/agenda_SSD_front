@@ -62,8 +62,8 @@ export default function WeeklyAgenda() {
   };
 
   return (
-    <div className="weekly-agenda">
-      <div className="agenda-header">
+    <div className="weekly-calendar">
+      <div className="calendar-header">
         <button onClick={handlePrevWeek}>◀ Semana anterior</button>
         <h2>
           Semana de {weekStart.toLocaleDateString()} até{" "}
@@ -72,9 +72,9 @@ export default function WeeklyAgenda() {
         <button onClick={handleNextWeek}>Próxima semana ▶</button>
       </div>
 
-      <div className="agenda-grid">
+      <div className="calendar-grid">
         {getWeekDays().map((day, index) => (
-          <div key={index} className="agenda-day">
+          <div key={index} className="calendar-day">
             <h3>
               {day.toLocaleDateString("pt-BR", {
                 weekday: "long",
