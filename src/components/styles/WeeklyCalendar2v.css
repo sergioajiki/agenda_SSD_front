@@ -8,15 +8,21 @@
   overflow-y: auto;
   background: #f5f5f5;
   color: #000;
+  margin-top: 12px; /* espaço do cabeçalho */
 }
 
-/* Controles */
+/* Controles de navegação da semana */
 .calendar-controls2v {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin: 8px 0 12px;
+  margin: 0 0 16px 0; /* distancia do calendário */
+  padding: 8px;
+  background: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: fit-content;
 }
 
 .calendar-controls2v button {

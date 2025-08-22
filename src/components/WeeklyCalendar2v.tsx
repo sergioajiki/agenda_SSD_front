@@ -83,8 +83,8 @@ export default function WeeklyCalendar2v() {
   };
 
   return (
-    <div className="weekly-calendar2v">
-      {/* Controles da semana */}
+    <>
+      {/* Controles da semana - agora separados */}
       <div className="calendar-controls2v">
         <button onClick={prevWeek}>← Semana Anterior</button>
         <span className="calendar-range2v">{weekRangeText}</span>
@@ -92,59 +92,61 @@ export default function WeeklyCalendar2v() {
         <button onClick={goToCurrentWeek}>Semana Atual</button>
       </div>
 
-      {/* Cabeçalho de horas */}
-      <div className="calendar-header2v">
-        <div className="calendar-day-col2v" />
-        {HOURS.map((t) => (
-          <div key={t} className="calendar-hour-col2v">
-            {t}
-          </div>
-        ))}
-      </div>
-
-      {/* Corpo: linhas = dias */}
-      <div className="calendar-body2v">
-        {daysOfWeek.map((day, dayIndex) => (
-          <div key={dayIndex} className="calendar-row2v">
-            <div className="calendar-day-col2v">
-              {day}
-              <br />
-              {formatBR(addDays(currentWeekStart, dayIndex))}
+      {/* Calendário em si */}
+      <div className="weekly-calendar2v">
+        {/* Cabeçalho de horas */}
+        <div className="calendar-header2v">
+          <div className="calendar-day-col2v" />
+          {HOURS.map((t) => (
+            <div key={t} className="calendar-hour-col2v">
+              {t}
             </div>
+          ))}
+        </div>
 
-            {(() => {
-              const rowCells: JSX.Element[] = [];
-              let cellIndex = 0;
+        {/* Corpo: linhas = dias */}
+        <div className="calendar-body2v">
+          {daysOfWeek.map((day, dayIndex) => (
+            <div key={dayIndex} className="calendar-row2v">
+              <div className="calendar-day-col2v">
+                {day}
+                <br />
+                {formatBR(addDays(currentWeekStart, dayIndex))}
+              </div>
 
-              while (cellIndex < HOURS.length) {
-                const t = HOURS[cellIndex];
-                const meeting = meetingStartingHere(dayIndex, t);
+              {(() => {
+                const rowCells: JSX.Element[] = [];
+                let cellIndex = 0;
 
-                if (meeting) {
-                  const span = getMeetingCells(meeting);
-                  rowCells.push(
-                    <div
-                      key={`${dayIndex}-${cellIndex}`}
-                      className="calendar-cell2v busy2v"
-                      style={{ gridColumn: `span ${span}` }}
-                    >
-                      <span className="meeting-title2v">{meeting.title}</span>
-                    </div>
-                  );
-                  cellIndex += span; // pula células da reunião
-                } else {
-                  rowCells.push(
-                    <div key={`${dayIndex}-${cellIndex}`} className="calendar-cell2v" />
-                  );
-                  cellIndex++;
+                while (cellIndex < HOURS.length) {
+                  const t = HOURS[cellIndex];
+                  const meeting = meetingStartingHere(dayIndex, t);
+
+                  if (meeting) {
+                    const span = getMeetingCells(meeting);
+                    rowCells.push(
+                      <div
+                        key={`${dayIndex}-${cellIndex}`}
+                        className="calendar-cell2v busy2v"
+                        style={{ gridColumn: `span ${span}` }}
+                      >
+                        <span className="meeting-title2v">{meeting.title}</span>
+                      </div>
+                    );
+                    cellIndex += span;
+                  } else {
+                    rowCells.push(
+                      <div key={`${dayIndex}-${cellIndex}`} className="calendar-cell2v" />
+                    );
+                    cellIndex++;
+                  }
                 }
-              }
-
-              return rowCells;
-            })()}
-          </div>
-        ))}
+                return rowCells;
+              })()}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
