@@ -6,7 +6,7 @@
   max-width: 800px;
   overflow-x: auto;
   overflow-y: auto;
-  background: #f5f5f5;
+  /*background: #f5f5f5;*/
   color: #000;
   margin-top: 12px; /* espaço do cabeçalho */
 }
@@ -41,6 +41,7 @@
 .calendar-range2v {
   font-weight: 600;
   margin: 0 12px;
+  color: #000;
 }
 
 /* Cabeçalho de horas */

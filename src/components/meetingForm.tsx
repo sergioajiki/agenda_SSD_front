@@ -81,7 +81,7 @@ export default function MeetingForm() {
 
     return (
         <div>
-            <h1>Cadastro de Reunião</h1>
+            <h3>Cadastro de Reunião</h3>
             <br />
             <form onSubmit={handleSubmit}>
                 Título da Reunião:
