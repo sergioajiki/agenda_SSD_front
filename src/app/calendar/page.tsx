@@ -3,7 +3,6 @@
 import { useState } from "react";
 import MeetingForm from "@/components/MeetingForm";
 import MonthlyCalendar from "@/components/MonthlyCalendar";
-import WeeklyCalendar from "@/components/WeeklyCalendar"; // importar o semanal
 import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
 import "./styles/Page.css";
 
