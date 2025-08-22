@@ -2,10 +2,10 @@
   border: 1px solid #ccc;
   font-family: Arial, sans-serif;
   font-size: 12px;
-  max-height: 60vh;
-  max-width: 100vw;
-  overflow-y: auto;
+  max-height: 70vh;
+  max-width: 900px;
   overflow-x: auto;
+  overflow-y: auto;
   background: #fff;
 }
 
@@ -36,15 +36,15 @@
   margin: 0 12px;
 }
 
-/* Cabeçalho com horas */
+/* Cabeçalho de horas */
 .calendar-header2v {
   display: grid;
-  grid-template-columns: 100px repeat(48, 40px);  /* largura fixa */
+  grid-template-columns: 100px repeat(48, 40px); /* largura fixa */
   background: #f0f0f0;
   border-bottom: 1px solid #ccc;
-  text-align: center;
   font-weight: bold;
-  min-width: calc(100px + 48 * 40px);  /* garante alinhamento */
+  text-align: center;
+  min-width: calc(100px + 48*40px);
 }
 
 .calendar-hour-col2v {
@@ -55,7 +55,7 @@
   white-space: nowrap;
 }
 
-/* Coluna fixa dos dias */
+/* Coluna de dias */
 .calendar-day-col2v {
   width: 100px;
   padding: 6px;
@@ -74,7 +74,7 @@
 
 .calendar-row2v {
   display: grid;
-  grid-template-columns: 100px repeat(48, 40px); /* igual ao header */
+  grid-template-columns: 100px repeat(48, 40px);
   border-bottom: 1px solid #eee;
   min-height: 28px;
 }
@@ -82,15 +82,18 @@
 /* Células */
 .calendar-cell2v {
   border-left: 1px solid #eee;
+  min-width: 40px;
   position: relative;
   padding: 2px;
-  min-width: 30px;
 }
 
 /* Célula ocupada (vermelho) */
 .calendar-cell2v.busy2v {
   background-color: #ffd6d6;
   border-left-color: #ff9b9b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Título da reunião */
@@ -98,8 +101,6 @@
   font-size: 11px;
   font-weight: bold;
   color: #a40000;
-  display: block;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: normal;
+  white-space: normal; /* permite quebra de linha */
+  text-align: center;
 }

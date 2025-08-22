@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { JSX, useCallback, useEffect, useMemo, useState } from "react";
 import { getMeetings } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/WeeklyCalendar2v.css";
@@ -19,22 +19,26 @@ const startOfWeek = (d: Date) => {
   x.setHours(0, 0, 0, 0);
   return x;
 };
+
 const addDays = (d: Date, days: number) => {
   const x = new Date(d);
   x.setDate(x.getDate() + days);
   return x;
 };
+
 const ymd = (d: Date) => {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 };
+
 const combineYmdAndHHmm = (ymdStr: string, hhmm: string) => {
   const [y, m, d] = ymdStr.split("-").map(Number);
   const [hh, mm] = hhmm.split(":").map(Number);
   return new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0, 0, 0);
 };
+
 const formatBR = (d: Date) =>
   d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -57,22 +61,16 @@ export default function WeeklyCalendar2v() {
     return `${formatBR(currentWeekStart)} - ${formatBR(end)}`;
   }, [currentWeekStart]);
 
-  /** célula ocupada se estiver entre start(inclusive) e end(exclusive) da reunião daquele dia */
-  const isCellBusy = (dayIndex: number, hhmm: string) => {
-    const date = addDays(currentWeekStart, dayIndex);
-    const dateStr = ymd(date);
-    const [h, m] = hhmm.split(":").map(Number);
-    const cellMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m, 0, 0).getTime();
+  const prevWeek = () => setCurrentWeekStart((p) => addDays(p, -7));
+  const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
+  const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
-    return meetings.some((mt) => {
-      if (mt.meetingDate !== dateStr) return false;
-      const start = combineYmdAndHHmm(mt.meetingDate, mt.timeStart).getTime();
-      const end = combineYmdAndHHmm(mt.meetingDate, mt.timeEnd).getTime();
-      return cellMs >= start && cellMs < end;
-    });
+  const getMeetingCells = (meeting: MeetingResponse) => {
+    const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
+    const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
+    return (end - start) / (30 * 60 * 1000); // 30 min por célula
   };
 
-  /** mostra o título só na primeira célula (exatamente no horário de início) */
   const meetingStartingHere = (dayIndex: number, hhmm: string) => {
     const date = addDays(currentWeekStart, dayIndex);
     const dateStr = ymd(date);
@@ -84,19 +82,9 @@ export default function WeeklyCalendar2v() {
     );
   };
 
-  const prevWeek = () => setCurrentWeekStart((p) => addDays(p, -7));
-  const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
-  const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
-
-  const getMeetingCells = (meeting: MeetingResponse) => {
-    const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
-    const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
-    const durationCells = (end - start) / (30 * 60 * 1000); // 30 min por célula
-    return durationCells;
-  };
-
   return (
     <div className="weekly-calendar2v">
+      {/* Controles da semana */}
       <div className="calendar-controls2v">
         <button onClick={prevWeek}>← Semana Anterior</button>
         <span className="calendar-range2v">{weekRangeText}</span>
@@ -104,7 +92,7 @@ export default function WeeklyCalendar2v() {
         <button onClick={goToCurrentWeek}>Semana Atual</button>
       </div>
 
-      {/* Cabeçalho: horas na horizontal */}
+      {/* Cabeçalho de horas */}
       <div className="calendar-header2v">
         <div className="calendar-day-col2v" />
         {HOURS.map((t) => (
@@ -114,32 +102,46 @@ export default function WeeklyCalendar2v() {
         ))}
       </div>
 
-      {/* Corpo: linhas = dias; colunas = intervalos de 30 min */}
+      {/* Corpo: linhas = dias */}
       <div className="calendar-body2v">
         {daysOfWeek.map((day, dayIndex) => (
-          <div key={day} className="calendar-row2v">
+          <div key={dayIndex} className="calendar-row2v">
             <div className="calendar-day-col2v">
               {day}
               <br />
               {formatBR(addDays(currentWeekStart, dayIndex))}
             </div>
 
-            {HOURS.map((t) => {
-              const meeting = meetingStartingHere(dayIndex, t);
-              const busy = isCellBusy(dayIndex, t);
-              return (
-                <div key={`${dayIndex}-${t}`} className={`calendar-cell2v ${busy ? "busy2v" : ""}`}>
-                  {meeting && (
-                    <span
-                      className="meeting-title2v"
-                      style={{ gridColumn: `span ${getMeetingCells(meeting)}` }}
+            {(() => {
+              const rowCells: JSX.Element[] = [];
+              let cellIndex = 0;
+
+              while (cellIndex < HOURS.length) {
+                const t = HOURS[cellIndex];
+                const meeting = meetingStartingHere(dayIndex, t);
+
+                if (meeting) {
+                  const span = getMeetingCells(meeting);
+                  rowCells.push(
+                    <div
+                      key={`${dayIndex}-${cellIndex}`}
+                      className="calendar-cell2v busy2v"
+                      style={{ gridColumn: `span ${span}` }}
                     >
-                      {meeting.title}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+                      <span className="meeting-title2v">{meeting.title}</span>
+                    </div>
+                  );
+                  cellIndex += span; // pula células da reunião
+                } else {
+                  rowCells.push(
+                    <div key={`${dayIndex}-${cellIndex}`} className="calendar-cell2v" />
+                  );
+                  cellIndex++;
+                }
+              }
+
+              return rowCells;
+            })()}
           </div>
         ))}
       </div>

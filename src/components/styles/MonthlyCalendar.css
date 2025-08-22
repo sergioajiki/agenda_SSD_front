@@ -1,9 +1,9 @@
 .calendar-container {
-  max-width: 900px;
+  width: 900px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
   max-height: 100vh;    
-  max-width: 100vh;     /* altura limitada */
+  /*max-width: 100vh;*/
   overflow-y: auto;
   overflow-x: auto;         /* rolagem vertical */
   border: 1px solid #ddd;
