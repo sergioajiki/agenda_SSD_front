@@ -1,16 +1,20 @@
 "use client";
 
-import { JSX, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getMeetings } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/WeeklyCalendar2v.css";
 
-/** 48 passos de 30min */
-const HOURS = Array.from({ length: 48 }, (_, i) => {
-  const h = Math.floor(i / 2).toString().padStart(2, "0");
-  const m = i % 2 === 0 ? "00" : "30";
-  return `${h}:${m}`;
-});
+/** Gera lista de horas (intervalos de 30 min) */
+const generateHours = () => {
+  return Array.from({ length: 48 }, (_, i) => {
+    const h = Math.floor(i / 2)
+      .toString()
+      .padStart(2, "0");
+    const m = i % 2 === 0 ? "00" : "30";
+    return `${h}:${m}`;
+  });
+};
 
 const startOfWeek = (d: Date) => {
   const x = new Date(d);
@@ -45,7 +49,15 @@ const formatBR = (d: Date) =>
 export default function WeeklyCalendar2v() {
   const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => startOfWeek(new Date()));
-  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  const [startHour, setStartHour] = useState("07:00");
+  const [endHour, setEndHour] = useState("18:00");
+
+  const allHours = useMemo(() => generateHours(), []);
+  const displayedHours = useMemo(() => {
+    const startIndex = allHours.indexOf(startHour);
+    const endIndex = allHours.indexOf(endHour) + 1;
+    return allHours.slice(startIndex, endIndex);
+  }, [startHour, endHour, allHours]);
 
   const fetchMeetings = useCallback(async () => {
     const data = await getMeetings();
@@ -65,88 +77,98 @@ export default function WeeklyCalendar2v() {
   const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
   const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
-  const getMeetingCells = (meeting: MeetingResponse) => {
-    const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
-    const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
-    return (end - start) / (30 * 60 * 1000); // 30 min por célula
-  };
-
-  const meetingStartingHere = (dayIndex: number, hhmm: string) => {
+  const isMeeting = (dayIndex: number, time: string) => {
     const date = addDays(currentWeekStart, dayIndex);
     const dateStr = ymd(date);
-    const startMsHere = combineYmdAndHHmm(dateStr, hhmm).getTime();
-    return meetings.find(
-      (mt) =>
-        mt.meetingDate === dateStr &&
-        combineYmdAndHHmm(mt.meetingDate, mt.timeStart).getTime() === startMsHere
-    );
+    const [h, m] = time.split(":").map(Number);
+    const cellTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m).getTime();
+
+    return meetings.some((meeting) => {
+      if (meeting.meetingDate !== dateStr) return false;
+      const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
+      const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
+      return cellTime >= start && cellTime < end;
+    });
   };
 
+  const getMeetingTitle = (dayIndex: number, time: string) => {
+    const date = addDays(currentWeekStart, dayIndex);
+    const dateStr = ymd(date);
+    const [h, m] = time.split(":").map(Number);
+    const cellTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m).getTime();
+
+    const found = meetings.find((meeting) => {
+      if (meeting.meetingDate !== dateStr) return false;
+      const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
+      const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
+      return cellTime >= start && cellTime < end;
+    });
+    return found ? found.title : "";
+  };
+
+  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
   return (
-    <>
-      {/* Controles da semana - agora separados */}
+    <div className="weekly-calendar2v">
+      {/* Controles */}
       <div className="calendar-controls2v">
-        <button onClick={prevWeek}>← Semana Anterior</button>
+        <div className="calendar-buttons">
+          <button onClick={prevWeek}>← Semana Anterior</button>
+          <button onClick={nextWeek}>Próxima Semana →</button>
+          <button onClick={goToCurrentWeek}>Semana Atual</button>
+        </div>
         <span className="calendar-range2v">{weekRangeText}</span>
-        <button onClick={nextWeek}>Próxima Semana →</button>
-        <button onClick={goToCurrentWeek}>Semana Atual</button>
+        <div className="calendar-hour-range">
+          <label>Início:</label>
+          <select value={startHour} onChange={(e) => setStartHour(e.target.value)}>
+            {allHours.map((h) => (
+              <option key={h}>{h}</option>
+            ))}
+          </select>
+          <label>Fim:</label>
+          <select value={endHour} onChange={(e) => setEndHour(e.target.value)}>
+            {allHours.map((h) => (
+              <option key={h}>{h}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Calendário em si */}
-      <div className="weekly-calendar2v">
-        {/* Cabeçalho de horas */}
+      {/* Cabeçalho vertical: dias */}
+      <div className="calendar-grid2v">
         <div className="calendar-header2v">
-          <div className="calendar-day-col2v" />
-          {HOURS.map((t) => (
-            <div key={t} className="calendar-hour-col2v">
-              {t}
+          <div className="calendar-time-col2v"></div>
+          {daysOfWeek.map((day, i) => (
+            <div key={i} className="calendar-day-col2v">
+              {day} <br />
+              {formatBR(addDays(currentWeekStart, i))}
             </div>
           ))}
         </div>
 
-        {/* Corpo: linhas = dias */}
+        {/* Corpo */}
         <div className="calendar-body2v">
-          {daysOfWeek.map((day, dayIndex) => (
-            <div key={dayIndex} className="calendar-row2v">
-              <div className="calendar-day-col2v">
-                {day}
-                <br />
-                {formatBR(addDays(currentWeekStart, dayIndex))}
-              </div>
-
-              {(() => {
-                const rowCells: JSX.Element[] = [];
-                let cellIndex = 0;
-
-                while (cellIndex < HOURS.length) {
-                  const t = HOURS[cellIndex];
-                  const meeting = meetingStartingHere(dayIndex, t);
-
-                  if (meeting) {
-                    const span = getMeetingCells(meeting);
-                    rowCells.push(
-                      <div
-                        key={`${dayIndex}-${cellIndex}`}
-                        className="calendar-cell2v busy2v"
-                        style={{ gridColumn: `span ${span}` }}
-                      >
-                        <span className="meeting-title2v">{meeting.title}</span>
-                      </div>
-                    );
-                    cellIndex += span;
-                  } else {
-                    rowCells.push(
-                      <div key={`${dayIndex}-${cellIndex}`} className="calendar-cell2v" />
-                    );
-                    cellIndex++;
-                  }
-                }
-                return rowCells;
-              })()}
+          {displayedHours.map((time, i) => (
+            <div key={i} className="calendar-row2v">
+              <div className="calendar-time-col2v">{time}</div>
+              {daysOfWeek.map((_, dayIdx) => (
+                <div
+                  key={`${i}-${dayIdx}`}
+                  className={`calendar-cell2v ${
+                    isMeeting(dayIdx, time) ? "busy2v" : ""
+                  }`}
+                >
+                  {isMeeting(dayIdx, time) && (
+                    <span className="meeting-title2v">
+                      {getMeetingTitle(dayIdx, time)}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

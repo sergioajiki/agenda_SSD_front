@@ -1,78 +1,60 @@
 .weekly-calendar2v {
-  border: 1px solid #ccc;
   font-family: Arial, sans-serif;
-  font-size: 12px;
-  max-height: 70vh;
-  max-width: 800px;
-  overflow-x: auto;
-  overflow-y: auto;
-  /*background: #f5f5f5;*/
+  background: linear-gradient(to right, #E3E3E3, #F1F1F2);
   color: #000;
-  margin-top: 12px; /* espaço do cabeçalho */
-}
-
-/* Controles de navegação da semana */
-.calendar-controls2v {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 16px 0; /* distancia do calendário */
-  padding: 8px;
-  background: #e0e0e0;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: fit-content;
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: auto;
 }
 
-.calendar-controls2v button {
+/* Controles */
+.calendar-controls2v {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #dcdcdc;
+  border-bottom: 1px solid #bbb;
+}
+
+.calendar-buttons button {
   background: #007bff;
   color: #fff;
   border: none;
-  padding: 6px 12px;
-  cursor: pointer;
   border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  margin-right: 4px;
 }
 
-.calendar-controls2v button:hover {
+.calendar-buttons button:hover {
   background: #0056b3;
 }
 
-.calendar-range2v {
-  font-weight: 600;
-  margin: 0 12px;
-  color: #000;
+.calendar-hour-range label {
+  margin: 0 4px;
 }
 
-/* Cabeçalho de horas */
+.calendar-hour-range select {
+  padding: 3px;
+  font-size: 13px;
+}
+
+/* Cabeçalho com dias */
 .calendar-header2v {
   display: grid;
-  grid-template-columns: 100px repeat(48, 40px); /* largura fixa */
-  border-bottom: 1px solid #ccc;
+  grid-template-columns: 80px repeat(7, 1fr);
+  background: #bbbbbb;
   font-weight: bold;
   text-align: center;
-  min-width: calc(100px + 48*40px);
-  background: #bbbbbb; /* cinza médio */
-  color: #000;
+  border-bottom: 1px solid #ccc;
 }
 
-.calendar-hour-col2v {
-  border-left: 1px solid #ccc;
-  padding: 4px;
-  font-size: 11px;
-  background: #fafafa;
-  white-space: nowrap;
-}
-
-/* Coluna de dias */
 .calendar-day-col2v {
-  width: 100px;
+  border-left: 1px solid #ccc;
   padding: 6px;
-  border-right: 1px solid #ccc;
-  font-weight: bold;
-  background: #fafafa;
-  text-align: right;
-  white-space: nowrap;
 }
 
 /* Corpo */
@@ -83,36 +65,40 @@
 
 .calendar-row2v {
   display: grid;
-  grid-template-columns: 100px repeat(48, 40px);
+  grid-template-columns: 80px repeat(7, 1fr);
   border-bottom: 1px solid #eee;
-  min-height: 28px;
+  min-height: 30px;
+}
+
+/* Coluna de horários */
+.calendar-time-col2v {
+  background: #f5f5f5;
+  border-right: 1px solid #ccc;
+  text-align: right;
+  padding: 4px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* Células */
 .calendar-cell2v {
-  border-right: 1px solid #ddd;
+  border-left: 1px solid #eee;
   border-bottom: 1px solid #eee;
-  background: #fff;
-  color: #000;
-  min-width: 40px;
   position: relative;
   padding: 2px;
+  background: #fff;
 }
 
-/* Célula ocupada (vermelho) */
 .calendar-cell2v.busy2v {
-  background-color: #dd0000;
-  border-left-color: #ff9b9b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: #c60000;
+  color: #fff;
+  text-align: center;
 }
 
-/* Título da reunião */
+/* Reunião */
 .meeting-title2v {
   font-size: 11px;
   font-weight: bold;
-  color: #ffffff;
-  white-space: normal; /* permite quebra de linha */
-  text-align: center;
+  color: #fff;
+  white-space: normal;
 }
