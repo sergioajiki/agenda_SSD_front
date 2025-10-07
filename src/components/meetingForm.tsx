@@ -6,9 +6,9 @@ import { createMeeting, getMeetings } from "@/services/meetingService";
 import { formatDateToYYYYMMDD, parseDDMMYYYYtoDate } from "@/utils/Utils";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useState } from "react";
+import "./styles/MeetingForm.css";
 
 export default function MeetingForm() {
-
     const [formData, setFormData] = useState({
         title: "",
         meetingDate: "", // exibido dd-MM-yyyy
@@ -80,76 +80,81 @@ export default function MeetingForm() {
     };
 
     return (
-        <div>
+        <div className="meeting-form-container">
             <h3>Cadastro de Reunião</h3>
-            <br />
-            <form onSubmit={handleSubmit}>
-                Título da Reunião:
+            <form className="meeting-form" onSubmit={handleSubmit}>
+                <label htmlFor="title">Título da Reunião:</label>
                 <input
                     type="text"
                     name="title"
+                    id="title"
                     placeholder="Título da reunião"
                     value={formData.title}
                     onChange={handleChange}
                     required
                 />
-                <br />
-                Data da Reunião:
+
+                <label htmlFor="meetingDate">Data da Reunião:</label>
                 <input
                     type="text"
                     name="meetingDate"
+                    id="meetingDate"
                     placeholder="Data (dd-MM-yyyy)"
                     value={formData.meetingDate}
                     onChange={handleChange}
                     required
                 />
-                <br />
-                Horário Início:
+
+                <label htmlFor="timeStart">Horário Início:</label>
                 <input
                     type="time"
                     name="timeStart"
+                    id="timeStart"
                     value={formData.timeStart}
                     onChange={handleChange}
                     required
                 />
-                <br />
-                Horário Fim:
+
+                <label htmlFor="timeEnd">Horário Fim:</label>
                 <input
                     type="time"
                     name="timeEnd"
+                    id="timeEnd"
                     value={formData.timeEnd}
                     onChange={handleChange}
                     required
                 />
-                <br />
-                Sala da Reunião:
+
+                <label htmlFor="meetingRoom">Sala da Reunião:</label>
                 <input
                     type="text"
                     name="meetingRoom"
+                    id="meetingRoom"
                     placeholder="Sala da reunião"
                     value={formData.meetingRoom}
                     onChange={handleChange}
                     required
                 />
-                <br />
-                ID do Responsável:
+
+                <label htmlFor="userId">ID do Responsável:</label>
                 <input
                     type="number"
                     name="userId"
+                    id="userId"
                     placeholder="ID do responsável"
                     value={formData.userId}
                     onChange={handleChange}
                     required
                 />
-                <br />
+
                 <button type="submit">Cadastrar</button>
             </form>
 
             {message && (
-                <p style={{ color: isError ? "red" : "green" }}>{message}</p>
+                <p className={`meeting-form-message ${isError ? "error" : "success"}`}>
+                    {message}
+                </p>
             )}
         </div>
     );
-
-
 }
