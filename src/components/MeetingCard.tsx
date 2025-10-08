@@ -1,6 +1,7 @@
 "use client";
 
 import { MeetingResponse } from "@/models/Meetings";
+import "./styles/MeetingCard.css"
 
 interface MeetingCardProps {
     meeting: MeetingResponse;

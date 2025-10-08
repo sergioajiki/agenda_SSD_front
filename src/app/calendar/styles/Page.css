@@ -1,23 +1,78 @@
+/* Layout geral */
 .calendar-page {
   padding: 20px;
   font-family: Arial, sans-serif;
 }
 
-.calendar-navy {
-    display: inline;
-}
-
 .calendar-layout {
   display: flex;
-  align-items: flex-start; /* alinha pelo topo */
-  gap: 20px; /* espaçamento entre colunas */
+  align-items: flex-start;
+  gap: 20px;
 }
 
+/* Área do formulário */
 .calendar-form {
   flex: 1;
-  max-width: 350px; /* largura fixa do formulário */
+  max-width: 350px;
 }
 
-.calendar-month {
-  flex: 3; /* ocupa mais espaço para o calendário */
+/* Área principal (calendário + cards) */
+.calendar-display {
+  flex: 3;
+}
+
+/* ========== CALENDÁRIO MENSAL E CARDS LADO A LADO ========== */
+.monthly-view {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+/* Container dos cards */
+.meeting-cards-container {
+  flex: 1;
+  padding: 12px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  min-width: 280px;
+  max-width: 350px;
+  height: fit-content;
+}
+
+.meeting-cards-container h3 {
+  margin-bottom: 10px;
+  color: #003366;
+  font-size: 1.1rem;
+}
+
+/* Cards lado a lado */
+.meeting-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.meeting-card-wrapper {
+  flex: 0 0 auto;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1500px) {
+  .monthly-view {
+    flex-direction: column; /* Cards abaixo do calendário */
+  }
+
+  .meeting-cards-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .meeting-cards-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+  }
 }

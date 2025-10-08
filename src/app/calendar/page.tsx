@@ -36,6 +36,7 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
+      {/* Alternador de visualização */}
       <div className="calendar-toggle">
         <button
           className={view === "monthly" ? "active" : ""}
@@ -52,29 +53,34 @@ export default function CalendarPage() {
       </div>
 
       <div className="calendar-layout">
-        {/* Formulário à esquerda */}
+        {/* Coluna esquerda - formulário */}
         <div className="calendar-form">
           <MeetingForm onMeetingAdded={fetchMeetings} />
         </div>
 
-        {/* Calendário e cards */}
+        {/* Coluna direita - calendário e cards */}
         <div className="calendar-display">
           {view === "monthly" ? (
-            <>
+            <div className="monthly-view">
               <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
+
               {selectedDate && (
                 <div className="meeting-cards-container">
                   <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
-                  {selectedMeetings.length > 0 ? (
-                    selectedMeetings.map((m) => (
-                      <MeetingCard key={m.id} meeting={m} />
-                    ))
-                  ) : (
-                    <p>Sem reuniões para esta data.</p>
-                  )}
+                  <div className="meeting-cards-grid">
+                    {selectedMeetings.length > 0 ? (
+                      selectedMeetings.map((m) => (
+                        <div key={m.id} className="meeting-card-wrapper">
+                          <MeetingCard meeting={m} />
+                        </div>
+                      ))
+                    ) : (
+                      <p>Sem reuniões para esta data.</p>
+                    )}
+                  </div>
                 </div>
               )}
-            </>
+            </div>
           ) : (
             <WeeklyCalendar2v meetings={meetings} />
           )}
