@@ -38,5 +38,3 @@ export default function MeetingCard({meeting}: MeetingCardProps) {
     </div>
   );
 }
-
-
