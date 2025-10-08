@@ -1,34 +1,19 @@
 "use client";
 
 import { MeetingResponse } from "@/models/Meetings";
-import { getMeetings } from "@/services/meetingService";
-import { useCallback, useEffect, useState } from "react";
 import "./styles/MonthlyCalendar.css";
+import { useState } from "react";
 
 type MonthlyCalendarProps = {
     meetings: MeetingResponse[];
+    onDayClick?: (dateStr: string) => void;
 };
 
-export default function MonthlyCalendar({ meetings }: MonthlyCalendarProps) {
-    //const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
+export default function MonthlyCalendar({ meetings, onDayClick }: MonthlyCalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-
-
-    //  const fetchMeetings = useCallback(async () => {
-    //    try {
-    //        const data = await getMeetings();
-    //         setMeetings(data);
-    //    } catch (error) {
-    //         console.error("Erro ao carregar reuiniões", error)
-    //     }
-    //  }, []);
-
-   // useEffect(() => {
-   //     fetchMeetings();
-   // }, [fetchMeetings, currentDate]); // recarrega sempre que mudar o mês
 
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
@@ -72,8 +57,13 @@ export default function MonthlyCalendar({ meetings }: MonthlyCalendarProps) {
                 {Array.from({ length: daysInMonth }).map((_, i) => {
                     const day = i + 1;
                     const dailyMeetings = getMeetingsForDay(day);
+                    const dateStr = new Date(year, month, day).toISOString().split("T")[0];
+
                     return (
-                        <div key={day} className="calendar-cell">
+                        <div
+                         key={day}
+                         className="calendar-cell"
+                         onClick={() => onDayClick && onDayClick(dateStr)}>
                             <div className="calendar-day-number">{day}</div>
                             <ul className="meeting-list">
                                 {dailyMeetings.map((m) => (
