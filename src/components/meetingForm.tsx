@@ -5,8 +5,20 @@ import { MeetingRequest, MeetingResponse } from "@/models/Meetings";
 import { createMeeting, getMeetings } from "@/services/meetingService";
 import { formatDateToYYYYMMDD, parseDDMMYYYYtoDate } from "@/utils/Utils";
 import axios from "axios";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import "./styles/MeetingForm.css";
+
+// Gera lista de horários de 00:00 até 23:30 de 30 em 30 minutos
+const generateHalfHourTimes = () => {
+    const times: string[] = [];
+    for (let h = 0; h < 24; h++) {
+        times.push(`${String(h).padStart(2, "0")}:00`);
+        times.push(`${String(h).padStart(2, "0")}:30`);
+    }
+    return times;
+};
+
+const HALF_HOUR_TIMES = generateHalfHourTimes();
 
 export default function MeetingForm() {
     const [formData, setFormData] = useState({
@@ -22,16 +34,39 @@ export default function MeetingForm() {
     const [isError, setIsError] = useState<boolean>(false);
     const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+            ...(name === "timeStart" ? { timeEnd: "" } : {}), // limpa o horário final se início mudar
+        }));
+    };
+
+    /** Lista de horários finais possíveis (após o horário inicial) */
+    const availableEndTimes = useMemo(() => {
+        if (!formData.timeStart) return HALF_HOUR_TIMES;
+        const startIdx = HALF_HOUR_TIMES.indexOf(formData.timeStart);
+        return HALF_HOUR_TIMES.slice(startIdx + 1);
+    }, [formData.timeStart]);
+
+    /** Valida se hora final é posterior à inicial */
+    const validateTimeRange = (): boolean => {
+        if (!formData.timeStart || !formData.timeEnd) return true;
+        const startIdx = HALF_HOUR_TIMES.indexOf(formData.timeStart);
+        const endIdx = HALF_HOUR_TIMES.indexOf(formData.timeEnd);
+        return endIdx > startIdx;
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!validateTimeRange()) {
+            setMessage("⚠️ O horário final deve ser posterior ao horário inicial.");
+            setIsError(true);
+            return;
+        }
+
         try {
             const parsedDate = parseDDMMYYYYtoDate(formData.meetingDate);
             const payload: MeetingRequest = {
@@ -106,24 +141,39 @@ export default function MeetingForm() {
                 />
 
                 <label htmlFor="timeStart">Horário Início:</label>
-                <input
-                    type="time"
+                <select
                     name="timeStart"
                     id="timeStart"
                     value={formData.timeStart}
                     onChange={handleChange}
                     required
-                />
+                >
+                    <option value="">Selecione...</option>
+                    {HALF_HOUR_TIMES.map((t) => (
+                        <option key={t} value={t}>
+                            {t}
+                        </option>
+                    ))}
+                </select>
 
                 <label htmlFor="timeEnd">Horário Fim:</label>
-                <input
-                    type="time"
+                <select
                     name="timeEnd"
                     id="timeEnd"
                     value={formData.timeEnd}
                     onChange={handleChange}
                     required
-                />
+                    disabled={!formData.timeStart}
+                >
+                    <option value="">
+                        {formData.timeStart ? "Selecione..." : "Escolha o início primeiro"}
+                    </option>
+                    {availableEndTimes.map((t) => (
+                        <option key={t} value={t}>
+                            {t}
+                        </option>
+                    ))}
+                </select>
 
                 <label htmlFor="meetingRoom">Sala da Reunião:</label>
                 <input

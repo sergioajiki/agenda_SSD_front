@@ -13,17 +13,7 @@ export default function MonthlyCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
-    //    useEffect(() => {
-    //        const fetchMeetings = async () => {
-    //            try {
-    //                const data = await getMeetings();
-    //                setMeetings(data);
-    //            } catch (error) {
-    //                console.error("Erro ao carregar reuniões", error);
-    //            }
-    //        };
-    //        fetchMeetings();
-    //    }, []);
+
     const fetchMeetings = useCallback(async () => {
         try {
             const data = await getMeetings();
@@ -95,5 +85,4 @@ export default function MonthlyCalendar() {
             </div>
         </div>
     );
-
 }
