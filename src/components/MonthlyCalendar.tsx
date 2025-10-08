@@ -5,27 +5,30 @@ import { getMeetings } from "@/services/meetingService";
 import { useCallback, useEffect, useState } from "react";
 import "./styles/MonthlyCalendar.css";
 
+type MonthlyCalendarProps = {
+    meetings: MeetingResponse[];
+};
 
-export default function MonthlyCalendar() {
-    const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
+export default function MonthlyCalendar({ meetings }: MonthlyCalendarProps) {
+    //const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
 
-    const fetchMeetings = useCallback(async () => {
-        try {
-            const data = await getMeetings();
-            setMeetings(data);
-        } catch (error) {
-            console.error("Erro ao carregar reuiniões", error)
-        }
-    }, []);
+    //  const fetchMeetings = useCallback(async () => {
+    //    try {
+    //        const data = await getMeetings();
+    //         setMeetings(data);
+    //    } catch (error) {
+    //         console.error("Erro ao carregar reuiniões", error)
+    //     }
+    //  }, []);
 
-    useEffect(() => {
-        fetchMeetings();
-    }, [fetchMeetings, currentDate]); // recarrega sempre que mudar o mês
+   // useEffect(() => {
+   //     fetchMeetings();
+   // }, [fetchMeetings, currentDate]); // recarrega sempre que mudar o mês
 
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);

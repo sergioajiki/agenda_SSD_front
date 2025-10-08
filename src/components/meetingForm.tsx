@@ -8,6 +8,10 @@ import axios from "axios";
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import "./styles/MeetingForm.css";
 
+type MeetingFormProps = {
+    onMeetingAdded?: () => void; // função opcional
+};
+
 // Gera lista de horários de 00:00 até 23:30 de 30 em 30 minutos
 const generateHalfHourTimes = () => {
     const times: string[] = [];
@@ -20,7 +24,7 @@ const generateHalfHourTimes = () => {
 
 const HALF_HOUR_TIMES = generateHalfHourTimes();
 
-export default function MeetingForm() {
+export default function MeetingForm({ onMeetingAdded }: MeetingFormProps) {
     const [formData, setFormData] = useState({
         title: "",
         meetingDate: "", // exibido dd-MM-yyyy
@@ -92,6 +96,9 @@ export default function MeetingForm() {
                 meetingRoom: "",
                 userId: "",
             });
+
+            // chama a atualização do calendário
+            if (onMeetingAdded) onMeetingAdded();
 
             // Atualiza lista automaticamente
             const updatedMeetings = await getMeetings();

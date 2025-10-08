@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { getMeetings } from "@/services/meetingService";
+import { useMemo, useState } from "react";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/WeeklyCalendar2v.css";
+
+interface WeeklyCalendar2vProps {
+  meetings: MeetingResponse[];
+}
 
 /** Gera lista de horas (intervalos de 30 min) */
 const generateHours = () => {
@@ -46,9 +49,10 @@ const combineYmdAndHHmm = (ymdStr: string, hhmm: string) => {
 const formatBR = (d: Date) =>
   d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
-export default function WeeklyCalendar2v() {
-  const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
-  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => startOfWeek(new Date()));
+export default function WeeklyCalendar2v({ meetings }: WeeklyCalendar2vProps) {
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() =>
+    startOfWeek(new Date())
+  );
   const [startHour, setStartHour] = useState("07:00");
   const [endHour, setEndHour] = useState("18:00");
 
@@ -59,14 +63,7 @@ export default function WeeklyCalendar2v() {
     return allHours.slice(startIndex, endIndex);
   }, [startHour, endHour, allHours]);
 
-  const fetchMeetings = useCallback(async () => {
-    const data = await getMeetings();
-    setMeetings(data);
-  }, []);
-
-  useEffect(() => {
-    fetchMeetings();
-  }, [fetchMeetings]);
+  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   const weekRangeText = useMemo(() => {
     const end = addDays(currentWeekStart, 6);
@@ -106,18 +103,18 @@ export default function WeeklyCalendar2v() {
     return found ? found.title : "";
   };
 
-  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-
   return (
     <div className="weekly-calendar2v">
-      {/* Controles */}
+      {/* Controles superiores */}
       <div className="calendar-controls2v">
         <div className="calendar-buttons">
           <button onClick={prevWeek}>← Semana Anterior</button>
           <button onClick={nextWeek}>Próxima Semana →</button>
           <button onClick={goToCurrentWeek}>Semana Atual</button>
         </div>
+
         <span className="calendar-range2v">{weekRangeText}</span>
+
         <div className="calendar-hour-range">
           <label>Início:</label>
           <select value={startHour} onChange={(e) => setStartHour(e.target.value)}>
@@ -134,19 +131,21 @@ export default function WeeklyCalendar2v() {
         </div>
       </div>
 
-      {/* Cabeçalho vertical: dias */}
+      {/* Grade principal */}
       <div className="calendar-grid2v">
+        {/* Cabeçalho dos dias */}
         <div className="calendar-header2v">
           <div className="calendar-time-col2v"></div>
           {daysOfWeek.map((day, i) => (
             <div key={i} className="calendar-day-col2v">
-              {day} <br />
+              {day}
+              <br />
               {formatBR(addDays(currentWeekStart, i))}
             </div>
           ))}
         </div>
 
-        {/* Corpo */}
+        {/* Corpo: linhas = horas, colunas = dias */}
         <div className="calendar-body2v">
           {displayedHours.map((time, i) => (
             <div key={i} className="calendar-row2v">
@@ -154,9 +153,7 @@ export default function WeeklyCalendar2v() {
               {daysOfWeek.map((_, dayIdx) => (
                 <div
                   key={`${i}-${dayIdx}`}
-                  className={`calendar-cell2v ${
-                    isMeeting(dayIdx, time) ? "busy2v" : ""
-                  }`}
+                  className={`calendar-cell2v ${isMeeting(dayIdx, time) ? "busy2v" : ""}`}
                 >
                   {isMeeting(dayIdx, time) && (
                     <span className="meeting-title2v">
