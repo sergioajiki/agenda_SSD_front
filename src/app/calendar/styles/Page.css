@@ -3,28 +3,31 @@
   font-family: Arial, sans-serif;
 }
 
-/* ========== CABEÇALHO COM LOGO ========== */
-.calendar-header-logo {
+/* ========== CABEÇALHO + LOGO + TÍTULO + BOTÕES ========== */
+.calendar-header-bar {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* alinha topo com o calendário */
   gap: 16px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-.calendar-header-logo img {
-  height: 84px;
-  width: 171px;
+.calendar-header-bar img {
+  height: auto;
+  max-height: 60px;
+  width: auto;
 }
 
-.calendar-header-logo h1 {
+.calendar-header-bar h1 {
   font-size: 1.8rem;
   color: #003366;
   margin: 0;
 }
 
-/* ========== TOGGLE (MENSAL / SEMANAL) ========== */
 .calendar-toggle {
-  margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+  margin-top: 4px; /* alinha visual com o título */
 }
 
 .calendar-toggle button {
@@ -32,7 +35,6 @@
   border: 1px solid #ccc;
   color: #000;
   padding: 6px 12px;
-  margin-right: 8px;
   cursor: pointer;
   border-radius: 4px;
   transition: 0.2s;
@@ -51,7 +53,7 @@
 /* ========== LAYOUT GERAL ========== */
 .calendar-layout {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-start; /* garante alinhamento pelo topo */
   gap: 20px;
 }
 
@@ -78,7 +80,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   min-width: 280px;
-  max-width: 350px;
+  max-width: 250px;
   height: fit-content;
 }
 
@@ -99,7 +101,7 @@
 }
 
 /* ========== RESPONSIVIDADE ========== */
-@media (max-width: 1000px) {
+@media (max-width: 1500px) {
   .monthly-view {
     flex-direction: column;
   }
@@ -116,12 +118,12 @@
     gap: 12px;
   }
 
-  .calendar-header-logo {
+  .calendar-header-bar {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .calendar-header-logo h1 {
+  .calendar-header-bar h1 {
     font-size: 1.5rem;
   }
 }

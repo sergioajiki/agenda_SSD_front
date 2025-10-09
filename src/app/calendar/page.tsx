@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import MeetingForm from "@/components/MeetingForm";
 import MonthlyCalendar from "@/components/MonthlyCalendar";
@@ -36,37 +35,10 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
-            {/* Cabeçalho com logotipo */}
-      <header className="calendar-header-logo">
-        <Image
-          src="/governo-do-estado-de-ms.png"
-          alt="Governo do Estado de Mato Grosso do Sul"
-          width={220}
-          height={60}
-          priority
-        />
-        <h1>Agenda de Reuniões</h1>
-      </header>
-      {/* Alternador de visualização */}
-      <div className="calendar-toggle">
-        <button
-          className={view === "monthly" ? "active" : ""}
-          onClick={() => setView("monthly")}
-        >
-          Calendário Mensal
-        </button>
-        <button
-          className={view === "weekly" ? "active" : ""}
-          onClick={() => setView("weekly")}
-        >
-          Agenda Semanal
-        </button>
-      </div>
-
       <div className="calendar-layout">
-        {/* Coluna esquerda - formulário */}
+        {/* Coluna esquerda - MeetingForm agora contém logo, título e botões */}
         <div className="calendar-form">
-          <MeetingForm onMeetingAdded={fetchMeetings} />
+          <MeetingForm onMeetingAdded={fetchMeetings} view={view} setView={setView} />
         </div>
 
         {/* Coluna direita - calendário e cards */}
