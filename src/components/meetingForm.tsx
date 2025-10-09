@@ -1,21 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import { ApiErrorResponse } from "@/models/ApiErrorResponse";
 import { MeetingRequest, MeetingResponse } from "@/models/Meetings";
-import { createMeeting, getMeetings } from "@/services/meetingService";
+import { createMeeting } from "@/services/meetingService";
 import { formatDateToYYYYMMDD, parseDDMMYYYYtoDate } from "@/utils/Utils";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import "./styles/MeetingForm.css";
 
 type MeetingFormProps = {
-  onMeetingAdded?: () => void;
-  view: "monthly" | "weekly";
-  setView: (v: "monthly" | "weekly") => void;
+  onMeetingAdded?: () => void | Promise<void>;
+  isBlocked?: boolean; // 🔹 botão bloqueado
 };
 
-// gera lista de horários
+// Gera lista de horários de 00:00 até 23:30 de 30 em 30 minutos
 const generateHalfHourTimes = () => {
   const times: string[] = [];
   for (let h = 0; h < 24; h++) {
@@ -24,9 +22,10 @@ const generateHalfHourTimes = () => {
   }
   return times;
 };
+
 const HALF_HOUR_TIMES = generateHalfHourTimes();
 
-export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFormProps) {
+export default function MeetingForm({ onMeetingAdded, isBlocked = false }: MeetingFormProps) {
   const [formData, setFormData] = useState({
     title: "",
     meetingDate: "",
@@ -44,16 +43,18 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === "timeStart" ? { timeEnd: "" } : {}),
+      ...(name === "timeStart" ? { timeEnd: "" } : {}) // limpa timeEnd se timeStart mudar
     }));
   };
 
+  /** Lista de horários finais possíveis (após o horário inicial) */
   const availableEndTimes = useMemo(() => {
     if (!formData.timeStart) return HALF_HOUR_TIMES;
     const startIdx = HALF_HOUR_TIMES.indexOf(formData.timeStart);
     return HALF_HOUR_TIMES.slice(startIdx + 1);
   }, [formData.timeStart]);
 
+  /** Valida se hora final é posterior à inicial */
   const validateTimeRange = (): boolean => {
     if (!formData.timeStart || !formData.timeEnd) return true;
     const startIdx = HALF_HOUR_TIMES.indexOf(formData.timeStart);
@@ -81,10 +82,12 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
         userId: formData.userId
       };
 
-      await createMeeting(payload);
-      setMessage(`✅ Reunião cadastrada com sucesso!`);
+      const meetingCreated: MeetingResponse = await createMeeting(payload);
+
+      setMessage(`✅ Reunião ${meetingCreated.id} cadastrada com sucesso!`);
       setIsError(false);
 
+      // limpa formulário
       setFormData({
         title: "",
         meetingDate: "",
@@ -94,7 +97,14 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
         userId: "",
       });
 
-      if (onMeetingAdded) onMeetingAdded();
+      if (onMeetingAdded) {
+        try {
+          await onMeetingAdded();
+        } catch (err) {
+          console.error("onMeetingAdded falhou:", err);
+        }
+      }
+
     } catch (error: unknown) {
       let errorMessage = "Erro ao enviar o formulário";
 
@@ -114,33 +124,6 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
 
   return (
     <div className="meeting-form-container">
-      {/* Cabeçalho */}
-      <div className="form-header">
-        <Image
-          src="/governo-do-estado-de-ms.png"
-          alt="Governo do Estado de Mato Grosso do Sul"
-          width={160}
-          height={50}
-          priority
-        />
-        <h2>Agenda de Reuniões</h2>
-        <div className="calendar-toggle">
-          <button
-            className={view === "monthly" ? "active" : ""}
-            onClick={() => setView("monthly")}
-          >
-            Calendário Mensal
-          </button>
-          <button
-            className={view === "weekly" ? "active" : ""}
-            onClick={() => setView("weekly")}
-          >
-            Agenda Semanal
-          </button>
-        </div>
-      </div>
-
-      {/* Formulário */}
       <h3>Cadastro de Reunião</h3>
       <form className="meeting-form" onSubmit={handleSubmit}>
         <label htmlFor="title">Título da Reunião:</label>
@@ -165,10 +148,9 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
           required
         />
 
-        {/* Horários na mesma linha */}
         <div className="time-row">
           <div className="time-field">
-            <label htmlFor="timeStart">Início:</label>
+            <label htmlFor="timeStart">Horário Início:</label>
             <select
               name="timeStart"
               id="timeStart"
@@ -184,7 +166,7 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
           </div>
 
           <div className="time-field">
-            <label htmlFor="timeEnd">Fim:</label>
+            <label htmlFor="timeEnd">Horário Fim:</label>
             <select
               name="timeEnd"
               id="timeEnd"
@@ -194,7 +176,7 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
               disabled={!formData.timeStart}
             >
               <option value="">
-                {formData.timeStart ? "Selecione..." : "Escolha o início"}
+                {formData.timeStart ? "Selecione..." : "Escolha o início primeiro"}
               </option>
               {availableEndTimes.map((t) => (
                 <option key={t} value={t}>{t}</option>
@@ -225,7 +207,13 @@ export default function MeetingForm({ onMeetingAdded, view, setView }: MeetingFo
           required
         />
 
-        <button type="submit" className="btn-submit">Cadastrar Reunião</button>
+        <button
+          type="submit"
+          className="btn-submit"
+          disabled={isBlocked} // 🔹 botão bloqueado
+        >
+          Cadastrar
+        </button>
       </form>
 
       {message && (

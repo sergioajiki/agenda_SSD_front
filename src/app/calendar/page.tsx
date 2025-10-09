@@ -1,18 +1,29 @@
 "use client";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import MeetingForm from "@/components/MeetingForm";
 import MonthlyCalendar from "@/components/MonthlyCalendar";
 import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
 import MeetingCard from "@/components/MeetingCard";
+import LoginForm from "@/components/LoginForm";
 import { getMeetings } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/Page.css";
+
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+};
 
 export default function CalendarPage() {
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
   const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
   const [selectedMeetings, setSelectedMeetings] = useState<MeetingResponse[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const [user, setUser] = useState<User | null>(null); // 🔹 estado de autenticação
 
   const fetchMeetings = useCallback(async () => {
     try {
@@ -35,13 +46,52 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
+      <header className="calendar-header-bar">
+
+
+        <div className="calendar-header-right">
+          {!user ? (
+            <LoginForm onLoginSuccess={setUser} />
+          ) : (
+            <p className="welcome-message">👤 {user.name}</p>
+          )}
+        </div>
+      </header>
+
       <div className="calendar-layout">
-        {/* Coluna esquerda - MeetingForm agora contém logo, título e botões */}
-        <div className="calendar-form">
-          <MeetingForm onMeetingAdded={fetchMeetings} view={view} setView={setView} />
+        <div className="calendar-header-left">
+          <Image
+            src="/governo-do-estado-de-ms.png"
+            alt="Governo do Estado de Mato Grosso do Sul"
+            width={180}
+            height={50}
+            priority
+          />
+          <h1>Agenda de Reuniões</h1>
+          <div className="calendar-toggle">
+            <button
+              className={view === "monthly" ? "active" : ""}
+              onClick={() => setView("monthly")}
+            >
+              Calendário Mensal
+            </button>
+            <button
+              className={view === "weekly" ? "active" : ""}
+              onClick={() => setView("weekly")}
+            >
+              Agenda Semanal
+            </button>
+          </div>
         </div>
 
-        {/* Coluna direita - calendário e cards */}
+        <div className="calendar-form">
+          {/* 🔹 formulário sempre visível, botão bloqueado se não logado */}
+          <MeetingForm
+            onMeetingAdded={fetchMeetings}
+            isBlocked={!user}
+          />
+        </div>
+
         <div className="calendar-display">
           {view === "monthly" ? (
             <div className="monthly-view">

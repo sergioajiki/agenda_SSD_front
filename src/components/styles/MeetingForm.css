@@ -121,3 +121,23 @@
 .meeting-form-message.error {
   color: red;
 }
+
+.btn-submit {
+  margin-top: 14px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Botão bloqueado visualmente */
+.btn-submit:disabled {
+  background: #cccccc;
+  color: #666;
+  cursor: not-allowed;
+}

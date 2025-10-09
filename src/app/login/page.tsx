@@ -3,6 +3,7 @@
 import { createUser } from "@/services/userService";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { UserRequest, UserResponse } from "@/models/User";
+import "./styles/Login.css";  // ⬅ importa o CSS
 
 export default function Login() {
   const [formData, setFormData] = useState<UserRequest>({
@@ -13,7 +14,7 @@ export default function Login() {
     role: "USER",
   });
 
-  const [message, setMessage] = useState<string>(""); // inicia com string vazia
+  const [message, setMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,19 +37,17 @@ export default function Login() {
         setMessage("⚠️ Não foi possível confirmar o cadastro");
         setIsError(true);
       }
-      console.log("Resposta da API", userCreated);
     } catch (error) {
       setMessage("❌ Erro ao cadastrar usuário");
       setIsError(true);
-      console.error("Erro ao cadastrar usuário", error);
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h1>Cadastro</h1>
-      <form onSubmit={handleSubmit}>
-        Nome:  
+      <form className="login-form" onSubmit={handleSubmit}>
+        <label>Nome:</label>
         <input
           type="text"
           name="name"
@@ -57,8 +56,8 @@ export default function Login() {
           onChange={handleChange}
           required
         />
-        <br/>
-        Email:  
+
+        <label>Email:</label>
         <input
           type="email"
           name="email"
@@ -67,8 +66,8 @@ export default function Login() {
           onChange={handleChange}
           required
         />
-        <br/>
-        Senha:  
+
+        <label>Senha:</label>
         <input
           type="password"
           name="password"
@@ -77,8 +76,8 @@ export default function Login() {
           onChange={handleChange}
           required
         />
-        <br/>
-        Matrícula:  
+
+        <label>Matrícula:</label>
         <input
           type="text"
           name="matricula"
@@ -87,16 +86,12 @@ export default function Login() {
           onChange={handleChange}
           required
         />
-        <br/>
-        <br/>
+
         <button type="submit">Cadastrar</button>
-        <br/>
-        <br/>
       </form>
 
-      {/* Renderiza apenas se houver mensagem */}
       {message && (
-        <p suppressHydrationWarning className={isError ? "text-red-600" : "text-green-600"}>
+        <p className={`login-message ${isError ? "error" : "success"}`}>
           {message}
         </p>
       )}
