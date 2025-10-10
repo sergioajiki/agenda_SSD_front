@@ -4,31 +4,42 @@
   padding-top: 80px;
 }
 
-/* ========== CABEÇALHO + LOGO + TÍTULO + BOTÕES ========== */
-.calendar-header-bar {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 20px;
-  position: relative;
-  /* necessário para login fixo */
+/* Login fixo no topo direito */
+.calendar-login-top-right {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
-.calendar-header-left {
+/* ========== LAYOUT GERAL ========== */
+.calendar-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.calendar-display {
+  flex: 3;
+}
+/* ========== ============= ========== */
+
+.calendar-left-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+  flex: 1;
+  max-width: 350px;
 }
 
 .calendar-left-column img {
   height: auto;
   width: auto;
-  max-height: 120px;
+  max-height: 70px;
   max-width: 250px;
   object-fit: contain;
 }
 
-.calendar-header-left h1 {
+.calendar-left-column h1 {
   margin: 0;
   color: #003366;
   font-size: 1.8rem;
@@ -58,32 +69,6 @@
 .calendar-toggle button:hover {
   background-color: #0055aa;
   color: white;
-}
-
-/* Login fixo no topo direito */
-.calendar-login-top-right {
-  position: absolute;
-  top: 20px;
-  right: 0;
-}
-
-/* ========== LAYOUT GERAL ========== */
-.calendar-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-.calendar-left-column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-  max-width: 350px;
-}
-
-.calendar-display {
-  flex: 3;
 }
 
 /* ========== CALENDÁRIO E CARDS ========== */
@@ -213,52 +198,3 @@
   color: red;
 }
 
-/* ========== LoginForm horizontal ========== */
-.login-form-container-horizontal {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  font-family: Arial, sans-serif;
-}
-
-.login-form-horizontal {
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-  align-items: center;
-}
-
-.login-form-horizontal input {
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 13px;
-}
-
-.login-form-horizontal button {
-  background: #0066cc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s;
-}
-
-.login-form-horizontal button:hover {
-  background: #004a99;
-}
-
-.success-message {
-  color: green;
-  font-weight: bold;
-  margin-left: 6px;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
-  margin-left: 6px;
-}

@@ -51,13 +51,12 @@ export default function CalendarPage() {
       </div>
 
       <div className="calendar-layout">
-        {/* Coluna esquerda - logo, título, toggle e formulário */}
         <div className="calendar-left-column">
           <Image
             src="/governo-do-estado-de-ms.png"
             alt="Governo do Estado de Mato Grosso do Sul"
-            width={180}
-            height={50}
+            width={150}
+            height={55}
             priority
           />
           <h1>Agenda de Reuniões</h1>
