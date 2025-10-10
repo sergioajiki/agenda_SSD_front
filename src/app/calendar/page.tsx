@@ -22,8 +22,7 @@ export default function CalendarPage() {
   const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
   const [selectedMeetings, setSelectedMeetings] = useState<MeetingResponse[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-  const [user, setUser] = useState<User | null>(null); // 🔹 estado de autenticação
+  const [user, setUser] = useState<User | null>(null);
 
   const fetchMeetings = useCallback(async () => {
     try {
@@ -46,20 +45,14 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
-      <header className="calendar-header-bar">
-
-
-        <div className="calendar-header-right">
-          {!user ? (
-            <LoginForm onLoginSuccess={setUser} />
-          ) : (
-            <p className="welcome-message">👤 {user.name}</p>
-          )}
-        </div>
-      </header>
+      {/* Login fixo no topo direito */}
+      <div className="calendar-login-top-right">
+        {!user ? <LoginForm onLoginSuccess={setUser} /> : <p className="welcome-message">👤 {user.name}</p>}
+      </div>
 
       <div className="calendar-layout">
-        <div className="calendar-header-left">
+        {/* Coluna esquerda - logo, título, toggle e formulário */}
+        <div className="calendar-left-column">
           <Image
             src="/governo-do-estado-de-ms.png"
             alt="Governo do Estado de Mato Grosso do Sul"
@@ -69,29 +62,15 @@ export default function CalendarPage() {
           />
           <h1>Agenda de Reuniões</h1>
           <div className="calendar-toggle">
-            <button
-              className={view === "monthly" ? "active" : ""}
-              onClick={() => setView("monthly")}
-            >
-              Calendário Mensal
-            </button>
-            <button
-              className={view === "weekly" ? "active" : ""}
-              onClick={() => setView("weekly")}
-            >
-              Agenda Semanal
-            </button>
+            <button className={view === "monthly" ? "active" : ""} onClick={() => setView("monthly")}>Calendário Mensal</button>
+            <button className={view === "weekly" ? "active" : ""} onClick={() => setView("weekly")}>Agenda Semanal</button>
           </div>
+
+          {/* MeetingForm abaixo do logo, título e toggle */}
+          <MeetingForm onMeetingAdded={fetchMeetings} isBlocked={!user} />
         </div>
 
-        <div className="calendar-form">
-          {/* 🔹 formulário sempre visível, botão bloqueado se não logado */}
-          <MeetingForm
-            onMeetingAdded={fetchMeetings}
-            isBlocked={!user}
-          />
-        </div>
-
+        {/* Coluna direita - calendário e cards */}
         <div className="calendar-display">
           {view === "monthly" ? (
             <div className="monthly-view">
