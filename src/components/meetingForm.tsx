@@ -18,6 +18,9 @@ const HALF_HOUR_TIMES = Array.from({ length: 48 }, (_, i) => {
   return `${String(h).padStart(2, "0")}:${m}`;
 });
 
+// 🔹 Filtra os horários para começar em 07:30
+const START_OPTIONS = HALF_HOUR_TIMES.filter(t => t >= "07:30");
+
 export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId }: MeetingFormProps) {
   const [formData, setFormData] = useState({
     title: "",
@@ -28,6 +31,18 @@ export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId 
   });
   const [message, setMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [dateError, setDateError] = useState<string>("");
+
+  const validateDateNotPast = (dateStr: string): boolean => {
+    try {
+      const date = parseDDMMYYYYtoDate(dateStr);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date >= today;
+    } catch {
+      return false;
+    }
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -36,6 +51,16 @@ export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId 
       [name]: value,
       ...(name === "timeStart" ? { timeEnd: "" } : {})
     }));
+
+    if (name === "meetingDate") {
+      if (value.trim() === "") {
+        setDateError("");
+      } else if (!validateDateNotPast(value)) {
+        setDateError("⚠️ Data inválida ou retroativa");
+      } else {
+        setDateError("");
+      }
+    }
   };
 
   const availableEndTimes = useMemo(() => {
@@ -51,6 +76,13 @@ export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId 
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (dateError) {
+      setMessage(dateError);
+      setIsError(true);
+      return;
+    }
+
     if (!validateTimeRange()) {
       setMessage("⚠️ O horário final deve ser posterior ao horário inicial.");
       setIsError(true);
@@ -71,14 +103,13 @@ export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId 
         timeStart: formData.timeStart,
         timeEnd: formData.timeEnd,
         meetingRoom: formData.meetingRoom,
-        userId: String(userId)       // 🔹 força ID do usuário logado
+        userId: String(userId)
       };
 
       const meetingCreated: MeetingResponse = await createMeeting(payload);
       setMessage(`✅ Reunião ${meetingCreated.id} cadastrada com sucesso!`);
       setIsError(false);
 
-      // limpa form
       setFormData({
         title: "",
         meetingDate: "",
@@ -120,7 +151,9 @@ export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId 
           placeholder="Ex: 15-10-2025"
           required
           disabled={isBlocked}
+          className={dateError ? "input-error" : formData.meetingDate ? "input-valid" : ""}
         />
+        {dateError && <p className="error-message">{dateError}</p>}
 
         <div className="time-row">
           <div className="time-field">
@@ -133,7 +166,7 @@ export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId 
               disabled={isBlocked}
             >
               <option value="">--</option>
-              {HALF_HOUR_TIMES.map(t => (
+              {START_OPTIONS.map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
             </select>

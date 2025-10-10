@@ -8,7 +8,7 @@ export interface MeetingRequest {
 }
 
 export interface MeetingResponse {
-    id: string;
+    id: number;
     title: string;
     meetingDate: string;
     timeStart: string;

@@ -1,20 +1,22 @@
 "use client";
 
 import { MeetingResponse } from "@/models/Meetings";
-import "./styles/MeetingCard.css"
+import "./styles/MeetingCard.css";
 
 interface MeetingCardProps {
-    meeting: MeetingResponse;
+  meeting: MeetingResponse;
+  userId?: number | null;
+  onDelete?: (id: number) => void;
 }
 
-export default function MeetingCard({meeting}: MeetingCardProps) {
-    const formatDateBR = (dateStr: string) => {
-        if (!dateStr) return "";
-        const [year, month, day] = dateStr.split("-");
-        return `${day}/${month}/${year}`;
-    };
+export default function MeetingCard({ meeting, userId, onDelete }: MeetingCardProps) {
+  const formatDateBR = (dateStr: string) => {
+    if (!dateStr) return "";
+    const [year, month, day] = dateStr.split("-");
+    return `${day}/${month}/${year}`;
+  };
 
-    return (
+  return (
     <div className="meeting-card">
       <div className="meeting-card-header">
         <h4>{meeting.title}</h4>
@@ -35,6 +37,16 @@ export default function MeetingCard({meeting}: MeetingCardProps) {
           <strong>Responsável (ID):</strong> {meeting.userId}
         </p>
       </div>
+
+      {/* 🔹 Botão de excluir aparece só para o dono da reunião */}
+      {userId && Number(meeting.userId) === userId && (
+        <button
+          className="btn-delete"
+          onClick={() => onDelete && onDelete(meeting.id)}
+        >
+          🗑 Excluir
+        </button>
+      )}
     </div>
   );
 }

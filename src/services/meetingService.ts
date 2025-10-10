@@ -49,3 +49,31 @@ export const getMeetings = async (): Promise<MeetingResponse[]> => {
         throw new Error("Erro desconhecido ao carregar reuniões");
     }
 };
+
+/**
+ * Exclui uma reunião existente.
+ * @param id ID da reunião
+ * @param requestingUserId ID do usuário autenticado
+ */
+export const deleteMeeting = async (id: number, requestingUserId: number): Promise<void> => {
+    try {
+        await api.delete(`/api/meeting/${id}`, {
+            params: { requestingUserId }
+        });
+    } catch (error: unknown) {
+        if (axios.isAxiosError<ApiErrorResponse>(error)) {
+            const apiDetail = error.response?.data?.detail;
+            const apiMessage = error.response?.data?.message;
+
+            console.error("Erro ao excluir reunião", error.response?.data || error.message);
+
+            throw new Error(apiDetail || apiMessage || "Erro desconhecido ao excluir reunião");
+        }
+
+        if (error instanceof Error) {
+            throw new Error(error.message || "Erro inesperado ao excluir reunião");
+        }
+
+        throw new Error("Erro desconhecido ao excluir reunião");
+    }
+};
