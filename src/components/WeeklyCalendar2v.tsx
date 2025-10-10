@@ -4,20 +4,17 @@ import { useMemo, useState } from "react";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/WeeklyCalendar2v.css";
 
-interface WeeklyCalendar2vProps {
+type WeeklyCalendarProps = {
   meetings: MeetingResponse[];
-}
+  onDayClick?: (dateStr: string) => void;
+};
 
-/** Gera lista de horas (intervalos de 30 min) */
-const generateHours = () => {
-  return Array.from({ length: 48 }, (_, i) => {
-    const h = Math.floor(i / 2)
-      .toString()
-      .padStart(2, "0");
+const generateHours = () =>
+  Array.from({ length: 48 }, (_, i) => {
+    const h = Math.floor(i / 2).toString().padStart(2, "0");
     const m = i % 2 === 0 ? "00" : "30";
     return `${h}:${m}`;
   });
-};
 
 const startOfWeek = (d: Date) => {
   const x = new Date(d);
@@ -49,10 +46,8 @@ const combineYmdAndHHmm = (ymdStr: string, hhmm: string) => {
 const formatBR = (d: Date) =>
   d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
-export default function WeeklyCalendar2v({ meetings }: WeeklyCalendar2vProps) {
-  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() =>
-    startOfWeek(new Date())
-  );
+export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalendarProps) {
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => startOfWeek(new Date()));
   const [startHour, setStartHour] = useState("07:00");
   const [endHour, setEndHour] = useState("18:00");
 
@@ -63,8 +58,6 @@ export default function WeeklyCalendar2v({ meetings }: WeeklyCalendar2vProps) {
     return allHours.slice(startIndex, endIndex);
   }, [startHour, endHour, allHours]);
 
-  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-
   const weekRangeText = useMemo(() => {
     const end = addDays(currentWeekStart, 6);
     return `${formatBR(currentWeekStart)} - ${formatBR(end)}`;
@@ -74,47 +67,35 @@ export default function WeeklyCalendar2v({ meetings }: WeeklyCalendar2vProps) {
   const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
   const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
-  const isMeeting = (dayIndex: number, time: string) => {
+  /** Retorna reunião que ocupa a célula */
+  const getMeetingAt = (dayIndex: number, time: string): MeetingResponse | null => {
     const date = addDays(currentWeekStart, dayIndex);
     const dateStr = ymd(date);
     const [h, m] = time.split(":").map(Number);
     const cellTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m).getTime();
 
-    return meetings.some((meeting) => {
-      if (meeting.meetingDate !== dateStr) return false;
-      const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
-      const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
-      return cellTime >= start && cellTime < end;
-    });
+    return (
+      meetings.find((meeting) => {
+        if (meeting.meetingDate !== dateStr) return false;
+        const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
+        const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
+        return cellTime >= start && cellTime < end;
+      }) || null
+    );
   };
 
-  const getMeetingTitle = (dayIndex: number, time: string) => {
-    const date = addDays(currentWeekStart, dayIndex);
-    const dateStr = ymd(date);
-    const [h, m] = time.split(":").map(Number);
-    const cellTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m).getTime();
-
-    const found = meetings.find((meeting) => {
-      if (meeting.meetingDate !== dateStr) return false;
-      const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
-      const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
-      return cellTime >= start && cellTime < end;
-    });
-    return found ? found.title : "";
-  };
+  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   return (
     <div className="weekly-calendar2v">
-      {/* Controles superiores */}
+      {/* Controles */}
       <div className="calendar-controls2v">
         <div className="calendar-buttons">
           <button onClick={prevWeek}>← Semana Anterior</button>
           <button onClick={nextWeek}>Próxima Semana →</button>
           <button onClick={goToCurrentWeek}>Semana Atual</button>
         </div>
-
         <span className="calendar-range2v">{weekRangeText}</span>
-
         <div className="calendar-hour-range">
           <label>Início:</label>
           <select value={startHour} onChange={(e) => setStartHour(e.target.value)}>
@@ -131,37 +112,44 @@ export default function WeeklyCalendar2v({ meetings }: WeeklyCalendar2vProps) {
         </div>
       </div>
 
-      {/* Grade principal */}
+      {/* Cabeçalho vertical: dias */}
       <div className="calendar-grid2v">
-        {/* Cabeçalho dos dias */}
         <div className="calendar-header2v">
           <div className="calendar-time-col2v"></div>
-          {daysOfWeek.map((day, i) => (
-            <div key={i} className="calendar-day-col2v">
-              {day}
-              <br />
-              {formatBR(addDays(currentWeekStart, i))}
-            </div>
-          ))}
+          {daysOfWeek.map((day, i) => {
+            const date = addDays(currentWeekStart, i);
+            const dateStr = ymd(date);
+            return (
+              <div
+                key={i}
+                className="calendar-day-col2v"
+                onClick={() => onDayClick?.(dateStr)}
+              >
+                {day} <br />
+                {formatBR(date)}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Corpo: linhas = horas, colunas = dias */}
+        {/* Corpo */}
         <div className="calendar-body2v">
           {displayedHours.map((time, i) => (
             <div key={i} className="calendar-row2v">
               <div className="calendar-time-col2v">{time}</div>
-              {daysOfWeek.map((_, dayIdx) => (
-                <div
-                  key={`${i}-${dayIdx}`}
-                  className={`calendar-cell2v ${isMeeting(dayIdx, time) ? "busy2v" : ""}`}
-                >
-                  {isMeeting(dayIdx, time) && (
-                    <span className="meeting-title2v">
-                      {getMeetingTitle(dayIdx, time)}
-                    </span>
-                  )}
-                </div>
-              ))}
+              {daysOfWeek.map((_, dayIdx) => {
+                const meeting = getMeetingAt(dayIdx, time);
+                const dateStr = ymd(addDays(currentWeekStart, dayIdx));
+                return (
+                  <div
+                    key={`${i}-${dayIdx}`}
+                    className={`calendar-cell2v ${meeting ? "busy2v" : ""}`}
+                    onClick={() => onDayClick?.(dateStr)}
+                  >
+                    {meeting ? meeting.title : ""}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>

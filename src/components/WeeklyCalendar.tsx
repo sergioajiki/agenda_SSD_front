@@ -1,103 +1,149 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { MeetingResponse } from "@/models/Meetings";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getMeetings } from "@/services/meetingService";
-import "./styles/WeeklyCalendar.css" 
+import { MeetingResponse } from "@/models/Meetings";
+import "./styles/WeeklyCalendar2v.css";
 
-export default function WeeklyAgenda() {
-  const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
-  const [weekStart, setWeekStart] = useState<Date>(() => {
-    const today = new Date();
-    const day = today.getDay(); // 0 = domingo
-    const sunday = new Date(today);
-    sunday.setDate(today.getDate() - day); // volta até domingo
-    return sunday;
+type WeeklyCalendarProps = {
+  meetings: MeetingResponse[];
+  onDayClick?: (dateStr: string) => void; // 🔹 nova prop
+};
+
+const generateHours = () =>
+  Array.from({ length: 48 }, (_, i) => {
+    const h = Math.floor(i / 2).toString().padStart(2, "0");
+    const m = i % 2 === 0 ? "00" : "30";
+    return `${h}:${m}`;
   });
 
-  useEffect(() => {
-    fetchMeetings();
-  }, [weekStart]);
+const startOfWeek = (d: Date) => {
+  const x = new Date(d);
+  const dow = x.getDay(); // domingo = 0
+  x.setDate(x.getDate() - dow);
+  x.setHours(0, 0, 0, 0);
+  return x;
+};
 
-  const fetchMeetings = async () => {
-    try {
-      const data = await getMeetings();
-      setMeetings(data);
-    } catch (error) {
-      console.error("Erro ao carregar reuniões", error);
-    }
-  };
+const addDays = (d: Date, days: number) => {
+  const x = new Date(d);
+  x.setDate(x.getDate() + days);
+  return x;
+};
 
-  // gera os dias da semana
-  const getWeekDays = () => {
-    return Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + i);
-      return date;
+const ymd = (d: Date) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
+const combineYmdAndHHmm = (ymdStr: string, hhmm: string) => {
+  const [y, m, d] = ymdStr.split("-").map(Number);
+  const [hh, mm] = hhmm.split(":").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0, 0, 0);
+};
+
+const formatBR = (d: Date) =>
+  d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+
+export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalendarProps) {
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => startOfWeek(new Date()));
+  const [startHour, setStartHour] = useState("07:00");
+  const [endHour, setEndHour] = useState("18:00");
+
+  const allHours = useMemo(() => generateHours(), []);
+  const displayedHours = useMemo(() => {
+    const startIndex = allHours.indexOf(startHour);
+    const endIndex = allHours.indexOf(endHour) + 1;
+    return allHours.slice(startIndex, endIndex);
+  }, [startHour, endHour, allHours]);
+
+  const weekRangeText = useMemo(() => {
+    const end = addDays(currentWeekStart, 6);
+    return `${formatBR(currentWeekStart)} - ${formatBR(end)}`;
+  }, [currentWeekStart]);
+
+  const prevWeek = () => setCurrentWeekStart((p) => addDays(p, -7));
+  const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
+  const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
+
+  const isMeeting = (dayIndex: number, time: string) => {
+    const date = addDays(currentWeekStart, dayIndex);
+    const dateStr = ymd(date);
+    const [h, m] = time.split(":").map(Number);
+    const cellTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m).getTime();
+
+    return meetings.some((meeting) => {
+      if (meeting.meetingDate !== dateStr) return false;
+      const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
+      const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
+      return cellTime >= start && cellTime < end;
     });
   };
 
-  // filtra reuniões de um dia
-  const getMeetingsForDay = (date: Date) => {
-    return meetings.filter((m) => {
-      const meetingDate = new Date(m.meetingDate);
-      return (
-        meetingDate.getFullYear() === date.getFullYear() &&
-        meetingDate.getMonth() === date.getMonth() &&
-        meetingDate.getDate() === date.getDate()
-      );
-    });
-  };
-
-  const handlePrevWeek = () => {
-    const prev = new Date(weekStart);
-    prev.setDate(weekStart.getDate() - 7);
-    setWeekStart(prev);
-  };
-
-  const handleNextWeek = () => {
-    const next = new Date(weekStart);
-    next.setDate(weekStart.getDate() + 7);
-    setWeekStart(next);
-  };
+  const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   return (
-    <div className="weekly-calendar">
-      <div className="calendar-header">
-        <button onClick={handlePrevWeek}>◀ Semana anterior</button>
-        <h2>
-          Semana de {weekStart.toLocaleDateString()} até{" "}
-          {new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString()}
-        </h2>
-        <button onClick={handleNextWeek}>Próxima semana ▶</button>
+    <div className="weekly-calendar2v">
+      {/* Controles */}
+      <div className="calendar-controls2v">
+        <div className="calendar-buttons">
+          <button onClick={prevWeek}>← Semana Anterior</button>
+          <button onClick={nextWeek}>Próxima Semana →</button>
+          <button onClick={goToCurrentWeek}>Semana Atual</button>
+        </div>
+        <span className="calendar-range2v">{weekRangeText}</span>
+        <div className="calendar-hour-range">
+          <label>Início:</label>
+          <select value={startHour} onChange={(e) => setStartHour(e.target.value)}>
+            {allHours.map((h) => (
+              <option key={h}>{h}</option>
+            ))}
+          </select>
+          <label>Fim:</label>
+          <select value={endHour} onChange={(e) => setEndHour(e.target.value)}>
+            {allHours.map((h) => (
+              <option key={h}>{h}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="calendar-grid">
-        {getWeekDays().map((day, index) => (
-          <div key={index} className="calendar-day">
-            <h3>
-              {day.toLocaleDateString("pt-BR", {
-                weekday: "long",
-                day: "2-digit",
-                month: "2-digit",
-              })}
-            </h3>
+      {/* Cabeçalho vertical: dias */}
+      <div className="calendar-grid2v">
+        <div className="calendar-header2v">
+          <div className="calendar-time-col2v"></div>
+          {daysOfWeek.map((day, i) => {
+            const date = addDays(currentWeekStart, i);
+            const dateStr = ymd(date);
+            return (
+              <div
+                key={i}
+                className="calendar-day-col2v"
+                onClick={() => onDayClick?.(dateStr)} // 🔹 clique chama onDayClick
+              >
+                {day} <br />
+                {formatBR(date)}
+              </div>
+            );
+          })}
+        </div>
 
-            <ul>
-              {getMeetingsForDay(day).length === 0 ? (
-                <li className="no-meetings">Nenhuma reunião</li>
-              ) : (
-                getMeetingsForDay(day).map((m) => (
-                  <li key={m.id} className="meeting-item">
-                    <strong>{m.title}</strong>
-                    <br />
-                    {m.timeStart} - {m.timeEnd} ({m.meetingRoom})
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-        ))}
+        {/* Corpo */}
+        <div className="calendar-body2v">
+          {displayedHours.map((time, i) => (
+            <div key={i} className="calendar-row2v">
+              <div className="calendar-time-col2v">{time}</div>
+              {daysOfWeek.map((_, dayIdx) => (
+                <div
+                  key={`${i}-${dayIdx}`}
+                  className={`calendar-cell2v ${isMeeting(dayIdx, time) ? "busy2v" : ""}`}
+                ></div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

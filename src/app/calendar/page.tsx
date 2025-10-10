@@ -47,7 +47,11 @@ export default function CalendarPage() {
     <div className="calendar-page">
       {/* Login fixo no topo direito */}
       <div className="calendar-login-top-right">
-        {!user ? <LoginForm onLoginSuccess={setUser} /> : <p className="welcome-message">👤 {user.name}</p>}
+        {!user ? (
+          <LoginForm onLoginSuccess={setUser} />
+        ) : (
+          <p className="welcome-message">👤 {user.name}</p>
+        )}
       </div>
 
       <div className="calendar-layout">
@@ -59,22 +63,29 @@ export default function CalendarPage() {
             height={55}
             priority
           />
-          <h1>Agenda de Reuniões</h1>
           <div className="calendar-toggle">
-            <button className={view === "monthly" ? "active" : ""} onClick={() => setView("monthly")}>Calendário Mensal</button>
-            <button className={view === "weekly" ? "active" : ""} onClick={() => setView("weekly")}>Agenda Semanal</button>
+            <button
+              className={view === "monthly" ? "active" : ""}
+              onClick={() => setView("monthly")}
+            >
+              Calendário Mensal
+            </button>
+            <button
+              className={view === "weekly" ? "active" : ""}
+              onClick={() => setView("weekly")}
+            >
+              Agenda Semanal
+            </button>
           </div>
 
-          {/* MeetingForm abaixo do logo, título e toggle */}
-          <MeetingForm onMeetingAdded={fetchMeetings} isBlocked={!user} />
+          <MeetingForm onMeetingAdded={fetchMeetings} isBlocked={!user} userId={user?.id ?? null} />
+
         </div>
 
-        {/* Coluna direita - calendário e cards */}
         <div className="calendar-display">
           {view === "monthly" ? (
             <div className="monthly-view">
               <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
-
               {selectedDate && (
                 <div className="meeting-cards-container">
                   <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
@@ -93,7 +104,25 @@ export default function CalendarPage() {
               )}
             </div>
           ) : (
-            <WeeklyCalendar2v meetings={meetings} />
+            <div className="weekly-view">
+              <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
+              {selectedDate && (
+                <div className="meeting-cards-container">
+                  <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
+                  <div className="meeting-cards-grid">
+                    {selectedMeetings.length > 0 ? (
+                      selectedMeetings.map((m) => (
+                        <div key={m.id} className="meeting-card-wrapper">
+                          <MeetingCard meeting={m} />
+                        </div>
+                      ))
+                    ) : (
+                      <p>Sem reuniões para esta data.</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
