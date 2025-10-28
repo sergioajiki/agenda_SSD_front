@@ -4,7 +4,7 @@ export interface MeetingRequest {
     timeStart: string;
     timeEnd: string;
     meetingRoom: string;
-    userId: string;
+    userId: number;
 }
 
 export interface MeetingResponse {
@@ -14,5 +14,5 @@ export interface MeetingResponse {
     timeStart: string;
     timeEnd: string;
     meetingRoom: string;
-    userId: string;
+    userId: number;
 }

@@ -77,3 +77,37 @@ export const deleteMeeting = async (id: number, requestingUserId: number): Promi
         throw new Error("Erro desconhecido ao excluir reunião");
     }
 };
+
+/**
+ * Atualiza uma reunião existente.
+ * @param id ID da reunião a ser atualizada
+ * @param meeting Dados atualizados da reunião
+ * @param requestingUserId ID do usuário autenticado (para verificação de permissão)
+ */
+export const updateMeeting = async (
+  id: number,
+  meeting: MeetingRequest,
+  requestingUserId: number
+): Promise<MeetingResponse> => {
+  try {
+    const response = await api.put<MeetingResponse>(`/api/meeting/${id}`, meeting, {
+      params: { requestingUserId },
+    });
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError<ApiErrorResponse>(error)) {
+      const apiDetail = error.response?.data?.detail;
+      const apiMessage = error.response?.data?.message;
+
+      console.error("Erro ao atualizar reunião", error.response?.data || error.message);
+
+      throw new Error(apiDetail || apiMessage || "Erro desconhecido ao atualizar reunião");
+    }
+
+    if (error instanceof Error) {
+      throw new Error(error.message || "Erro inesperado ao atualizar reunião");
+    }
+
+    throw new Error("Erro desconhecido ao atualizar reunião");
+  }
+};

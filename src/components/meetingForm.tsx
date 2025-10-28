@@ -1,211 +1,230 @@
 "use client";
-import { FormEvent, ChangeEvent, useMemo, useState } from "react";
-import { createMeeting } from "@/services/meetingService";
+
+import { useState, useEffect } from "react";
+import { createMeeting, updateMeeting } from "@/services/meetingService";
 import { MeetingRequest, MeetingResponse } from "@/models/Meetings";
-import { formatDateToYYYYMMDD, parseDDMMYYYYtoDate } from "@/utils/Utils";
-import axios from "axios";
 import "./styles/MeetingForm.css";
 
 type MeetingFormProps = {
-  onMeetingAdded?: () => void | Promise<void>;
-  isBlocked?: boolean;          // 🔒 bloqueia se não autenticado
-  userId?: number | null;       // 🔹 recebemos do usuário logado
+  onMeetingAdded: () => void;
+  isBlocked: boolean;
+  userId?: number;
+  editMeeting?: MeetingResponse | null;
+  onCancelEdit?: () => void;
 };
 
-const HALF_HOUR_TIMES = Array.from({ length: 48 }, (_, i) => {
-  const h = Math.floor(i / 2);
-  const m = i % 2 === 0 ? "00" : "30";
-  return `${String(h).padStart(2, "0")}:${m}`;
-});
-
-// 🔹 Filtra os horários para começar em 07:30
-const START_OPTIONS = HALF_HOUR_TIMES.filter(t => t >= "07:30");
-
-export default function MeetingForm({ onMeetingAdded, isBlocked = false, userId }: MeetingFormProps) {
-  const [formData, setFormData] = useState({
-    title: "",
-    meetingDate: "",
-    timeStart: "",
-    timeEnd: "",
-    meetingRoom: ""
+export default function MeetingForm({
+  onMeetingAdded,
+  isBlocked,
+  userId,
+  editMeeting,
+  onCancelEdit,
+}: MeetingFormProps) {
+  const [title, setTitle] = useState("");
+  const [meetingRoom, setMeetingRoom] = useState("APOIO");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [timeStart, setTimeStart] = useState("");
+  const [timeEnd, setTimeEnd] = useState("");
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" | "" }>({
+    text: "",
+    type: "",
   });
-  const [message, setMessage] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
-  const [dateError, setDateError] = useState<string>("");
 
-  const validateDateNotPast = (dateStr: string): boolean => {
-    try {
-      const date = parseDDMMYYYYtoDate(dateStr);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return date >= today;
-    } catch {
-      return false;
-    }
-  };
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-      ...(name === "timeStart" ? { timeEnd: "" } : {})
-    }));
-
-    if (name === "meetingDate") {
-      if (value.trim() === "") {
-        setDateError("");
-      } else if (!validateDateNotPast(value)) {
-        setDateError("⚠️ Data inválida ou retroativa");
-      } else {
-        setDateError("");
+  /** 🔹 Gera horários de 07:30 até 18:30 em intervalos de 30 minutos */
+  const generateTimeOptions = () => {
+    const times: string[] = [];
+    let hour = 7;
+    let minute = 30;
+    while (hour < 19) {
+      times.push(`${String(hour).padStart(2, "0")}:${minute === 0 ? "00" : "30"}`);
+      minute += 30;
+      if (minute === 60) {
+        minute = 0;
+        hour++;
       }
     }
+    return times;
   };
 
-  const availableEndTimes = useMemo(() => {
-    if (!formData.timeStart) return HALF_HOUR_TIMES;
-    const startIdx = HALF_HOUR_TIMES.indexOf(formData.timeStart);
-    return HALF_HOUR_TIMES.slice(startIdx + 1);
-  }, [formData.timeStart]);
+  const allTimes = generateTimeOptions();
 
-  const validateTimeRange = () => {
-    if (!formData.timeStart || !formData.timeEnd) return true;
-    return HALF_HOUR_TIMES.indexOf(formData.timeEnd) > HALF_HOUR_TIMES.indexOf(formData.timeStart);
+  /** 🔹 Preenche os campos no modo de edição */
+  useEffect(() => {
+    if (editMeeting) {
+      setTitle(editMeeting.title || "");
+      setMeetingRoom(editMeeting.meetingRoom || "APOIO");
+      setMeetingDate(editMeeting.meetingDate || "");
+      setTimeStart(editMeeting.timeStart?.substring(0, 5) || "");
+      setTimeEnd(editMeeting.timeEnd?.substring(0, 5) || "");
+    } else {
+      resetForm();
+    }
+  }, [editMeeting]);
+
+  const resetForm = () => {
+    setTitle("");
+    setMeetingRoom("APOIO");
+    setMeetingDate("");
+    setTimeStart("");
+    setTimeEnd("");
+    if (onCancelEdit) onCancelEdit();
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  /** 🔹 Calcula o dia atual em formato YYYY-MM-DD */
+  const todayDate = new Date().toISOString().split("T")[0];
+
+  /** 🔹 Opções de horário final: só exibe horários posteriores ao início */
+  const filteredEndTimes = timeStart
+    ? allTimes.filter((t) => t > timeStart)
+    : allTimes;
+
+  /** 🔹 Submissão do formulário */
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (dateError) {
-      setMessage(dateError);
-      setIsError(true);
-      return;
-    }
-
-    if (!validateTimeRange()) {
-      setMessage("⚠️ O horário final deve ser posterior ao horário inicial.");
-      setIsError(true);
-      return;
-    }
-
     if (!userId) {
-      setMessage("⚠️ Você precisa estar logado para cadastrar uma reunião.");
-      setIsError(true);
+      setMessage({ text: "Usuário não autenticado.", type: "error" });
       return;
     }
+
+    if (timeStart >= timeEnd) {
+      setMessage({
+        text: "O horário final deve ser posterior ao horário inicial.",
+        type: "error",
+      });
+      return;
+    }
+
+    const meeting: MeetingRequest = {
+      title,
+      meetingRoom,
+      meetingDate,
+      timeStart,
+      timeEnd,
+      userId,
+    };
 
     try {
-      const parsedDate = parseDDMMYYYYtoDate(formData.meetingDate);
-      const payload: MeetingRequest = {
-        title: formData.title,
-        meetingDate: formatDateToYYYYMMDD(parsedDate),
-        timeStart: formData.timeStart,
-        timeEnd: formData.timeEnd,
-        meetingRoom: formData.meetingRoom,
-        userId: String(userId)
-      };
+      if (editMeeting) {
+        await updateMeeting(editMeeting.id, meeting, userId);
+        setMessage({ text: "Reunião atualizada com sucesso!", type: "success" });
+      } else {
+        await createMeeting(meeting);
+        setMessage({ text: "Reunião cadastrada com sucesso!", type: "success" });
+      }
 
-      const meetingCreated: MeetingResponse = await createMeeting(payload);
-      setMessage(`✅ Reunião ${meetingCreated.id} cadastrada com sucesso!`);
-      setIsError(false);
-
-      setFormData({
-        title: "",
-        meetingDate: "",
-        timeStart: "",
-        timeEnd: "",
-        meetingRoom: ""
-      });
-
-      if (onMeetingAdded) await onMeetingAdded();
-    } catch (error: unknown) {
-      let errorMessage = "Erro ao enviar o formulário";
-      if (axios.isAxiosError(error)) errorMessage = error.response?.data?.detail || error.message;
-      else if (error instanceof Error) errorMessage = error.message;
-      setMessage(errorMessage);
-      setIsError(true);
+      onMeetingAdded();
+      resetForm();
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : "Erro ao salvar reunião.";
+      setMessage({ text: errMsg, type: "error" });
     }
   };
 
   return (
-    <div className={`meeting-form-container ${isBlocked ? "blocked" : ""}`}>
-      <h3>Cadastro de Reunião</h3>
-      <form className="meeting-form" onSubmit={handleSubmit}>
+    <div className="meeting-form-container">
+      <h3>{editMeeting ? "Editar Reunião" : "Agendar Reunião"}</h3>
+
+      <form onSubmit={handleSubmit} className="meeting-form">
+        {/* 🔹 Título */}
         <label>Título</label>
         <input
           type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           disabled={isBlocked}
+          required
         />
 
-        <label>Data (DD-MM-AAAA)</label>
+        {/* 🔹 Data (mínimo = hoje) */}
+        <label>Data</label>
         <input
-          type="text"
-          name="meetingDate"
-          value={formData.meetingDate}
-          onChange={handleChange}
-          placeholder="Ex: 15-10-2025"
-          required
+          type="date"
+          value={meetingDate}
+          min={todayDate}
+          onChange={(e) => setMeetingDate(e.target.value)}
           disabled={isBlocked}
-          className={dateError ? "input-error" : formData.meetingDate ? "input-valid" : ""}
+          required
         />
-        {dateError && <p className="error-message">{dateError}</p>}
 
+        {/* 🔹 Horários */}
         <div className="time-row">
           <div className="time-field">
             <label>Início</label>
             <select
-              name="timeStart"
-              value={formData.timeStart}
-              onChange={handleChange}
-              required
+              value={timeStart}
+              onChange={(e) => {
+                setTimeStart(e.target.value);
+                setTimeEnd("");
+              }}
               disabled={isBlocked}
+              required
             >
-              <option value="">--</option>
-              {START_OPTIONS.map(t => (
-                <option key={t} value={t}>{t}</option>
+              <option value="">Selecione</option>
+              {allTimes.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
           </div>
+
           <div className="time-field">
-            <label>Fim</label>
+            <label>Término</label>
             <select
-              name="timeEnd"
-              value={formData.timeEnd}
-              onChange={handleChange}
+              value={timeEnd}
+              onChange={(e) => setTimeEnd(e.target.value)}
+              disabled={isBlocked || !timeStart}
               required
-              disabled={isBlocked}
             >
-              <option value="">--</option>
-              {availableEndTimes.map(t => (
-                <option key={t} value={t}>{t}</option>
+              <option value="">Selecione</option>
+              {filteredEndTimes.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
           </div>
         </div>
 
-        <label>Sala</label>
-        <input
-          type="text"
-          name="meetingRoom"
-          value={formData.meetingRoom}
-          onChange={handleChange}
+        {/* 🔹 Sala */}
+        <label htmlFor="meetingRoom">Sala</label>
+        <select
+          id="meetingRoom"
+          value={meetingRoom}
+          onChange={(e) => setMeetingRoom(e.target.value)}
           required
           disabled={isBlocked}
-        />
+        >
+          {/* 🏢 Aqui serão adicionadas as outras opções de sala futuramente */}
+          <option value="APOIO">APOIO</option>
+        </select>
 
-        <button className="btn-submit" type="submit" disabled={isBlocked}>
-          {isBlocked ? "🔒 Faça login" : "Cadastrar"}
-        </button>
+        {/* 🔹 Botões */}
+        <div className="form-buttons">
+          <button
+            type="submit"
+            className="btn-submit"
+            disabled={isBlocked || !userId}
+          >
+            {editMeeting ? "Atualizar" : "Cadastrar"}
+          </button>
 
-        {message && (
-          <p className={`meeting-form-message ${isError ? "error" : "success"}`}>{message}</p>
-        )}
+          {editMeeting && (
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={resetForm}
+              disabled={isBlocked}
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
       </form>
+
+      {message.text && (
+        <p className={`meeting-form-message ${message.type}`}>{message.text}</p>
+      )}
     </div>
   );
 }

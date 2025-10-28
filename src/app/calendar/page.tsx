@@ -10,12 +10,7 @@ import { getMeetings, deleteMeeting } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/Page.css";
 
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-};
+type User = { id: number; name: string; email: string; role: string };
 
 export default function CalendarPage() {
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
@@ -23,71 +18,70 @@ export default function CalendarPage() {
   const [selectedMeetings, setSelectedMeetings] = useState<MeetingResponse[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [editingMeeting, setEditingMeeting] = useState<MeetingResponse | null>(null);
 
+  /** 🔹 Buscar todas as reuniões */
   const fetchMeetings = useCallback(async () => {
     try {
       const data = await getMeetings();
       setMeetings(data);
-    } catch (error) {
-      console.error("Erro ao carregar reuniões", error);
+      if (selectedDate) {
+        const filtered = data.filter((m) => m.meetingDate === selectedDate);
+        setSelectedMeetings(filtered);
+      }
+    } catch (err) {
+      console.error("Erro ao carregar reuniões:", err);
     }
-  }, []);
+  }, [selectedDate]);
 
+  useEffect(() => {
+    fetchMeetings();
+  }, [fetchMeetings]);
+
+  /** 🔹 Quando o usuário clica num dia */
+  const handleDayClick = (dateStr: string) => {
+    setSelectedDate(dateStr);
+    const filtered = meetings.filter((m) => m.meetingDate === dateStr);
+    setSelectedMeetings(filtered);
+  };
+
+  /** 🔹 Excluir reunião */
   const handleDelete = async (id: number) => {
-    if (!user) return;
+    if (!user) return alert("É necessário estar logado.");
+    if (!confirm("Deseja realmente excluir esta reunião?")) return;
+
     try {
       await deleteMeeting(id, user.id);
       await fetchMeetings();
-      if (selectedDate) {
-        const filtered = meetings.filter((m) => m.meetingDate === selectedDate);
-        setSelectedMeetings(filtered);
-      }
     } catch (error) {
       alert("Erro ao excluir reunião.");
       console.error(error);
     }
   };
 
-  // 🔹 Gera YYYY-MM-DD
-  const ymd = (d: Date) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  };
+  /** 🔹 Editar reunião */
+  const handleEdit = (meeting: MeetingResponse) => {
+    if (!user) return alert("Faça login para editar reuniões.");
 
-  // 🔹 Início da semana (domingo)
-  const startOfWeek = (d: Date) => {
-    const x = new Date(d);
-    const dow = x.getDay(); // 0 = domingo
-    x.setDate(x.getDate() - dow);
-    x.setHours(0, 0, 0, 0);
-    return x;
-  };
+    const now = new Date();
+    const start = new Date(`${meeting.meetingDate}T${meeting.timeStart}`);
 
-  const handleDayClick = (dateStr: string) => {
-    const filtered = meetings.filter((m) => m.meetingDate === dateStr);
-    setSelectedMeetings(filtered);
-    setSelectedDate(dateStr);
-  };
+    if (start <= now) {
+      alert("Não é possível editar uma reunião que já iniciou.");
+      return;
+    }
 
-  useEffect(() => {
-    fetchMeetings().then(() => {
-      let initialDate: string;
-      if (view === "monthly") {
-        const firstDayOfMonth = new Date();
-        firstDayOfMonth.setDate(1);
-        initialDate = ymd(firstDayOfMonth);
-      } else {
-        const firstDayOfWeek = startOfWeek(new Date());
-        initialDate = ymd(firstDayOfWeek);
-      }
-      handleDayClick(initialDate);
-    });
-  }, [fetchMeetings, view]);
+    if (meeting.userId !== user.id) {
+      alert("Você só pode editar suas próprias reuniões.");
+      return;
+    }
+
+    setEditingMeeting(meeting);
+  };
 
   return (
     <div className="calendar-page">
+      {/* 🔹 Login no canto superior direito */}
       <div className="calendar-login-top-right">
         {!user ? (
           <LoginForm onLoginSuccess={setUser} />
@@ -97,14 +91,17 @@ export default function CalendarPage() {
       </div>
 
       <div className="calendar-layout">
+        {/* 🔹 Coluna lateral */}
         <div className="calendar-left-column">
           <Image
             src="/governo-do-estado-de-ms.png"
-            alt="Governo do Estado de Mato Grosso do Sul"
+            alt="Logo Governo do Estado de MS"
             width={150}
             height={55}
             priority
           />
+
+          {/* 🔹 Botões de alternância */}
           <div className="calendar-toggle">
             <button
               className={view === "monthly" ? "active" : ""}
@@ -120,57 +117,42 @@ export default function CalendarPage() {
             </button>
           </div>
 
+          {/* 🔹 Formulário de Reunião */}
           <MeetingForm
             onMeetingAdded={fetchMeetings}
             isBlocked={!user}
             userId={user?.id}
+            editMeeting={editingMeeting}
+            onCancelEdit={() => setEditingMeeting(null)}
           />
         </div>
 
+        {/* 🔹 Área principal */}
         <div className="calendar-display">
           {view === "monthly" ? (
-            <div className="monthly-view">
-              <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
-              {selectedDate && (
-                <div className="meeting-cards-container">
-                  <h3>
-                    Reuniões de {selectedDate.split("-").reverse().join("/")}
-                  </h3>
-                  <div className="meeting-cards-grid">
-                    {selectedMeetings.length > 0 ? (
-                      selectedMeetings.map((m) => (
-                        <div key={m.id} className="meeting-card-wrapper">
-                          <MeetingCard meeting={m} userId={user?.id} onDelete={handleDelete} />
-                        </div>
-                      ))
-                    ) : (
-                      <p>Sem reuniões para esta data.</p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
           ) : (
-            <div className="weekly-view">
-              <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
-              {selectedDate && (
-                <div className="meeting-cards-container">
-                  <h3>
-                    Reuniões de {selectedDate.split("-").reverse().join("/")}
-                  </h3>
-                  <div className="meeting-cards-grid">
-                    {selectedMeetings.length > 0 ? (
-                      selectedMeetings.map((m) => (
-                        <div key={m.id} className="meeting-card-wrapper">
-                          <MeetingCard meeting={m} userId={user?.id} onDelete={handleDelete} />
-                        </div>
-                      ))
-                    ) : (
-                      <p>Sem reuniões para esta data.</p>
-                    )}
-                  </div>
-                </div>
-              )}
+            <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
+          )}
+
+          {selectedDate && (
+            <div className="meeting-cards-container">
+              <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
+              <div className="meeting-cards-grid">
+                {selectedMeetings.length > 0 ? (
+                  selectedMeetings.map((m) => (
+                    <MeetingCard
+                      key={m.id}
+                      meeting={m}
+                      userId={user?.id}
+                      onDelete={handleDelete}
+                      onEdit={handleEdit}
+                    />
+                  ))
+                ) : (
+                  <p>Sem reuniões para esta data.</p>
+                )}
+              </div>
             </div>
           )}
         </div>

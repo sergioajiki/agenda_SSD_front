@@ -7,14 +7,22 @@ interface MeetingCardProps {
   meeting: MeetingResponse;
   userId?: number | null;
   onDelete?: (id: number) => void;
+  onEdit?: (meeting: MeetingResponse) => void;
 }
 
-export default function MeetingCard({ meeting, userId, onDelete }: MeetingCardProps) {
+export default function MeetingCard({
+  meeting,
+  userId,
+  onDelete,
+  onEdit,
+}: MeetingCardProps) {
   const formatDateBR = (dateStr: string) => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
     return `${day}/${month}/${year}`;
   };
+
+  const canModify = !!userId && userId === meeting.userId;
 
   return (
     <div className="meeting-card">
@@ -38,14 +46,27 @@ export default function MeetingCard({ meeting, userId, onDelete }: MeetingCardPr
         </p>
       </div>
 
-      {/* 🔹 Botão de excluir aparece só para o dono da reunião */}
-      {userId && Number(meeting.userId) === userId && (
-        <button
-          className="btn-delete"
-          onClick={() => onDelete && onDelete(meeting.id)}
-        >
-          🗑 Excluir
-        </button>
+      {canModify && (
+        <div className="meeting-card-actions">
+          {onEdit && (
+            <button
+              type="button"
+              className="btn-edit"
+              onClick={() => onEdit(meeting)}
+            >
+              ✏️ Editar
+            </button>
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              className="btn-delete"
+              onClick={() => onDelete(meeting.id)}
+            >
+              🗑️ Excluir
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
