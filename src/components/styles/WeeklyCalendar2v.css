@@ -4,7 +4,7 @@
   color: #000;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 900px;
+  width: 950px;
   margin: 0 auto;
   overflow: auto;
 }
@@ -67,7 +67,7 @@
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
   border-bottom: 1px solid #eee;
-  min-height: 30px;
+  min-height: 31px;
 }
 
 /* Coluna de horários */
@@ -87,6 +87,14 @@
   position: relative;
   padding: 2px;
   background: #fff;
+  font-size: 0.7rem;
+  line-height: 1.1;
+
+  /* 🔹 Centralização vertical e horizontal */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .calendar-cell2v.busy2v {
