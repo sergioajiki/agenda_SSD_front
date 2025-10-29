@@ -17,8 +17,6 @@ type LoginFormProps = {
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,12 +31,11 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
         formData
       );
 
-      setMessage(`✅ Bem-vindo, ${response.data.name}!`);
-      setIsError(false);
+      console.log(`✅ Login bem-sucedido: ${response.data.name}`);
       onLoginSuccess(response.data);
     } catch (error) {
-      setMessage("❌ Email ou senha inválidos");
-      setIsError(true);
+      console.error("❌ Erro ao fazer login:", error);
+      alert("Email ou senha inválidos!");
     }
   };
 
@@ -63,12 +60,6 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
         />
         <button type="submit">Entrar</button>
       </form>
-
-      {message && (
-        <span className={isError ? "error-message" : "success-message"}>
-          {message}
-        </span>
-      )}
     </div>
   );
 }
