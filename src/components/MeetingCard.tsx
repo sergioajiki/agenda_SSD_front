@@ -49,6 +49,9 @@ export default function MeetingCard({
         <p>
           <strong>Responsável (ID):</strong> {meeting.userId}
         </p>
+                <p>
+          <strong>Responsável (Nome):</strong> {meeting.userName}
+        </p>
       </div>
 
       {/* 🔹 Ações visíveis apenas para o usuário dono da reunião */}

@@ -15,4 +15,6 @@ export interface MeetingResponse {
     timeEnd: string;
     meetingRoom: string;
     userId: number;
+    userName: string;
+    
 }
