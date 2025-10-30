@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/WeeklyCalendar2v.css";
 
@@ -18,7 +18,7 @@ const generateHours = () =>
 
 const startOfWeek = (d: Date) => {
   const x = new Date(d);
-  const dow = x.getDay(); // domingo = 0
+  const dow = x.getDay();
   x.setDate(x.getDate() - dow);
   x.setHours(0, 0, 0, 0);
   return x;
@@ -51,6 +51,7 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
   const [startHour, setStartHour] = useState("07:00");
   const [endHour, setEndHour] = useState("18:00");
 
+  const today = new Date().toISOString().split("T")[0];
   const allHours = useMemo(() => generateHours(), []);
   const displayedHours = useMemo(() => {
     const startIndex = allHours.indexOf(startHour);
@@ -67,7 +68,6 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
   const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
   const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
-  /** Retorna reunião que ocupa a célula */
   const getMeetingAt = (dayIndex: number, time: string): MeetingResponse | null => {
     const date = addDays(currentWeekStart, dayIndex);
     const dateStr = ymd(date);
@@ -88,7 +88,6 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
 
   return (
     <div className="weekly-calendar2v">
-      {/* Controles */}
       <div className="calendar-controls2v">
         <div className="calendar-buttons">
           <button onClick={prevWeek}>← Semana Anterior</button>
@@ -112,38 +111,40 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
         </div>
       </div>
 
-      {/* Cabeçalho vertical: dias */}
       <div className="calendar-grid2v">
         <div className="calendar-header2v">
           <div className="calendar-time-col2v"></div>
           {daysOfWeek.map((day, i) => {
             const date = addDays(currentWeekStart, i);
             const dateStr = ymd(date);
+            const isToday = dateStr === today;
             return (
               <div
                 key={i}
-                className="calendar-day-col2v"
+                className={`calendar-day-col2v ${isToday ? "today" : ""}`}
                 onClick={() => onDayClick?.(dateStr)}
               >
-                {day} <br />
-                {formatBR(date)}
+                {day} <br /> {formatBR(date)}
               </div>
             );
           })}
         </div>
 
-        {/* Corpo */}
         <div className="calendar-body2v">
           {displayedHours.map((time, i) => (
             <div key={i} className="calendar-row2v">
               <div className="calendar-time-col2v">{time}</div>
               {daysOfWeek.map((_, dayIdx) => {
+                const date = addDays(currentWeekStart, dayIdx);
+                const dateStr = ymd(date);
                 const meeting = getMeetingAt(dayIdx, time);
-                const dateStr = ymd(addDays(currentWeekStart, dayIdx));
+                const isToday = dateStr === today;
                 return (
                   <div
                     key={`${i}-${dayIdx}`}
-                    className={`calendar-cell2v ${meeting ? "busy2v" : ""}`}
+                    className={`calendar-cell2v ${meeting ? "busy2v" : ""} ${
+                      isToday ? "today" : ""
+                    }`}
                     onClick={() => onDayClick?.(dateStr)}
                   >
                     {meeting ? meeting.title : ""}

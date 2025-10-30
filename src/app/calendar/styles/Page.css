@@ -1,22 +1,24 @@
+/* ===== Layout principal ===== */
 .calendar-page {
   font-family: Arial, sans-serif;
   padding-top: 50px;
-  padding-right: 20px;
   color: #000;
+  position: relative;
 }
 
-/* Login fixo no topo direito */
+/* Login fixo no canto superior direito */
 .calendar-login-top-right {
   position: absolute;
   top: 20px;
   right: 20px;
 }
 
-/* ===== Layout principal ===== */
+/* Layout em 3 colunas: esquerda (form), centro (calendário), direita (cards) */
 .calendar-layout {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 280px 1fr 320px; /* 🔹 define 3 colunas fixas */
   gap: 20px;
+  align-items: flex-start;
 }
 
 /* ===== Coluna esquerda ===== */
@@ -25,8 +27,6 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  flex: 1;
-  max-width: 350px;
 }
 
 .calendar-left-column img {
@@ -35,11 +35,11 @@
   object-fit: contain;
 }
 
-/* Botões de alternar vista */
+/* Botões de alternância */
 .calendar-toggle {
   display: flex;
   gap: 10px;
-  width: 250px;
+  width: 100%;
 }
 
 .calendar-toggle button {
@@ -63,59 +63,49 @@
   color: white;
 }
 
-/* ===== Área principal ===== */
-.calendar-main {
-  flex: 4;
+/* ===== Coluna central: calendário ===== */
+.calendar-center {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
-.calendar-and-cards {
+/* ===== Coluna direita: cards ===== */
+.calendar-right-column {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.calendar-display {
-  flex: 3;
-}
-
-/* ===== Cards ===== */
+/* Cards de reuniões */
 .meeting-cards-container {
-  flex: 1;
-  padding: 12px;
-  background-color: #f8f8f8;
-  border: 1px solid #ccc;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  min-width: 250px;
-  height: fit-content;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .meeting-cards-container h3 {
   margin-bottom: 10px;
   color: #003366;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-align: center;
 }
 
 .meeting-cards-grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* ===== Responsividade ===== */
-@media (max-width: 1400px) {
+@media (max-width: 1200px) {
   .calendar-layout {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
-
-  .calendar-and-cards {
-    flex-direction: column;
-  }
-
-  .meeting-cards-container {
-    width: 100%;
+  .calendar-right-column {
+    order: 3;
   }
 }

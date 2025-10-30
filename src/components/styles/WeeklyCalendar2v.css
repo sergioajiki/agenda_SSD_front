@@ -33,16 +33,7 @@
   background: #0056b3;
 }
 
-.calendar-hour-range label {
-  margin: 0 4px;
-}
-
-.calendar-hour-range select {
-  padding: 3px;
-  font-size: 13px;
-}
-
-/* Cabeçalho com dias */
+/* Cabeçalho */
 .calendar-header2v {
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
@@ -57,6 +48,13 @@
   padding: 6px;
 }
 
+/* 🔹 Destaque da coluna do dia atual */
+.calendar-day-col2v.today,
+.calendar-cell2v.today {
+  border: 2px solid #007bff !important;
+  background-color: #eaf3ff;
+}
+
 /* Corpo */
 .calendar-body2v {
   display: flex;
@@ -67,46 +65,22 @@
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
   border-bottom: 1px solid #eee;
-  min-height: 31px;
-}
-
-/* Coluna de horários */
-.calendar-time-col2v {
-  background: #f5f5f5;
-  border-right: 1px solid #ccc;
-  text-align: right;
-  padding: 4px;
-  font-size: 12px;
-  font-weight: bold;
+  min-height: 31.5px;
 }
 
 /* Células */
 .calendar-cell2v {
-  border-left: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  position: relative;
-  padding: 2px;
-  background: #fff;
-  font-size: 0.7rem;
-  line-height: 1.1;
-
-  /* 🔹 Centralização vertical e horizontal */
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  border-left: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  font-size: 12px;
 }
 
 .calendar-cell2v.busy2v {
   background-color: #c60000;
   color: #fff;
   text-align: center;
-}
-
-/* Reunião */
-.meeting-title2v {
-  font-size: 11px;
-  font-weight: bold;
-  color: #fff;
-  white-space: normal;
 }
