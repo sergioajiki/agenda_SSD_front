@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/WeeklyCalendar2v.css";
 
@@ -9,6 +9,7 @@ type WeeklyCalendarProps = {
   onDayClick?: (dateStr: string) => void;
 };
 
+/** 🔹 Gera intervalos de 30 minutos (00:00 → 23:30) */
 const generateHours = () =>
   Array.from({ length: 48 }, (_, i) => {
     const h = Math.floor(i / 2).toString().padStart(2, "0");
@@ -16,6 +17,7 @@ const generateHours = () =>
     return `${h}:${m}`;
   });
 
+/** 🔹 Retorna o início da semana (domingo) */
 const startOfWeek = (d: Date) => {
   const x = new Date(d);
   const dow = x.getDay();
@@ -24,12 +26,14 @@ const startOfWeek = (d: Date) => {
   return x;
 };
 
+/** 🔹 Soma dias à data */
 const addDays = (d: Date, days: number) => {
   const x = new Date(d);
   x.setDate(x.getDate() + days);
   return x;
 };
 
+/** 🔹 Formata data YYYY-MM-DD */
 const ymd = (d: Date) => {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -37,12 +41,14 @@ const ymd = (d: Date) => {
   return `${y}-${m}-${day}`;
 };
 
+/** 🔹 Junta data e hora em objeto Date */
 const combineYmdAndHHmm = (ymdStr: string, hhmm: string) => {
   const [y, m, d] = ymdStr.split("-").map(Number);
   const [hh, mm] = hhmm.split(":").map(Number);
   return new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0, 0, 0);
 };
 
+/** 🔹 Formata data no padrão brasileiro */
 const formatBR = (d: Date) =>
   d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -51,23 +57,33 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
   const [startHour, setStartHour] = useState("07:00");
   const [endHour, setEndHour] = useState("18:00");
 
+  // 🔹 Guarda o dia atual
   const today = new Date().toISOString().split("T")[0];
+
   const allHours = useMemo(() => generateHours(), []);
+
+  /** 🔹 Filtra as horas exibidas conforme os seletores */
   const displayedHours = useMemo(() => {
     const startIndex = allHours.indexOf(startHour);
     const endIndex = allHours.indexOf(endHour) + 1;
     return allHours.slice(startIndex, endIndex);
   }, [startHour, endHour, allHours]);
 
+  /** 🔹 Texto do intervalo da semana exibida */
   const weekRangeText = useMemo(() => {
     const end = addDays(currentWeekStart, 6);
     return `${formatBR(currentWeekStart)} - ${formatBR(end)}`;
   }, [currentWeekStart]);
 
+  /** 🔹 Funções de navegação semanal */
   const prevWeek = () => setCurrentWeekStart((p) => addDays(p, -7));
   const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
   const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
+  /**
+   * 🔹 Verifica se há reunião para um horário e dia específicos.
+   * Retorna o objeto da reunião, caso exista.
+   */
   const getMeetingAt = (dayIndex: number, time: string): MeetingResponse | null => {
     const date = addDays(currentWeekStart, dayIndex);
     const dateStr = ymd(date);
@@ -88,6 +104,7 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
 
   return (
     <div className="weekly-calendar2v">
+      {/* ===== Controles de navegação e filtros ===== */}
       <div className="calendar-controls2v">
         <div className="calendar-buttons">
           <button onClick={prevWeek}>← Semana Anterior</button>
@@ -111,6 +128,7 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
         </div>
       </div>
 
+      {/* ===== Grade semanal (colunas = dias / linhas = horários) ===== */}
       <div className="calendar-grid2v">
         <div className="calendar-header2v">
           <div className="calendar-time-col2v"></div>
@@ -118,6 +136,7 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
             const date = addDays(currentWeekStart, i);
             const dateStr = ymd(date);
             const isToday = dateStr === today;
+
             return (
               <div
                 key={i}
@@ -139,6 +158,7 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
                 const dateStr = ymd(date);
                 const meeting = getMeetingAt(dayIdx, time);
                 const isToday = dateStr === today;
+
                 return (
                   <div
                     key={`${i}-${dayIdx}`}

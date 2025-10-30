@@ -5,18 +5,20 @@
   padding: 12px 16px;
   margin: 8px 0;
   width: 100%;
-  max-width: 230px;
+  max-width: 250px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   color: #000;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Efeito ao passar o mouse */
 .meeting-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* Cabeçalho */
 .meeting-card-header {
   display: flex;
   justify-content: space-between;
@@ -37,19 +39,39 @@
   color: #666;
 }
 
+/* Corpo */
 .meeting-card-body p {
   margin: 4px 0;
   font-size: 0.9rem;
   line-height: 1.4;
 }
 
+/* Ações (editar/excluir) */
 .meeting-card-actions {
   display: flex;
   gap: 6px;
   margin-top: 10px;
 }
 
-.btn-edit,
+/* Botão Editar */
+.btn-edit {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  transition: background 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: #0069d9;
+}
+
+/* Botão Excluir */
 .btn-delete {
   flex: 1;
   border: none;
@@ -58,21 +80,9 @@
   font-size: 0.85rem;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn-edit {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-edit:hover {
-  background-color: #0069d9;
-}
-
-.btn-delete {
   background-color: #dc3545;
   color: white;
+  transition: background 0.2s;
 }
 
 .btn-delete:hover {

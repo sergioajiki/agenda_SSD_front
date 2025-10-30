@@ -6,11 +6,11 @@ import { MeetingRequest, MeetingResponse } from "@/models/Meetings";
 import "./styles/MeetingForm.css";
 
 type MeetingFormProps = {
-  onMeetingAdded: () => void;
-  isBlocked: boolean;
-  userId?: number;
-  editMeeting?: MeetingResponse | null;
-  onCancelEdit?: () => void;
+  onMeetingAdded: () => void;          // 🔹 Callback para atualizar lista após salvar
+  isBlocked: boolean;                  // 🔹 Bloqueia o formulário se usuário não estiver logado
+  userId?: number;                     // 🔹 ID do usuário logado
+  editMeeting?: MeetingResponse | null;// 🔹 Dados da reunião sendo editada (opcional)
+  onCancelEdit?: () => void;           // 🔹 Função chamada ao cancelar edição
 };
 
 export default function MeetingForm({
@@ -20,17 +20,18 @@ export default function MeetingForm({
   editMeeting,
   onCancelEdit,
 }: MeetingFormProps) {
-  const [title, setTitle] = useState("");
-  const [meetingRoom, setMeetingRoom] = useState("APOIO");
-  const [meetingDate, setMeetingDate] = useState("");
-  const [timeStart, setTimeStart] = useState("");
-  const [timeEnd, setTimeEnd] = useState("");
+  /** 🔹 Estados controlados */
+  const [title, setTitle] = useState("");           // Título da reunião
+  const [meetingRoom, setMeetingRoom] = useState("APOIO"); // Sala escolhida
+  const [meetingDate, setMeetingDate] = useState("");       // Data da reunião
+  const [timeStart, setTimeStart] = useState("");           // Horário de início
+  const [timeEnd, setTimeEnd] = useState("");               // Horário de término
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" | "" }>({
     text: "",
     type: "",
   });
 
-  /** 🔹 Gera horários de 07:30 até 18:30 em intervalos de 30 minutos */
+  /** 🔹 Gera os horários disponíveis de 07:30 até 18:30 em intervalos de 30 minutos */
   const generateTimeOptions = () => {
     const times: string[] = [];
     let hour = 7;
@@ -45,10 +46,9 @@ export default function MeetingForm({
     }
     return times;
   };
-
   const allTimes = generateTimeOptions();
 
-  /** 🔹 Preenche os campos no modo de edição */
+  /** 🔹 Quando entra em modo edição, preenche os campos com os dados da reunião */
   useEffect(() => {
     if (editMeeting) {
       setTitle(editMeeting.title || "");
@@ -57,10 +57,11 @@ export default function MeetingForm({
       setTimeStart(editMeeting.timeStart?.substring(0, 5) || "");
       setTimeEnd(editMeeting.timeEnd?.substring(0, 5) || "");
     } else {
-      resetForm();
+      resetForm(); // limpa tudo se não estiver editando
     }
   }, [editMeeting]);
 
+  /** 🔹 Reseta o formulário */
   const resetForm = () => {
     setTitle("");
     setMeetingRoom("APOIO");
@@ -70,10 +71,10 @@ export default function MeetingForm({
     if (onCancelEdit) onCancelEdit();
   };
 
-  /** 🔹 Calcula o dia atual em formato YYYY-MM-DD */
+  /** 🔹 Define a data mínima possível (hoje) */
   const todayDate = new Date().toISOString().split("T")[0];
 
-  /** 🔹 Opções de horário final: só exibe horários posteriores ao início */
+  /** 🔹 Filtra os horários de término para mostrar apenas opções após o início */
   const filteredEndTimes = timeStart
     ? allTimes.filter((t) => t > timeStart)
     : allTimes;
@@ -81,11 +82,14 @@ export default function MeetingForm({
   /** 🔹 Submissão do formulário */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Bloqueia se usuário não autenticado
     if (!userId) {
       setMessage({ text: "Usuário não autenticado.", type: "error" });
       return;
     }
 
+    // Valida intervalo de horários
     if (timeStart >= timeEnd) {
       setMessage({
         text: "O horário final deve ser posterior ao horário inicial.",
@@ -94,6 +98,7 @@ export default function MeetingForm({
       return;
     }
 
+    // Monta objeto para enviar ao backend
     const meeting: MeetingRequest = {
       title,
       meetingRoom,
@@ -104,16 +109,19 @@ export default function MeetingForm({
     };
 
     try {
+      // Se estiver editando, atualiza
       if (editMeeting) {
         await updateMeeting(editMeeting.id, meeting, userId);
         setMessage({ text: "Reunião atualizada com sucesso!", type: "success" });
-      } else {
+      } 
+      // Caso contrário, cria nova
+      else {
         await createMeeting(meeting);
         setMessage({ text: "Reunião cadastrada com sucesso!", type: "success" });
       }
 
-      onMeetingAdded();
-      resetForm();
+      onMeetingAdded(); // atualiza a lista
+      resetForm(); // limpa o formulário
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : "Erro ao salvar reunião.";
       setMessage({ text: errMsg, type: "error" });
@@ -125,7 +133,7 @@ export default function MeetingForm({
       <h3>{editMeeting ? "Editar Reunião" : "Agendar Reunião"}</h3>
 
       <form onSubmit={handleSubmit} className="meeting-form">
-        {/* 🔹 Título */}
+        {/* 🔹 Campo de título */}
         <label>Título</label>
         <input
           type="text"
@@ -135,7 +143,7 @@ export default function MeetingForm({
           required
         />
 
-        {/* 🔹 Data (mínimo = hoje) */}
+        {/* 🔹 Campo de data (mínimo = hoje) */}
         <label>Data</label>
         <input
           type="date"
@@ -146,7 +154,7 @@ export default function MeetingForm({
           required
         />
 
-        {/* 🔹 Horários */}
+        {/* 🔹 Seleção de horários */}
         <div className="time-row">
           <div className="time-field">
             <label>Início</label>
@@ -154,7 +162,7 @@ export default function MeetingForm({
               value={timeStart}
               onChange={(e) => {
                 setTimeStart(e.target.value);
-                setTimeEnd("");
+                setTimeEnd(""); // limpa término ao mudar início
               }}
               disabled={isBlocked}
               required
@@ -186,7 +194,7 @@ export default function MeetingForm({
           </div>
         </div>
 
-        {/* 🔹 Sala */}
+        {/* 🔹 Campo de sala (fixo com placeholder para futuras opções) */}
         <label htmlFor="meetingRoom">Sala</label>
         <select
           id="meetingRoom"
@@ -199,7 +207,7 @@ export default function MeetingForm({
           <option value="APOIO">APOIO</option>
         </select>
 
-        {/* 🔹 Botões */}
+        {/* 🔹 Botões de ação */}
         <div className="form-buttons">
           <button
             type="submit"
@@ -222,6 +230,7 @@ export default function MeetingForm({
         </div>
       </form>
 
+      {/* 🔹 Exibe mensagem de sucesso ou erro */}
       {message.text && (
         <p className={`meeting-form-message ${message.type}`}>{message.text}</p>
       )}

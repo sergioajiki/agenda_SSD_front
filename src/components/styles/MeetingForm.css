@@ -1,3 +1,4 @@
+/* Container principal do formulário */
 .meeting-form-container {
   background: #fdfdfd;
   padding: 18px;
@@ -5,20 +6,24 @@
   border-radius: 8px;
   color: #000;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 }
 
+/* Estrutura do formulário */
 .meeting-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+/* Rótulos */
 .meeting-form label {
   font-weight: bold;
   margin-top: 4px;
   font-size: 13px;
 }
 
+/* Inputs e selects */
 .meeting-form input,
 .meeting-form select {
   padding: 6px;
@@ -28,18 +33,21 @@
   width: 100%;
 }
 
+/* Linha que agrupa os campos de horário */
 .time-row {
   display: flex;
   gap: 10px;
   justify-content: space-between;
 }
 
+/* Cada campo de horário */
 .time-field {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+/* Botão principal (Cadastrar/Atualizar) */
 .btn-submit {
   margin-top: 14px;
   background: #28a745;
@@ -62,6 +70,7 @@
   cursor: not-allowed;
 }
 
+/* Botão de cancelar */
 .btn-cancel {
   margin-top: 8px;
   background: #6c757d;
@@ -79,17 +88,19 @@
   background: #5a6268;
 }
 
+/* Mensagens */
 .meeting-form-message {
   margin-top: 10px;
   font-weight: bold;
+  text-align: center;
 }
 
 .meeting-form-message.success {
   color: green;
-  width: 200px;
+  width: 100%;
 }
 
 .meeting-form-message.error {
   color: red;
-  width: 200px;
+  width: 100%;
 }

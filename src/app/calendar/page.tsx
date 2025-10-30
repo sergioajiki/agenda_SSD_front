@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import MeetingForm from "@/components/MeetingForm";
@@ -13,23 +14,36 @@ import "./styles/Page.css";
 type User = { id: number; name: string; email: string; role: string };
 
 export default function CalendarPage() {
-  // 🔹 Estado principal da aplicação
+  // 🔹 Estado de controle da visão atual (mensal ou semanal)
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
+
+  // 🔹 Lista completa de reuniões
   const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
+
+  // 🔹 Lista de reuniões filtradas pela data selecionada
   const [selectedMeetings, setSelectedMeetings] = useState<MeetingResponse[]>([]);
+
+  // 🔹 Data atualmente selecionada (inicia com hoje)
   const [selectedDate, setSelectedDate] = useState<string>(() =>
     new Date().toISOString().split("T")[0]
   );
+
+  // 🔹 Usuário autenticado
   const [user, setUser] = useState<User | null>(null);
+
+  // 🔹 Reunião em modo de edição
   const [editingMeeting, setEditingMeeting] = useState<MeetingResponse | null>(null);
 
-  /** 🔹 Busca as reuniões no backend e define as do dia atual */
+  /**
+   * 🔹 Carrega todas as reuniões do backend
+   * e exibe inicialmente as reuniões do dia atual.
+   */
   const fetchMeetings = useCallback(async () => {
     try {
       const data = await getMeetings();
       setMeetings(data);
 
-      // Mostra as reuniões do dia atual ao carregar
+      // Filtra as reuniões do dia de hoje
       const today = new Date().toISOString().split("T")[0];
       const filtered = data.filter((m) => m.meetingDate === today);
       setSelectedMeetings(filtered);
@@ -39,18 +53,24 @@ export default function CalendarPage() {
     }
   }, []);
 
+  // 🔹 Carrega as reuniões assim que o componente for montado
   useEffect(() => {
     fetchMeetings();
   }, [fetchMeetings]);
 
-  /** 🔹 Quando o usuário clica em um dia no calendário */
+  /**
+   * 🔹 Ao clicar em um dia do calendário
+   * filtra as reuniões daquela data.
+   */
   const handleDayClick = (dateStr: string) => {
     setSelectedDate(dateStr);
     const filtered = meetings.filter((m) => m.meetingDate === dateStr);
     setSelectedMeetings(filtered);
   };
 
-  /** 🔹 Exclusão de reunião */
+  /**
+   * 🔹 Exclui uma reunião (requer login)
+   */
   const handleDelete = async (id: number) => {
     if (!user) return alert("É necessário estar logado.");
     if (!confirm("Deseja realmente excluir esta reunião?")) return;
@@ -58,7 +78,10 @@ export default function CalendarPage() {
     await fetchMeetings();
   };
 
-  /** 🔹 Edição de reunião (somente se ainda não começou) */
+  /**
+   * 🔹 Coloca a reunião em modo de edição,
+   * impedindo edição de reuniões já iniciadas.
+   */
   const handleEdit = (meeting: MeetingResponse) => {
     const now = new Date();
     const start = new Date(`${meeting.meetingDate}T${meeting.timeStart}`);
@@ -68,7 +91,7 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
-      {/* 🔹 Login fixo no topo direito */}
+      {/* 🔹 Área de login fixada no canto superior direito */}
       <div className="calendar-login-top-right">
         {!user ? (
           <LoginForm onLoginSuccess={setUser} />
@@ -77,9 +100,9 @@ export default function CalendarPage() {
         )}
       </div>
 
-      {/* 🔹 Layout em 3 colunas */}
+      {/* 🔹 Estrutura principal da página: lado esquerdo = form / lado direito = calendário + cards */}
       <div className="calendar-layout">
-        {/* 🧩 Coluna esquerda: logo, botões e formulário */}
+        {/* Coluna lateral esquerda com logo, botões e formulário */}
         <div className="calendar-left-column">
           <Image
             src="/governo-do-estado-de-ms.png"
@@ -89,6 +112,7 @@ export default function CalendarPage() {
             priority
           />
 
+          {/* Botões de alternância entre calendário mensal e semanal */}
           <div className="calendar-toggle">
             <button
               className={view === "monthly" ? "active" : ""}
@@ -104,6 +128,7 @@ export default function CalendarPage() {
             </button>
           </div>
 
+          {/* Formulário de agendamento */}
           <MeetingForm
             onMeetingAdded={fetchMeetings}
             isBlocked={!user}
@@ -113,17 +138,17 @@ export default function CalendarPage() {
           />
         </div>
 
-        {/* 📅 Coluna central: calendário */}
-        <div className="calendar-center">
-          {view === "monthly" ? (
-            <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
-          ) : (
-            <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
-          )}
-        </div>
-
-        {/* 🗂️ Coluna direita: cards das reuniões do dia selecionado */}
+        {/* 🔹 Área do calendário e cards lado a lado */}
         <div className="calendar-right-column">
+          <div className="calendar-display">
+            {view === "monthly" ? (
+              <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
+            ) : (
+              <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
+            )}
+          </div>
+
+          {/* 🔹 Cards de reuniões exibidos ao lado do calendário */}
           {selectedDate && (
             <div className="meeting-cards-container">
               <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>

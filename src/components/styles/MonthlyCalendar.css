@@ -11,18 +11,12 @@
   overflow-x: auto;
 }
 
+/* Cabeçalho superior com título e navegação */
 .calendar-header {
-  color: #000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-}
-
-.calendar-header h2 {
-  color: #000;
-  margin: 0;
-  text-transform: capitalize;
 }
 
 .calendar-header button {
@@ -33,32 +27,30 @@
   cursor: pointer;
 }
 
+/* Grade 7 colunas */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
 }
 
+/* Cabeçalho dos dias da semana */
 .calendar-day-header {
   text-align: center;
   font-weight: bold;
   padding: 6px;
   background-color: #d9d9d9;
-  color: #000;
 }
 
+/* Células de dias */
 .calendar-cell {
   border: 1px solid #ddd;
   min-height: 115px;
-  max-height: 115px;
-  min-width: 115px;
-  max-width: 115px;
   padding: 4px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   background: #fff;
-  color: #000;
   transition: 0.2s;
 }
 
@@ -66,22 +58,23 @@
   background-color: #f0f0f0;
 }
 
+/* 🔹 Destaque do dia atual */
 .calendar-cell.today {
-  border: 2px solid #007bff; /* 🔹 destaque azul */
+  border: 2px solid #007bff;
   background-color: #eaf3ff;
 }
 
+/* Número do dia */
 .calendar-day-number {
   font-weight: bold;
   margin-bottom: 4px;
 }
 
+/* Lista das reuniões resumidas */
 .meeting-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-grow: 1;
-  overflow-y: auto;
 }
 
 .meeting-item {
@@ -89,8 +82,7 @@
   color: #003366;
   padding: 2px 4px;
   margin-bottom: 2px;
-  font-size: 0.75em; /* 🔹 fonte menor */
+  font-size: 0.75em;
   border-radius: 3px;
-  word-break: break-word;
   text-align: center;
 }
