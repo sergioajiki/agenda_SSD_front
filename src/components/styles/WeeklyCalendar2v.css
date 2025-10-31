@@ -79,7 +79,7 @@
   font-weight: bold;
 }
 
-/* Células dos horários */
+/* ===== Células ===== */
 .calendar-cell2v {
   display: flex;
   align-items: center; /* Centraliza verticalmente */
@@ -90,9 +90,28 @@
   font-size: 12px;
 }
 
-/* Horários ocupados */
-.calendar-cell2v.busy2v {
-  background-color: #c60000;
-  color: #fff;
+/* 🔹 Sala APOIO (vermelha) */
+.calendar-cell2v.apoio-room {
+  background-color: #ffb3b3;
+  border: 1px solid #cc0000;
+}
+
+/* 🔹 Sala CIEGES (azul) */
+.calendar-cell2v.cieges-room {
+  background-color: #b3d1ff;
+  border: 1px solid #0044cc;
+}
+
+/* 🔹 Ambas as salas (metade vermelha / metade azul) */
+.calendar-cell2v.mixed-room {
+  background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
+  border: 2px solid #333;
+}
+
+/* Título das reuniões */
+.meeting-title {
+  font-size: 10px;
+  font-weight: bold;
   text-align: center;
+  word-break: break-word;
 }

@@ -80,25 +80,14 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
   const nextWeek = () => setCurrentWeekStart((p) => addDays(p, +7));
   const goToCurrentWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
-  /**
-   * 🔹 Verifica se há reunião para um horário e dia específicos.
-   * Retorna o objeto da reunião, caso exista.
-   */
-  const getMeetingAt = (dayIndex: number, time: string): MeetingResponse | null => {
-    const date = addDays(currentWeekStart, dayIndex);
-    const dateStr = ymd(date);
-    const [h, m] = time.split(":").map(Number);
-    const cellTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m).getTime();
-
-    return (
-      meetings.find((meeting) => {
-        if (meeting.meetingDate !== dateStr) return false;
-        const start = combineYmdAndHHmm(meeting.meetingDate, meeting.timeStart).getTime();
-        const end = combineYmdAndHHmm(meeting.meetingDate, meeting.timeEnd).getTime();
-        return cellTime >= start && cellTime < end;
-      }) || null
+  /** 🔹 Reuniões do horário e data */
+  const getMeetingsAt = (dateStr: string, time: string) =>
+    meetings.filter(
+      (m) =>
+        m.meetingDate === dateStr &&
+        m.timeStart <= time &&
+        m.timeEnd > time
     );
-  };
 
   const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -156,18 +145,31 @@ export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalenda
               {daysOfWeek.map((_, dayIdx) => {
                 const date = addDays(currentWeekStart, dayIdx);
                 const dateStr = ymd(date);
-                const meeting = getMeetingAt(dayIdx, time);
+                const cellMeetings = getMeetingsAt(dateStr, time);
+
+                // 🔹 Define a cor com base na sala
+                const hasApoio = cellMeetings.some((m) => m.meetingRoom === "APOIO");
+                const hasCieges = cellMeetings.some((m) => m.meetingRoom === "CIEGES");
+                let cellClass = "calendar-cell2v";
+
+                if (hasApoio && hasCieges) cellClass += " mixed-room";
+                else if (hasApoio) cellClass += " apoio-room";
+                else if (hasCieges) cellClass += " cieges-room";
+
                 const isToday = dateStr === today;
+                if (isToday) cellClass += " today";
 
                 return (
                   <div
                     key={`${i}-${dayIdx}`}
-                    className={`calendar-cell2v ${meeting ? "busy2v" : ""} ${
-                      isToday ? "today" : ""
-                    }`}
+                    className={cellClass}
                     onClick={() => onDayClick?.(dateStr)}
                   >
-                    {meeting ? meeting.title : ""}
+                    {cellMeetings.map((m) => (
+                      <div key={m.id} className="meeting-title">
+                        {m.title}
+                      </div>
+                    ))}
                   </div>
                 );
               })}

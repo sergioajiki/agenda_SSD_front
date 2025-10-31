@@ -75,10 +75,21 @@ export default function MonthlyCalendar({ meetings, onDayClick }: MonthlyCalenda
           const dailyMeetings = getMeetingsForDay(day);
           const isToday = dateStr === today; // destaca o dia atual
 
+          // 🔹 Verifica salas
+          const hasApoio = dailyMeetings.some((m) => m.meetingRoom === "APOIO");
+          const hasCieges = dailyMeetings.some((m) => m.meetingRoom === "CIEGES");
+
+          // 🔹 Define classes de cor com base na sala
+          let cellClass = "calendar-cell";
+          if (hasApoio && hasCieges) cellClass += " mixed-room";
+          else if (hasApoio) cellClass += " apoio-room";
+          else if (hasCieges) cellClass += " cieges-room";
+          if (isToday) cellClass += " today";
+
           return (
             <div
               key={day}
-              className={`calendar-cell ${isToday ? "today" : ""}`}
+              className={cellClass}
               onClick={() => onDayClick && onDayClick(dateStr)}
             >
               <div className="calendar-day-number">{day}</div>

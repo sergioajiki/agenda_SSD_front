@@ -205,6 +205,7 @@ export default function MeetingForm({
         >
           {/* 🏢 Aqui serão adicionadas as outras opções de sala futuramente */}
           <option value="APOIO">APOIO</option>
+           <option value="CIEGES">CIEGES</option>
         </select>
 
         {/* 🔹 Botões de ação */}

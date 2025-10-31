@@ -1,3 +1,4 @@
+/* ===== Estrutura geral ===== */
 .calendar-container {
   width: 950px;
   height: 795px;
@@ -42,7 +43,7 @@
   background-color: #d9d9d9;
 }
 
-/* Células de dias */
+/* ===== Células ===== */
 .calendar-cell {
   border: 1px solid #ddd;
   min-height: 115px;
@@ -54,6 +55,7 @@
   transition: 0.2s;
 }
 
+/* Células vazias (antes do 1º dia) */
 .calendar-cell.empty {
   background-color: #f0f0f0;
 }
@@ -62,6 +64,24 @@
 .calendar-cell.today {
   border: 2px solid #007bff;
   background-color: #eaf3ff;
+}
+
+/* 🔹 Sala APOIO (vermelha) */
+.calendar-cell.apoio-room {
+  background-color: #ffb3b3;
+  border: 2px solid #cc0000;
+}
+
+/* 🔹 Sala CIEGES (azul) */
+.calendar-cell.cieges-room {
+  background-color: #b3d1ff;
+  border: 2px solid #0044cc;
+}
+
+/* 🔹 Ambas as salas (metade vermelha / metade azul) */
+.calendar-cell.mixed-room {
+  background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
+  border: 2px solid #333;
 }
 
 /* Número do dia */
@@ -78,7 +98,7 @@
 }
 
 .meeting-item {
-  background-color: #e6f0ff;
+  background-color: rgba(255, 255, 255, 0.8);
   color: #003366;
   padding: 2px 4px;
   margin-bottom: 2px;
