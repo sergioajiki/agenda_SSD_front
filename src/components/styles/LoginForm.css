@@ -1,11 +1,15 @@
+/* ===== Layout principal (formulário ou sessão logada) ===== */
 .login-form-container-horizontal {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-end; /* 🔹 garante alinhamento à direita */
   gap: 8px;
   font-family: Arial, sans-serif;
+  width: 100%;
 }
 
+/* ===== Formulário de login ===== */
 .login-form-horizontal {
   display: flex;
   flex-direction: row;
@@ -33,4 +37,32 @@
 
 .login-form-horizontal button:hover {
   background: #004a99;
+}
+
+/* ===== Sessão logada: nome + botão lado a lado ===== */
+.user-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-logout {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background-color: #c82333;
+}
+
+/* ===== Mensagem de erro ===== */
+.error-message {
+  color: #cc0000;
+  font-size: 12px;
+  margin-left: 8px;
 }

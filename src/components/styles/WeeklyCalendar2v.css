@@ -1,3 +1,4 @@
+/* ===== Contêiner principal da agenda semanal ===== */
 .weekly-calendar2v {
   font-family: Arial, sans-serif;
   background: linear-gradient(to right, #E3E3E3, #F1F1F2);
@@ -6,10 +7,15 @@
   border-radius: 6px;
   width: 950px;
   margin: 0 auto;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: 850px; /* 🔹 Limita a altura total da agenda */
+  overflow: hidden;  /* 🔹 Impede rolagem na página inteira */
 }
 
-/* ===== Controles ===== */
+/* ===========================================================
+   🔸 Seção superior de controle (navegação e filtro de horas)
+   =========================================================== */
 .calendar-controls2v {
   display: flex;
   justify-content: space-between;
@@ -17,8 +23,10 @@
   padding: 10px;
   background: #dcdcdc;
   border-bottom: 1px solid #bbb;
+  flex-shrink: 0; /* 🔹 Mantém fixo no topo */
 }
 
+/* Botões de navegação semanal */
 .calendar-buttons button {
   background: #007bff;
   color: #fff;
@@ -27,13 +35,24 @@
   padding: 6px 10px;
   cursor: pointer;
   margin-right: 4px;
+  transition: background 0.2s;
 }
 
 .calendar-buttons button:hover {
   background: #0056b3;
 }
 
-/* ===== Cabeçalho ===== */
+/* Filtros de hora de início/fim */
+.calendar-hour-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+/* ===========================================================
+   🔸 Cabeçalho dos dias da semana
+   =========================================================== */
 .calendar-header2v {
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
@@ -41,24 +60,29 @@
   font-weight: bold;
   text-align: center;
   border-bottom: 1px solid #ccc;
+  flex-shrink: 0; /* 🔹 Evita que o cabeçalho role junto */
 }
 
+/* Colunas de dias */
 .calendar-day-col2v {
   border-left: 1px solid #ccc;
   padding: 6px;
 }
 
 /* 🔹 Destaque da coluna do dia atual */
-.calendar-day-col2v.today,
-.calendar-cell2v.today {
+.calendar-day-col2v.today {
   border: 2px solid #007bff !important;
   background-color: #eaf3ff;
 }
 
-/* ===== Corpo ===== */
+/* ===========================================================
+   🔸 Corpo principal da grade (linhas de horários)
+   =========================================================== */
 .calendar-body2v {
-  display: flex;
-  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;  /* ✅ Rolagem vertical interna */
+  overflow-x: hidden;
+  background: #fff;
 }
 
 /* Cada linha representa um horário */
@@ -66,52 +90,110 @@
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
   border-bottom: 1px solid #eee;
-  min-height: 31.5px; /* +5% de altura ajustada */
+  min-height: 35px;
 }
 
-/* Coluna de horários à esquerda */
+/* Coluna fixa de horários (lado esquerdo) */
 .calendar-time-col2v {
   background: #f5f5f5;
   border-right: 1px solid #ccc;
   text-align: right;
   padding: 4px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
 }
 
-/* ===== Células ===== */
+/* ===========================================================
+   🔸 Células da grade de horários
+   =========================================================== */
 .calendar-cell2v {
   display: flex;
-  align-items: center; /* Centraliza verticalmente */
-  justify-content: center; /* Centraliza horizontalmente */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Centraliza vertical e horizontalmente */
   border-left: 1px solid #eee;
   border-bottom: 1px solid #eee;
   background: #fff;
   font-size: 12px;
+  position: relative;
+  transition: background 0.2s, border 0.2s;
+  flex-wrap: wrap; /* 🔹 Permite múltiplos títulos empilhados */
 }
 
-/* 🔹 Sala APOIO (vermelha) */
-.calendar-cell2v.apoio-room {
-  background-color: #ffb3b3;
-  border: 1px solid #cc0000;
+/* ===========================================================
+   🔸 Cores por sala
+   =========================================================== */
+
+/* 🔴 Sala APOIO */
+.apoio-room {
+  background-color: #ffb3b3; /* Vermelho claro */
+  border: 1px solid #c60000;
+  color: #fff;
 }
 
-/* 🔹 Sala CIEGES (azul) */
-.calendar-cell2v.cieges-room {
-  background-color: #b3d1ff;
-  border: 1px solid #0044cc;
+/* 🔵 Sala CIEGES */
+.cieges-room {
+  background-color: #99c9ff; /* Azul claro */
+  border: 1px solid #004aad;
+  color: #fff;
 }
 
-/* 🔹 Ambas as salas (metade vermelha / metade azul) */
-.calendar-cell2v.mixed-room {
-  background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
-  border: 2px solid #333;
+/* 🔷 Sala MISTA (APOIO + CIEGES no mesmo horário) */
+.mixed-room {
+  background: linear-gradient(90deg, #ffb3b3 50%, #99c9ff 50%);
+  border: 1px solid #004aad;
+  color: #fff;
 }
 
-/* Título das reuniões */
+/* 🔹 Destaque da célula do dia atual */
+.calendar-cell2v.today {
+  border: 2px solid #007bff;
+}
+
+/* ===========================================================
+   🔸 Títulos das reuniões dentro das células
+   =========================================================== */
 .meeting-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   text-align: center;
-  word-break: break-word;
+  margin: 1px 0;
+  padding: 2px 3px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2); /* Leve contraste */
+  width: 95%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ===========================================================
+   🔸 Efeito de destaque ao passar o mouse
+   =========================================================== */
+.calendar-cell2v:hover {
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+
+/* ===========================================================
+   🔸 Rolagem personalizada interna (scrollbar)
+   =========================================================== */
+.calendar-body2v::-webkit-scrollbar {
+  width: 8px;
+}
+
+.calendar-body2v::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+
+.calendar-body2v::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* ===========================================================
+   🔸 Ajustes para rolagem horizontal (em telas pequenas)
+   =========================================================== */
+.calendar-grid2v {
+  overflow-x: auto; /* Caso o container fique menor que 950px */
 }
