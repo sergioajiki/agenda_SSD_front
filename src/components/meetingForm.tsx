@@ -11,6 +11,7 @@ type MeetingFormProps = {
   userId?: number;                     // 🔹 ID do usuário logado
   editMeeting?: MeetingResponse | null;// 🔹 Dados da reunião sendo editada (opcional)
   onCancelEdit?: () => void;           // 🔹 Função chamada ao cancelar edição
+  selectedDate?: string | null;        // 🔹 Data clicada no calendário
 };
 
 export default function MeetingForm({
@@ -19,6 +20,7 @@ export default function MeetingForm({
   userId,
   editMeeting,
   onCancelEdit,
+  selectedDate,
 }: MeetingFormProps) {
   /** 🔹 Estados controlados */
   const [title, setTitle] = useState("");           // Título da reunião
@@ -60,6 +62,13 @@ export default function MeetingForm({
       resetForm(); // limpa tudo se não estiver editando
     }
   }, [editMeeting]);
+
+    /** 🔹 Quando o usuário clica em um dia no calendário */
+  useEffect(() => {
+    if (selectedDate && !editMeeting) {
+      setMeetingDate(selectedDate); // ✅ preenche o campo de data automaticamente
+    }
+  }, [selectedDate, editMeeting]);
 
   /** 🔹 Reseta o formulário */
   const resetForm = () => {

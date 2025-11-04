@@ -29,6 +29,10 @@ export default function CalendarPage() {
     new Date().toISOString().split("T")[0]
   );
 
+  // 🔹 Data enviada para o MeetingForm (quando clicada no calendário)
+  const [selectedDateForm, setSelectedDateForm] = useState<string | null>(null);
+
+
   // 🔹 Usuário autenticado (ou null se não logado)
   const [user, setUser] = useState<User | null>(null);
 
@@ -65,6 +69,12 @@ export default function CalendarPage() {
     setSelectedDate(dateStr);
     const filtered = meetings.filter((m) => m.meetingDate === dateStr);
     setSelectedMeetings(filtered);
+
+    if (user) {
+      setSelectedDateForm(dateStr); // ✅ envia a data clicada para o MeetingForm
+    } else {
+      alert("⚠️ Faça login para agendar uma reunião nesta data.");
+    }
   };
 
   /**
@@ -148,6 +158,7 @@ export default function CalendarPage() {
             userId={user?.id}
             editMeeting={editingMeeting}
             onCancelEdit={() => setEditingMeeting(null)}
+            selectedDate={selectedDateForm}
           />
         </div>
 
