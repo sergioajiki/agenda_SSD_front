@@ -117,11 +117,6 @@ export default function LoginForm({
         />
         <button type="submit">Entrar</button>
       </form>
-
-      {/* 🔸 Mensagem de erro, exibida somente em caso de falha */}
-      {isError && (
-        <p className="error-message">Email ou senha incorretos. Verifique e tente novamente.</p>
-      )}
     </div>
   );
 }

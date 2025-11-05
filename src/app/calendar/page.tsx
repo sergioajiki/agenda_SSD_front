@@ -72,9 +72,11 @@ export default function CalendarPage() {
 
     if (user) {
       setSelectedDateForm(dateStr); // ✅ envia a data clicada para o MeetingForm
-    } else {
-      alert("⚠️ Faça login para agendar uma reunião nesta data.");
     }
+  /**    else {
+    alert("⚠️ Faça login para agendar uma reunião nesta data.");
+      } 
+  */
   };
 
   /**
