@@ -57,7 +57,7 @@
    =========================================================== */
 .calendar-header2v {
   display: grid;
-  grid-template-columns: 80px repeat(7, 145px); /* ✅ Largura fixa para cada dia */
+  grid-template-columns: 80px repeat(7, 140px); /* ✅ Largura fixa para cada dia */
   background: #bbbbbb;
   font-weight: bold;
   text-align: center;
@@ -91,10 +91,10 @@
 /* 🔹 Cada linha representa um horário */
 .calendar-row2v {
   display: grid;
-  grid-template-columns: 80px repeat(7, 145px); /* ✅ Mantém largura fixa */
+  grid-template-columns: 80px repeat(7, 140px); /* ✅ Mantém largura fixa */
   border-bottom: 1px solid #eee;
-  min-height: 70px;
-  height: 70;
+  min-height: 60px;
+  height: 60;
 }
 
 /* 🔹 Coluna fixa com os horários (lado esquerdo) */
