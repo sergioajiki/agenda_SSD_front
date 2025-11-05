@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, FormEvent, ChangeEvent } from "react";
-import { loginUser, LoginResponse } from "@/services/authService";
+import { loginUser } from "@/services/authService";
+import { LoginResponse } from "@/models/Auth";
 import "./styles/LoginForm.css";
 
 /** 

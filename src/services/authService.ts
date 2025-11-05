@@ -1,24 +1,7 @@
 import api from "./api"
 import axios from "axios";
 import { ApiErrorResponse } from "@/models/ApiErrorResponse";
-
-/**
- * 🔹 Tipo de resposta do backend para login
- */
-export type LoginResponse = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-};
-
-/**
- * 🔹 Tipo de requisição de login
- */
-export type LoginRequest = {
-  email: string;
-  password: string;
-};
+import { LoginRequest, LoginResponse } from "@/models/Auth";
 
 /**
  * 🔹 Efetua login do usuário
