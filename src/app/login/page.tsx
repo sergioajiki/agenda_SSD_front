@@ -3,7 +3,7 @@
 import { createUser } from "@/services/userService";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { UserRequest, UserResponse } from "@/models/User";
-import "./styles/Login.css";  // ⬅ importa o CSS
+import "./styles/Login.css";
 
 export default function Login() {
   const [formData, setFormData] = useState<UserRequest>({

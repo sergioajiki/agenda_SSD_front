@@ -3,6 +3,10 @@ import { ApiErrorResponse } from "@/models/ApiErrorResponse";
 import api from "./api";
 import axios from "axios";
 
+/**
+ * 🔹 Cadastra um novo usuário no sistema
+ * @param user Objeto com os dados do novo usuário
+ */
 export const createUser = async (user: UserRequest): Promise<UserResponse> => {
     try {
         const response = await api.post<UserResponse>("/api/user", user);

@@ -1,18 +1,8 @@
 "use client";
 
 import { useState, FormEvent, ChangeEvent } from "react";
-import axios from "axios";
+import { loginUser, LoginResponse } from "@/services/authService";
 import "./styles/LoginForm.css";
-
-/** 
- * 🔹 Tipo de resposta esperada do backend no login 
- */
-type LoginResponse = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-};
 
 /** 
  * 🔹 Propriedades esperadas pelo componente 
@@ -32,7 +22,7 @@ type LoginFormProps = {
  * 🔹 Componente de Login
  * - Exibe um formulário de login quando o usuário não está autenticado
  * - Quando autenticado, mostra o nome e o botão de sair
- * - Comunica o login e logout com o componente pai
+ * - Comunicação com o backend é feita via authService.ts
  */
 export default function LoginForm({
   onLoginSuccess,
@@ -54,22 +44,18 @@ export default function LoginForm({
   };
 
   /**
-   * 🔹 Faz a requisição de login para o backend
+   * 🔹 Faz a requisição de login via authService
    * Caso o login seja bem-sucedido, envia os dados do usuário ao componente pai
    */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post<LoginResponse>(
-        "http://10.26.57.174:8080/api/user/login",
-        formData
-      );
-
+      const user = await loginUser(formData);
       setIsError(false);
-      onLoginSuccess(response.data); // informa ao pai que o login foi feito
-      alert(`✅ Bem-vindo, ${response.data.name}!`);
-    } catch {
+      onLoginSuccess(user); // informa ao pai que o login foi feito
+      alert(`✅ Bem-vindo, ${user.name}!`);
+    } catch (error) {
       // Exibe apenas na tela, sem console.error
       setIsError(true);
       alert("❌ Email ou senha inválidos. Tente novamente.");
@@ -117,6 +103,11 @@ export default function LoginForm({
         />
         <button type="submit">Entrar</button>
       </form>
+      {
+      /**isError && (
+        <p className="login-error">⚠️ Falha ao autenticar. Verifique seus dados.</p>
+      )*/
+      }
     </div>
   );
 }
