@@ -40,25 +40,49 @@ export default function CalendarPage() {
   // Controle de exibição: login ↔ cadastro
   const [showRegister, setShowRegister] = useState(false);
 
-  /** 🔹 Busca todas as reuniões do backend */
-  const fetchMeetings = useCallback(async () => {
+  // Estado da notificação de atualização automática
+  const [showUpdateNotice, setShowUpdateNotice] = useState(false);
+
+  /** ============================================================
+   * 🔹 Função principal de busca — NÃO redefine a data selecionada
+   * ============================================================ */
+  const fetchMeetings = useCallback(async (keepDate: boolean = true) => {
     try {
       const data = await getMeetings();
       setMeetings(data);
 
-      // Exibe automaticamente as reuniões do dia atual
-      const today = new Date().toISOString().split("T")[0];
-      const filtered = data.filter((m) => m.meetingDate === today);
-      setSelectedMeetings(filtered);
-      setSelectedDate(today);
+      // 🔹 Se mantiver a data anterior, apenas refiltra os cards dela
+      if (keepDate && selectedDate) {
+        const filtered = data.filter((m) => m.meetingDate === selectedDate);
+        setSelectedMeetings(filtered);
+      } else {
+        // 🔹 Caso contrário, usa o dia atual
+        const today = new Date().toISOString().split("T")[0];
+        const filtered = data.filter((m) => m.meetingDate === today);
+        setSelectedDate(today);
+        setSelectedMeetings(filtered);
+      }
     } catch {
-      alert("❌ Erro ao carregar as reuniões. Tente novamente mais tarde.");
+      console.error("❌ Erro ao carregar reuniões.");
     }
-  }, []);
+  }, [selectedDate]);
 
   // Executa busca inicial
   useEffect(() => {
     fetchMeetings();
+  }, [fetchMeetings]);
+
+  /** ============================================================
+   * Atualização automática por polling + notificação visual
+   * ============================================================ */
+  /** 🔹 Atualização automática (polling) mantendo data selecionada */
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await fetchMeetings(true); // ✅ mantém selectedDate
+      setShowUpdateNotice(true);
+      setTimeout(() => setShowUpdateNotice(false), 3000);
+    }, 30000);
+    return () => clearInterval(interval);
   }, [fetchMeetings]);
 
   /** 🔹 Filtra as reuniões da data clicada */
@@ -97,7 +121,7 @@ export default function CalendarPage() {
     alert("👋 Você saiu do sistema.");
   };
 
-   // =======================================================
+  // =======================================================
   // 🔹 RENDERIZAÇÃO PRINCIPAL
   // =======================================================
   return (
@@ -175,7 +199,7 @@ export default function CalendarPage() {
 
           {/* 🔹 Formulário de agendamento */}
           <MeetingForm
-            onMeetingAdded={fetchMeetings}
+            onMeetingAdded={() => fetchMeetings(true)}
             isBlocked={!user}
             userId={user?.id}
             editMeeting={editingMeeting}
@@ -217,6 +241,12 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
+      {/* Notificação discreta no canto inferior direito */}
+      {showUpdateNotice && (
+        <div className="update-notice">
+          🔄 Updating...
+        </div>
+      )}
     </div>
   );
 }
