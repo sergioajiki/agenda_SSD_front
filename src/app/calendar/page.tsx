@@ -7,47 +7,46 @@ import MonthlyCalendar from "@/components/MonthlyCalendar";
 import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
 import MeetingCard from "@/components/MeetingCard";
 import LoginForm from "@/components/LoginForm";
+import RegisterForm from "@/components/RegisterForm";
 import { getMeetings, deleteMeeting } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
+import { LoginResponse } from "@/models/Auth";
 import "./styles/Page.css";
 
-/** 🔹 Tipo para o usuário autenticado */
-type User = { id: number; name: string; email: string; role: string };
+/** 🔹 Tipo de usuário autenticado */
+type User = LoginResponse;
 
 export default function CalendarPage() {
-  // 🔹 Controle de visualização: "monthly" (mensal) ou "weekly" (semanal)
+  // Controle de visualização: mensal ou semanal
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
 
-  // 🔹 Lista geral de reuniões vindas do backend
+  // Lista de reuniões vindas do backend
   const [meetings, setMeetings] = useState<MeetingResponse[]>([]);
 
-  // 🔹 Lista de reuniões da data atualmente selecionada
+  // Lista de reuniões do dia selecionado
   const [selectedMeetings, setSelectedMeetings] = useState<MeetingResponse[]>([]);
 
-  // 🔹 Data selecionada (inicia como o dia de hoje)
-  const [selectedDate, setSelectedDate] = useState<string>(() =>
-    new Date().toISOString().split("T")[0]
+  // Data atualmente selecionada (inicia com o dia atual)
+  const [selectedDate, setSelectedDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0]
   );
 
-  // 🔹 Data enviada para o MeetingForm (quando clicada no calendário)
-  const [selectedDateForm, setSelectedDateForm] = useState<string | null>(null);
-
-
-  // 🔹 Usuário autenticado (ou null se não logado)
+  // Usuário autenticado
   const [user, setUser] = useState<User | null>(null);
 
-  // 🔹 Reunião em modo de edição
+  // Reunião em modo de edição
   const [editingMeeting, setEditingMeeting] = useState<MeetingResponse | null>(null);
 
-  /**
-   * 🔹 Busca todas as reuniões do backend e exibe inicialmente as do dia atual.
-   */
+  // Controle de exibição: login ↔ cadastro
+  const [showRegister, setShowRegister] = useState(false);
+
+  /** 🔹 Busca todas as reuniões do backend */
   const fetchMeetings = useCallback(async () => {
     try {
       const data = await getMeetings();
       setMeetings(data);
 
-      // Filtra automaticamente as reuniões do dia atual
+      // Exibe automaticamente as reuniões do dia atual
       const today = new Date().toISOString().split("T")[0];
       const filtered = data.filter((m) => m.meetingDate === today);
       setSelectedMeetings(filtered);
@@ -57,31 +56,19 @@ export default function CalendarPage() {
     }
   }, []);
 
-  // 🔹 Executa a busca inicial de reuniões ao montar o componente
+  // Executa busca inicial
   useEffect(() => {
     fetchMeetings();
   }, [fetchMeetings]);
 
-  /**
-   * 🔹 Quando o usuário clica em um dia, filtra as reuniões daquele dia.
-   */
+  /** 🔹 Filtra as reuniões da data clicada */
   const handleDayClick = (dateStr: string) => {
     setSelectedDate(dateStr);
     const filtered = meetings.filter((m) => m.meetingDate === dateStr);
     setSelectedMeetings(filtered);
-
-    if (user) {
-      setSelectedDateForm(dateStr); // ✅ envia a data clicada para o MeetingForm
-    }
-  /**    else {
-    alert("⚠️ Faça login para agendar uma reunião nesta data.");
-      } 
-  */
   };
 
-  /**
-   * 🔹 Exclui uma reunião (somente se logado e com confirmação)
-   */
+  /** 🔹 Exclui reunião (somente se logado) */
   const handleDelete = async (id: number) => {
     if (!user) return alert("⚠️ É necessário estar logado para excluir uma reunião.");
     if (!confirm("Deseja realmente excluir esta reunião?")) return;
@@ -95,20 +82,16 @@ export default function CalendarPage() {
     }
   };
 
-  /**
-   * 🔹 Coloca uma reunião em modo de edição,
-   * impedindo edição de reuniões já iniciadas.
-   */
+  /** 🔹 Coloca uma reunião em modo de edição */
   const handleEdit = (meeting: MeetingResponse) => {
     const now = new Date();
     const start = new Date(`${meeting.meetingDate}T${meeting.timeStart}`);
-    if (start <= now) return alert("⛔ Não é possível editar uma reunião que já iniciou.");
+    if (start <= now)
+      return alert("⛔ Não é possível editar uma reunião que já iniciou.");
     setEditingMeeting(meeting);
   };
 
-  /**
-   * 🔹 Faz logout (limpa o estado do usuário)
-   */
+  /** 🔹 Faz logout do usuário */
   const handleLogout = () => {
     setUser(null);
     alert("👋 Você saiu do sistema.");
@@ -116,28 +99,62 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page">
-      {/* 🔹 Área de login ou usuário logado */}
-      <div className="calendar-login-top-right">
-        <LoginForm
-          onLoginSuccess={setUser}
-          onLogout={() => setUser(null)}
-          loggedUser={user}
-        />
-      </div>
-
-      {/* 🔹 Layout principal: esquerda (formulário) | direita (calendário e cards) */}
       <div className="calendar-layout">
-        {/* ==== COLUNA ESQUERDA ==== */}
+        {/* =======================================================
+            🔹 COLUNA ESQUERDA — Login, Cadastro e Formulário
+           ======================================================= */}
         <div className="calendar-left-column">
+          {/* 🔹 Logotipo institucional */}
           <Image
             src="/governo-do-estado-de-ms.png"
             alt="Logo Governo do Estado de MS"
-            width={150}
-            height={55}
+            className="app-logo"
+            width={180}
+            height={60}
             priority
           />
 
-          {/* Botões de alternância entre visões */}
+          {/* 🔹 Seção de autenticação (login / cadastro) */}
+          <div className="auth-section">
+            {!user ? (
+              <>
+                {showRegister ? (
+                  <>
+                    <RegisterForm />
+                    <button
+                      className="switch-auth-button"
+                      onClick={() => setShowRegister(false)}
+                    >
+                      Já possui cadastro? Fazer Login
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <LoginForm
+                      onLoginSuccess={setUser}
+                      onLogout={handleLogout}
+                      loggedUser={null}
+                    />
+                    <button
+                      className="switch-auth-button"
+                      onClick={() => setShowRegister(true)}
+                    >
+                      Novo por aqui? Cadastrar Usuário
+                    </button>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="logged-user-info">
+                <p>👤 {user.name}</p>
+                <button onClick={handleLogout} className="btn-logout">
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* 🔹 Alternância entre visões */}
           <div className="calendar-toggle">
             <button
               className={view === "monthly" ? "active" : ""}
@@ -153,33 +170,39 @@ export default function CalendarPage() {
             </button>
           </div>
 
-          {/* Formulário de agendamento */}
+          {/* 🔹 Formulário de agendamento */}
           <MeetingForm
             onMeetingAdded={fetchMeetings}
             isBlocked={!user}
             userId={user?.id}
             editMeeting={editingMeeting}
             onCancelEdit={() => setEditingMeeting(null)}
-            selectedDate={selectedDateForm}
+            selectedDate={selectedDate}
           />
         </div>
 
-        {/* ==== COLUNA DIREITA ==== */}
+        {/* =======================================================
+            🔹 COLUNA DIREITA — Calendário e reuniões
+           ======================================================= */}
         <div className="calendar-right-column">
-          {/* Exibição do calendário (mensal ou semanal) */}
           <div className="calendar-display">
             {view === "monthly" ? (
-              <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
+              <MonthlyCalendar
+                meetings={meetings}
+                onDayClick={handleDayClick}
+              />
             ) : (
-              <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
+              <WeeklyCalendar2v
+                meetings={meetings}
+                onDayClick={handleDayClick}
+              />
             )}
           </div>
 
-          {/* Lista de cards das reuniões da data selecionada */}
+          {/* 🔹 Cards das reuniões do dia selecionado */}
           {selectedDate && (
             <div className="meeting-cards-container">
               <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
-
               <div className="meeting-cards-grid">
                 {selectedMeetings.length > 0 ? (
                   selectedMeetings.map((m) => (

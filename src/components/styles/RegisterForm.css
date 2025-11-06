@@ -1,7 +1,7 @@
 /* ===========================================================
-   🔹 Contêiner principal (formulário ou sessão logada)
+   🔹 Contêiner principal do formulário de cadastro
    =========================================================== */
-.login-form-container-vertical {
+.register-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,32 +17,33 @@
 }
 
 /* ===========================================================
-   🔹 Título do formulário
+   🔹 Título
    =========================================================== */
 .form-title {
   font-size: 18px;
   font-weight: bold;
   color: #003366;
   margin-bottom: 4px;
+  text-align: center;
 }
 
 /* ===========================================================
-   🔹 Formulário de login (vertical)
+   🔹 Estrutura do formulário
    =========================================================== */
-.login-form-vertical {
+.register-form {
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 100%;
 }
 
-.login-form-vertical label {
+.register-form label {
   font-size: 13px;
   font-weight: bold;
   color: #333;
 }
 
-.login-form-vertical input {
+.register-form input {
   padding: 6px 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -50,8 +51,8 @@
   width: 100%;
 }
 
-.login-form-vertical button {
-  background: #0066cc;
+.register-form button {
+  background: #28a745;
   color: white;
   border: none;
   border-radius: 6px;
@@ -63,64 +64,31 @@
   margin-top: 6px;
 }
 
-.login-form-vertical button:hover {
-  background: #004a99;
+.register-form button:hover {
+  background: #1e7e34;
 }
 
 /* ===========================================================
-   🔹 Sessão logada (usuário + botão logout)
+   🔹 Mensagens de status
    =========================================================== */
-.logged-user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-.user-name {
-  font-weight: bold;
-  color: #003366;
-  font-size: 14px;
-}
-
-.btn-logout {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
+.register-message {
   font-size: 13px;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.btn-logout:hover {
-  background-color: #b52b27;
-}
-
-/* ===========================================================
-   🔹 Mensagens
-   =========================================================== */
-.error-message {
-  color: #cc0000;
-  font-size: 12px;
   text-align: center;
-  margin-top: 4px;
 }
 
-.success-message {
+.register-message.success {
   color: #007b00;
-  font-size: 12px;
-  text-align: center;
+}
+
+.register-message.error {
+  color: #cc0000;
 }
 
 /* ===========================================================
    🔹 Responsividade
    =========================================================== */
 @media (max-width: 768px) {
-  .login-form-container-vertical {
+  .register-container {
     width: 100%;
   }
 }
