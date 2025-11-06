@@ -97,14 +97,16 @@ export default function CalendarPage() {
     alert("👋 Você saiu do sistema.");
   };
 
+   // =======================================================
+  // 🔹 RENDERIZAÇÃO PRINCIPAL
+  // =======================================================
   return (
     <div className="calendar-page">
       <div className="calendar-layout">
         {/* =======================================================
-            🔹 COLUNA ESQUERDA — Login, Cadastro e Formulário
+            🔸 COLUNA ESQUERDA — Login / Cadastro / Formulário
            ======================================================= */}
         <div className="calendar-left-column">
-          {/* 🔹 Logotipo institucional */}
           <Image
             src="/governo-do-estado-de-ms.png"
             alt="Logo Governo do Estado de MS"
@@ -112,9 +114,25 @@ export default function CalendarPage() {
             width={180}
             height={60}
             priority
+            style={{ objectFit: "contain", width: "100%", height: "60px" }}
           />
 
-          {/* 🔹 Seção de autenticação (login / cadastro) */}
+
+          {/* 🔹 Alternância de visão */}
+          <div className="calendar-toggle">
+            <button
+              className={view === "monthly" ? "active" : ""}
+              onClick={() => setView("monthly")}
+            >
+              Calendário Mensal
+            </button>
+            <button
+              className={view === "weekly" ? "active" : ""}
+              onClick={() => setView("weekly")}
+            >
+              Agenda Semanal
+            </button>
+          </div>
           <div className="auth-section">
             {!user ? (
               <>
@@ -139,7 +157,7 @@ export default function CalendarPage() {
                       className="switch-auth-button"
                       onClick={() => setShowRegister(true)}
                     >
-                      Novo por aqui? Cadastrar Usuário
+                      Primeiro Acesso? Cadastrar Usuário
                     </button>
                   </>
                 )}
@@ -154,21 +172,6 @@ export default function CalendarPage() {
             )}
           </div>
 
-          {/* 🔹 Alternância entre visões */}
-          <div className="calendar-toggle">
-            <button
-              className={view === "monthly" ? "active" : ""}
-              onClick={() => setView("monthly")}
-            >
-              Calendário Mensal
-            </button>
-            <button
-              className={view === "weekly" ? "active" : ""}
-              onClick={() => setView("weekly")}
-            >
-              Agenda Semanal
-            </button>
-          </div>
 
           {/* 🔹 Formulário de agendamento */}
           <MeetingForm
@@ -182,44 +185,36 @@ export default function CalendarPage() {
         </div>
 
         {/* =======================================================
-            🔹 COLUNA DIREITA — Calendário e reuniões
+            🔸 COLUNA CENTRAL — Calendário
+           ======================================================= */}
+        <div className="calendar-center-column">
+          {view === "monthly" ? (
+            <MonthlyCalendar meetings={meetings} onDayClick={handleDayClick} />
+          ) : (
+            <WeeklyCalendar2v meetings={meetings} onDayClick={handleDayClick} />
+          )}
+        </div>
+
+        {/* =======================================================
+            🔸 COLUNA DIREITA — Cards de Reuniões
            ======================================================= */}
         <div className="calendar-right-column">
-          <div className="calendar-display">
-            {view === "monthly" ? (
-              <MonthlyCalendar
-                meetings={meetings}
-                onDayClick={handleDayClick}
-              />
+          <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
+          <div className="meeting-cards-grid">
+            {selectedMeetings.length > 0 ? (
+              selectedMeetings.map((m) => (
+                <MeetingCard
+                  key={m.id}
+                  meeting={m}
+                  userId={user?.id}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                />
+              ))
             ) : (
-              <WeeklyCalendar2v
-                meetings={meetings}
-                onDayClick={handleDayClick}
-              />
+              <p>📅 Sem reuniões para esta data.</p>
             )}
           </div>
-
-          {/* 🔹 Cards das reuniões do dia selecionado */}
-          {selectedDate && (
-            <div className="meeting-cards-container">
-              <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
-              <div className="meeting-cards-grid">
-                {selectedMeetings.length > 0 ? (
-                  selectedMeetings.map((m) => (
-                    <MeetingCard
-                      key={m.id}
-                      meeting={m}
-                      userId={user?.id}
-                      onDelete={handleDelete}
-                      onEdit={handleEdit}
-                    />
-                  ))
-                ) : (
-                  <p>📅 Sem reuniões para esta data.</p>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

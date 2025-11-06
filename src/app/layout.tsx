@@ -28,7 +28,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}`}
         suppressHydrationWarning
       >
-        <div suppressHydrationWarning>Fase desenvolvimento</div>
         {children}
       </body>
     </html>

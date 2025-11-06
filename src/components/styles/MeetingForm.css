@@ -1,4 +1,6 @@
-/* Container principal do formulário */
+/* =======================================================
+   🔹 CONTAINER PRINCIPAL DO FORMULÁRIO
+   ======================================================= */
 .meeting-form-container {
   background: #fdfdfd;
   padding: 18px;
@@ -9,21 +11,27 @@
   font-family: Arial, sans-serif;
 }
 
-/* Estrutura do formulário */
+/* =======================================================
+   🔹 ESTRUTURA GERAL DO FORMULÁRIO
+   ======================================================= */
 .meeting-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Rótulos */
+/* =======================================================
+   🔹 RÓTULOS DOS CAMPOS
+   ======================================================= */
 .meeting-form label {
   font-weight: bold;
   margin-top: 4px;
   font-size: 13px;
 }
 
-/* Inputs e selects */
+/* =======================================================
+   🔹 CAMPOS DE INPUT E SELECT
+   ======================================================= */
 .meeting-form input,
 .meeting-form select {
   padding: 6px;
@@ -33,23 +41,37 @@
   width: 100%;
 }
 
-/* Linha que agrupa os campos de horário */
+/* =======================================================
+   🔹 LINHA DE CAMPOS DE HORÁRIO (Início / Término)
+   ======================================================= */
 .time-row {
   display: flex;
   gap: 10px;
   justify-content: space-between;
 }
 
-/* Cada campo de horário */
+/* 🔹 Cada campo de horário dentro da linha */
 .time-field {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Botão principal (Cadastrar/Atualizar) */
+/* =======================================================
+   🔹 ÁREA DE BOTÕES (Cadastrar / Atualizar / Cancelar)
+   ======================================================= */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* =======================================================
+   🔹 BOTÃO PRINCIPAL — CADASTRAR
+   ======================================================= */
 .btn-submit {
-  margin-top: 14px;
+  flex: 1; /* 🔹 Garante mesmo tamanho dos botões */
   background: #28a745;
   color: white;
   border: none;
@@ -61,24 +83,48 @@
   transition: 0.3s;
 }
 
+/* 🔹 Efeito ao passar o mouse (se não estiver desabilitado) */
 .btn-submit:hover:not([disabled]) {
   background: #218838;
 }
 
+/* 🔹 Estado desabilitado */
 .btn-submit[disabled] {
   background: #ccc;
   cursor: not-allowed;
 }
 
-/* Botão de cancelar */
+/* =======================================================
+   🔹 BOTÃO ATUALIZAR — USADO NO MODO DE EDIÇÃO
+   ======================================================= */
+.btn-update {
+  flex: 1; /* 🔹 Mesma largura do cancelar */
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-update:hover {
+  background: #0056b3;
+}
+
+/* =======================================================
+   🔹 BOTÃO CANCELAR — USADO NO MODO DE EDIÇÃO
+   ======================================================= */
 .btn-cancel {
-  margin-top: 8px;
+  flex: 1; /* 🔹 Igual ao botão atualizar */
   background: #6c757d;
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 8px;
-  font-size: 13px;
+  padding: 10px;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -88,19 +134,43 @@
   background: #5a6268;
 }
 
-/* Mensagens */
+/* =======================================================
+   🔹 MENSAGENS DE STATUS (SUCESSO / ERRO)
+   ======================================================= */
 .meeting-form-message {
   margin-top: 10px;
   font-weight: bold;
   text-align: center;
+  width: 100%;
 }
 
+/* 🔹 Mensagem de sucesso */
 .meeting-form-message.success {
   color: green;
-  width: 100%;
 }
 
+/* 🔹 Mensagem de erro */
 .meeting-form-message.error {
   color: red;
-  width: 100%;
+}
+
+/* =======================================================
+   🔹 ESTILOS OPCIONAIS — MODO BLOQUEADO (USUÁRIO NÃO LOGADO)
+   ======================================================= */
+.meeting-form input:disabled,
+.meeting-form select:disabled {
+  background-color: #f5f5f5;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* 🔹 (Opcional) mensagem visual indicando bloqueio */
+.meeting-form-container.blocked::before {
+  content: "🔒 Faça login para agendar uma reunião";
+  display: block;
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }

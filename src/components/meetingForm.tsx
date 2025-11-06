@@ -219,23 +219,27 @@ export default function MeetingForm({
 
         {/* 🔹 Botões de ação */}
         <div className="form-buttons">
-          <button
-            type="submit"
-            className="btn-submit"
-            disabled={isBlocked || !userId}
-          >
-            {editMeeting ? "Atualizar" : "Cadastrar"}
-          </button>
-
-          {editMeeting && (
-            <button
-              type="button"
-              className="btn-cancel"
-              onClick={resetForm}
-              disabled={isBlocked}
-            >
-              Cancelar
+          {/* 🔸 Só mostra o botão cadastrar se o usuário estiver logado e não estiver editando */}
+          {!isBlocked && !editMeeting && (
+            <button type="submit" className="btn-submit">
+              Cadastrar
             </button>
+          )}
+
+          {/* 🔸 Mostra botões Atualizar / Cancelar no modo edição */}
+          {editMeeting && (
+            <>
+              <button type="submit" className="btn-update">
+                Atualizar
+              </button>
+              <button
+                type="button"
+                className="btn-cancel"
+                onClick={resetForm}
+              >
+                Cancelar
+              </button>
+            </>
           )}
         </div>
       </form>
