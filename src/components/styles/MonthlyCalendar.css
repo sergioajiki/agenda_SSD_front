@@ -87,10 +87,29 @@
   background-color: #f0f0f0;
 }
 
-/* 🔹 Destaque do dia atual */
+/* Destaque do dia atual */
 .calendar-cell.today {
   border: 2px solid #007bff;
   background-color: #eaf3ff;
+}
+
+/* Célula selecionada (dia clicado) */
+.calendar-cell.selected {
+  /* borda principal */
+  border: 3px solid #007bff !important;
+
+  /* outline adicional (não afeta box model) */
+  outline: 2px solid rgba(0, 123, 255, 0.12);
+
+  /* sombra suave para destaque */
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.18);
+
+  /* leve fundo para contraste */
+  background-color: #e7f1ff;
+
+  /* garante subida visual */
+  transform: translateY(-3px);
+  z-index: 5;
 }
 
 /* 🔹 Sala APOIO (vermelha) */

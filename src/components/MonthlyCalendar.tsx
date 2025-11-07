@@ -2,33 +2,48 @@
 
 import { MeetingResponse } from "@/models/Meetings";
 import "./styles/MonthlyCalendar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type MonthlyCalendarProps = {
-  meetings: MeetingResponse[];       // Lista de todas as reuniões recebidas do backend
-  onDayClick?: (dateStr: string) => void; // Callback ao clicar em um dia (ex: atualizar cards)
+  meetings: MeetingResponse[];             // Lista de todas as reuniões recebidas do backend
+  onDayClick?: (dateStr: string) => void;  // Callback ao clicar em um dia (ex: atualizar cards)
+  selectedDate?: string;                   // Data atualmente selecionada (para destacar visualmente)
 };
 
-export default function MonthlyCalendar({ meetings, onDayClick }: MonthlyCalendarProps) {
-  // 🔹 Estado de controle da data base do calendário
+export default function MonthlyCalendar({
+  meetings,
+  onDayClick,
+  selectedDate,
+}: MonthlyCalendarProps) {
+  // 🔹 Estado de controle da data base do calendário (mês atual exibido)
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // 🔹 Extrai o ano e o mês da data atual
+  // 🔹 Estado interno para armazenar a data clicada (para destacar visualmente)
+  const [localSelectedDate, setLocalSelectedDate] = useState<string | null>(null);
+
+  // 🔹 Sincroniza o estado local com a prop recebida do componente pai
+  useEffect(() => {
+    if (selectedDate) {
+      setLocalSelectedDate(selectedDate);
+    }
+  }, [selectedDate]);
+
+  // 🔹 Extrai o ano e o mês atuais
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  // 🔹 Define o primeiro e o último dia do mês atual
+  // 🔹 Define o primeiro e o último dia do mês
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
-  const daysInMonth = lastDay.getDate(); // quantidade total de dias
-  const startDay = firstDay.getDay(); // dia da semana em que o mês começa (0 = domingo)
+  const daysInMonth = lastDay.getDate();
+  const startDay = firstDay.getDay(); // 0 = domingo, 6 = sábado
 
-  // 🔹 Guarda a data de hoje no formato YYYY-MM-DD para comparação
+  // 🔹 Guarda a data de hoje no formato YYYY-MM-DD
   const today = new Date().toISOString().split("T")[0];
 
   /**
    * 🔹 Retorna todas as reuniões que acontecem em determinado dia
-   * (comparando meeting.meetingDate com a data formatada do dia).
+   * (comparando meeting.meetingDate com a data formatada do dia)
    */
   const getMeetingsForDay = (day: number) => {
     const dateStr = new Date(year, month, day).toISOString().split("T")[0];
@@ -43,6 +58,12 @@ export default function MonthlyCalendar({ meetings, onDayClick }: MonthlyCalenda
   // 🔹 Navega para o próximo mês
   const handleNextMonth = () => {
     setCurrentDate(new Date(year, month + 1, 1));
+  };
+
+  // 🔹 Ao clicar em uma célula do calendário
+  const handleDayClick = (dateStr: string) => {
+    setLocalSelectedDate(dateStr);      // 🟢 ALTERADO — garante borda visível
+    if (onDayClick) onDayClick(dateStr);
   };
 
   return (
@@ -60,7 +81,9 @@ export default function MonthlyCalendar({ meetings, onDayClick }: MonthlyCalenda
       <div className="calendar-grid">
         {/* Cabeçalho com dias da semana */}
         {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((d) => (
-          <div key={d} className="calendar-day-header">{d}</div>
+          <div key={d} className="calendar-day-header">
+            {d}
+          </div>
         ))}
 
         {/* Espaços vazios antes do 1º dia do mês */}
@@ -79,19 +102,24 @@ export default function MonthlyCalendar({ meetings, onDayClick }: MonthlyCalenda
           const hasApoio = dailyMeetings.some((m) => m.meetingRoom === "APOIO");
           const hasCieges = dailyMeetings.some((m) => m.meetingRoom === "CIEGES");
 
-          // 🔹 Define classes de cor com base na sala
+          // 🔹 Define classes de cor com base na sala e estado
           let cellClass = "calendar-cell";
           if (hasApoio && hasCieges) cellClass += " mixed-room";
           else if (hasApoio) cellClass += " apoio-room";
           else if (hasCieges) cellClass += " cieges-room";
           if (isToday) cellClass += " today";
 
+          // 🟢 NOVO — aplica borda azul na célula selecionada
+          const isSelected = localSelectedDate === dateStr;
+          if (isSelected) cellClass += " selected";
+
           return (
             <div
               key={day}
               className={cellClass}
-              onClick={() => onDayClick && onDayClick(dateStr)}
+              onClick={() => handleDayClick(dateStr)}   // 🟢 ALTERADO — usa função unificada
             >
+              {/* Número do dia */}
               <div className="calendar-day-number">{day}</div>
 
               {/* Lista resumida das reuniões do dia */}

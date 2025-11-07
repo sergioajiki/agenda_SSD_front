@@ -155,6 +155,7 @@ export default function CalendarPage() {
         <div className="calendar-left-column">
           <Image
             src="/governo-do-estado-de-ms.png"
+           // src="/logotipo_ssd_ses_gov.jpg"
             alt="Logo Governo do Estado de MS"
             className="app-logo"
             width={180}
