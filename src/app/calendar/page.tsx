@@ -8,6 +8,7 @@ import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
 import MeetingCard from "@/components/MeetingCard";
 import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
+import FloatingMessage from "@/components/FloatingMessage"; // ✅ NOVO
 import { getMeetings, deleteMeeting } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
 import { LoginResponse } from "@/models/Auth";
@@ -43,29 +44,47 @@ export default function CalendarPage() {
   // Estado da notificação de atualização automática
   const [showUpdateNotice, setShowUpdateNotice] = useState(false);
 
+  // Estado global da mensagem flutuante
+  const [floatingMessage, setFloatingMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "warning" | "info";
+  } | null>(null);
+
+  /** =======================================================
+   * 🔹 Exibe mensagem flutuante temporária (3s)
+   * ======================================================= */
+  const showMessage = (
+    text: string,
+    type: "success" | "error" | "warning" | "info" = "info"
+  ) => {
+    setFloatingMessage({ text, type });
+    setTimeout(() => setFloatingMessage(null), 3000);
+  };
+
   /** ============================================================
    * 🔹 Função principal de busca — NÃO redefine a data selecionada
    * ============================================================ */
-  const fetchMeetings = useCallback(async (keepDate: boolean = true) => {
-    try {
-      const data = await getMeetings();
-      setMeetings(data);
+  const fetchMeetings = useCallback(
+    async (keepDate: boolean = true) => {
+      try {
+        const data = await getMeetings();
+        setMeetings(data);
 
-      // 🔹 Se mantiver a data anterior, apenas refiltra os cards dela
-      if (keepDate && selectedDate) {
-        const filtered = data.filter((m) => m.meetingDate === selectedDate);
-        setSelectedMeetings(filtered);
-      } else {
-        // 🔹 Caso contrário, usa o dia atual
-        const today = new Date().toISOString().split("T")[0];
-        const filtered = data.filter((m) => m.meetingDate === today);
-        setSelectedDate(today);
-        setSelectedMeetings(filtered);
+        if (keepDate && selectedDate) {
+          const filtered = data.filter((m) => m.meetingDate === selectedDate);
+          setSelectedMeetings(filtered);
+        } else {
+          const today = new Date().toISOString().split("T")[0];
+          const filtered = data.filter((m) => m.meetingDate === today);
+          setSelectedDate(today);
+          setSelectedMeetings(filtered);
+        }
+      } catch {
+        showMessage("❌ Erro ao carregar reuniões.", "error");
       }
-    } catch {
-      console.error("❌ Erro ao carregar reuniões.");
-    }
-  }, [selectedDate]);
+    },
+    [selectedDate]
+  );
 
   // Executa busca inicial
   useEffect(() => {
@@ -73,12 +92,11 @@ export default function CalendarPage() {
   }, [fetchMeetings]);
 
   /** ============================================================
-   * Atualização automática por polling + notificação visual
+   * 🔹 Atualização automática (polling) mantendo data selecionada
    * ============================================================ */
-  /** 🔹 Atualização automática (polling) mantendo data selecionada */
   useEffect(() => {
     const interval = setInterval(async () => {
-      await fetchMeetings(true); // ✅ mantém selectedDate
+      await fetchMeetings(true);
       setShowUpdateNotice(true);
       setTimeout(() => setShowUpdateNotice(false), 3000);
     }, 30000);
@@ -94,15 +112,17 @@ export default function CalendarPage() {
 
   /** 🔹 Exclui reunião (somente se logado) */
   const handleDelete = async (id: number) => {
-    if (!user) return alert("⚠️ É necessário estar logado para excluir uma reunião.");
-    if (!confirm("Deseja realmente excluir esta reunião?")) return;
+    if (!user) {
+      showMessage("⚠️ É necessário estar logado para excluir.", "warning");
+      return;
+    }
 
     try {
       await deleteMeeting(id, user.id);
-      await fetchMeetings();
-      alert("🗑️ Reunião excluída com sucesso!");
+      await fetchMeetings(true);
+      showMessage("🗑️ Reunião excluída com sucesso!", "success");
     } catch {
-      alert("❌ Não foi possível excluir a reunião.");
+      showMessage("❌ Erro ao excluir reunião.", "error");
     }
   };
 
@@ -110,15 +130,17 @@ export default function CalendarPage() {
   const handleEdit = (meeting: MeetingResponse) => {
     const now = new Date();
     const start = new Date(`${meeting.meetingDate}T${meeting.timeStart}`);
-    if (start <= now)
-      return alert("⛔ Não é possível editar uma reunião que já iniciou.");
+    if (start <= now) {
+      showMessage("⛔ Não é possível editar uma reunião que já iniciou.", "error");
+      return;
+    }
     setEditingMeeting(meeting);
   };
 
   /** 🔹 Faz logout do usuário */
   const handleLogout = () => {
     setUser(null);
-    alert("👋 Você saiu do sistema.");
+    showMessage("👋 Você saiu do sistema.", "info");
   };
 
   // =======================================================
@@ -141,7 +163,6 @@ export default function CalendarPage() {
             style={{ objectFit: "contain", width: "100%", height: "60px" }}
           />
 
-
           {/* 🔹 Alternância de visão */}
           <div className="calendar-toggle">
             <button
@@ -157,6 +178,8 @@ export default function CalendarPage() {
               Agenda Semanal
             </button>
           </div>
+
+          {/* 🔹 Login / Cadastro */}
           <div className="auth-section">
             {!user ? (
               <>
@@ -167,13 +190,16 @@ export default function CalendarPage() {
                       className="switch-auth-button"
                       onClick={() => setShowRegister(false)}
                     >
-                      Já possui cadastro? Fazer Login
+                      Primeiro Acesso? Fazer Login
                     </button>
                   </>
                 ) : (
                   <>
                     <LoginForm
-                      onLoginSuccess={setUser}
+                      onLoginSuccess={(userData) => {
+                        setUser(userData);
+                        showMessage(`✅ Bem-vindo, ${userData.name}!`, "success");
+                      }}
                       onLogout={handleLogout}
                       loggedUser={null}
                     />
@@ -196,10 +222,12 @@ export default function CalendarPage() {
             )}
           </div>
 
-
           {/* 🔹 Formulário de agendamento */}
           <MeetingForm
-            onMeetingAdded={() => fetchMeetings(true)}
+            onMeetingAdded={() => {
+              fetchMeetings(true);
+              showMessage("✅ Reunião cadastrada com sucesso!", "success");
+            }}
             isBlocked={!user}
             userId={user?.id}
             editMeeting={editingMeeting}
@@ -241,11 +269,17 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
-      {/* Notificação discreta no canto inferior direito */}
-      {showUpdateNotice && (
-        <div className="update-notice">
-          🔄 Updating...
-        </div>
+
+      {/* 🔹 Notificação discreta no canto inferior direito */}
+      {showUpdateNotice && <div className="update-notice">🔄 Atualizando...</div>}
+
+      {/* 🔹 Mensagem flutuante global centralizada */}
+      {floatingMessage && (
+        <FloatingMessage
+          text={floatingMessage.text}
+          type={floatingMessage.type}
+          duration={3000}
+        />
       )}
     </div>
   );

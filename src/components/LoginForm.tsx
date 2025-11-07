@@ -49,10 +49,8 @@ export default function LoginForm({
       const user = await loginUser(formData);
       setIsError(false);
       onLoginSuccess(user);
-      alert(`✅ Bem-vindo, ${user.name}!`);
     } catch {
       setIsError(true);
-      alert("❌ Email ou senha inválidos. Tente novamente.");
     }
   };
 

@@ -174,11 +174,42 @@
   z-index: 9999;
 }
 
-/* 🔹 Animação de entrada/saída suave */
+/* =======================================================
+   🔹 Mensagem flutuante global (substitui alert)
+   ======================================================= */
+.floating-global-message {
+  position: fixed;
+  top: 20px;
+  right: 25px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: fadeInOut 3s ease forwards;
+}
+
+/* Cores específicas */
+.floating-global-message.success {
+  background: #28a745;
+}
+
+.floating-global-message.error {
+  background: #dc3545;
+}
+
+.floating-global-message.info {
+  background: #007bff;
+}
+
+/* Animação suave */
 @keyframes fadeInOut {
   0% {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(-10px);
   }
   15% {
     opacity: 1;
@@ -186,10 +217,9 @@
   }
   85% {
     opacity: 1;
-    transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(-10px);
   }
 }

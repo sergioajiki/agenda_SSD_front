@@ -28,10 +28,10 @@ export default function MeetingForm({
   const [meetingDate, setMeetingDate] = useState("");       // Data da reunião
   const [timeStart, setTimeStart] = useState("");           // Horário de início
   const [timeEnd, setTimeEnd] = useState("");               // Horário de término
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" | "" }>({
-    text: "",
-    type: "",
-  });
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "warning" | "";
+  }>({ text: "", type: "" });  // Exibe mensagens temporárias (success | error | warning)
 
   /** 🔹 Gera os horários disponíveis de 07:30 até 18:30 em intervalos de 30 minutos */
   const generateTimeOptions = () => {
@@ -63,10 +63,10 @@ export default function MeetingForm({
     }
   }, [editMeeting]);
 
-    /** 🔹 Quando o usuário clica em um dia no calendário */
+  /** 🔹 Quando o usuário clica em um dia no calendário */
   useEffect(() => {
     if (selectedDate && !editMeeting) {
-      setMeetingDate(selectedDate); // ✅ preenche o campo de data automaticamente
+      setMeetingDate(selectedDate); // Preenche o campo de data automaticamente
     }
   }, [selectedDate, editMeeting]);
 
@@ -94,16 +94,13 @@ export default function MeetingForm({
 
     // Bloqueia se usuário não autenticado
     if (!userId) {
-      setMessage({ text: "Usuário não autenticado.", type: "error" });
+      setTempMessage("⚠️ Faça login para agendar uma reunião.", "warning");
       return;
     }
 
     // Valida intervalo de horários
     if (timeStart >= timeEnd) {
-      setMessage({
-        text: "O horário final deve ser posterior ao horário inicial.",
-        type: "error",
-      });
+      setTempMessage("⚠️ O horário final deve ser posterior ao inicial.", "warning");
       return;
     }
 
@@ -121,20 +118,26 @@ export default function MeetingForm({
       // Se estiver editando, atualiza
       if (editMeeting) {
         await updateMeeting(editMeeting.id, meeting, userId);
-        setMessage({ text: "Reunião atualizada com sucesso!", type: "success" });
-      } 
+        setTempMessage("✅ Reunião atualizada com sucesso!", "success");
+      }
       // Caso contrário, cria nova
       else {
         await createMeeting(meeting);
-        setMessage({ text: "Reunião cadastrada com sucesso!", type: "success" });
+        setTempMessage("✅ Reunião cadastrada com sucesso!", "success");
       }
 
       onMeetingAdded(); // atualiza a lista
-      resetForm(); // limpa o formulário
+      resetForm(); // limpa o formulário            
     } catch (error) {
-      const errMsg = error instanceof Error ? error.message : "Erro ao salvar reunião.";
-      setMessage({ text: errMsg, type: "error" });
+      const msg = error instanceof Error ? error.message : "Erro ao salvar reunião.";
+      setTempMessage("❌ " + msg, "error");
     }
+  };
+
+  /** 🔹 Mostra mensagem temporária e desaparece em 3s */
+  const setTempMessage = (text: string, type: "success" | "error" | "warning") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: "", type: "" }), 3000);
   };
 
   return (
@@ -214,40 +217,29 @@ export default function MeetingForm({
         >
           {/* 🏢 Aqui serão adicionadas as outras opções de sala futuramente */}
           <option value="APOIO">APOIO</option>
-           <option value="CIEGES">CIEGES</option>
+          <option value="CIEGES">CIEGES</option>
         </select>
 
-        {/* 🔹 Botões de ação */}
-        <div className="form-buttons">
-          {/* 🔸 Só mostra o botão cadastrar se o usuário estiver logado e não estiver editando */}
-          {!isBlocked && !editMeeting && (
-            <button type="submit" className="btn-submit">
-              Cadastrar
-            </button>
-          )}
 
-          {/* 🔸 Mostra botões Atualizar / Cancelar no modo edição */}
-          {editMeeting && (
-            <>
-              <button type="submit" className="btn-update">
-                Atualizar
-              </button>
-              <button
-                type="button"
-                className="btn-cancel"
-                onClick={resetForm}
-              >
+        {!isBlocked && (
+          <div className="form-buttons">
+            <button type="submit" className="btn-submit">
+              {editMeeting ? "Atualizar" : "Cadastrar"}
+            </button>
+            {editMeeting && (
+              <button type="button" className="btn-cancel" onClick={resetForm}>
                 Cancelar
               </button>
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        )}
+
+        {/* 🔹 Mensagem flutuante (não empurra conteúdo) */}
+        {message.text && (
+          <div className={`floating-message ${message.type}`}>{message.text}</div>
+        )}
       </form>
 
-      {/* 🔹 Exibe mensagem de sucesso ou erro */}
-      {message.text && (
-        <p className={`meeting-form-message ${message.type}`}>{message.text}</p>
-      )}
     </div>
   );
 }
