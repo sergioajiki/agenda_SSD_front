@@ -1,24 +1,30 @@
-.meeting-card {
+/* =======================================================
+   🔹 Estilo isolado do componente MeetingCard
+   ======================================================= */
+
+div.meeting-card {
+  all: unset;
+  display: block;
   background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 12px 16px;
   margin: 8px 0;
   width: 100%;
-  max-width: 230px;
+  max-width: 200px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
   color: #000;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Efeito ao passar o mouse */
+/* Efeito hover */
 .meeting-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Cabeçalho */
+/* Cabeçalho do card */
 .meeting-card-header {
   display: flex;
   justify-content: space-between;
@@ -39,7 +45,7 @@
   color: #666;
 }
 
-/* Corpo */
+/* Corpo do card */
 .meeting-card-body p {
   margin: 4px 0;
   font-size: 0.9rem;
@@ -87,4 +93,26 @@
 
 .btn-delete:hover {
   background-color: #c82333;
+}
+
+/* =========================================================
+   🔹 Bordas coloridas conforme a sala da reunião
+   ========================================================= */
+
+/* 🔴 Sala APOIO — vermelha */
+.meeting-card.apoio-border {
+  border: 3px solid #cc0000 !important;
+  box-shadow: 0 0 8px rgba(204, 0, 0, 0.45);
+}
+
+/* 🔵 Sala CIEGES — azul */
+.meeting-card.cieges-border {
+  border: 3px solid #0044cc !important;
+  box-shadow: 0 0 8px rgba(0, 68, 204, 0.45);
+}
+
+/* 🟣 Mista — roxa */
+.meeting-card.mixed-border {
+  border: 3px solid #6f42c1 !important;
+  box-shadow: 0 0 8px rgba(111, 66, 193, 0.4);
 }

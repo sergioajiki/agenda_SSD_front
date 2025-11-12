@@ -27,15 +27,25 @@ export default function MeetingCard({
   /** 🔹 Apenas o criador da reunião pode editar/excluir */
   const canModify = !!userId && userId === meeting.userId;
 
+  /** ===========================================================
+   * 🔹 Define classes visuais conforme a sala da reunião
+   * - Mantém o mesmo padrão de cores usado no calendário mensal
+   * =========================================================== */
+  /** 🔹 Define classe conforme a sala da reunião */
+  let roomClass = "";
+  if (meeting.meetingRoom === "APOIO") roomClass = "apoio-border";
+  else if (meeting.meetingRoom === "CIEGES") roomClass = "cieges-border";
+  else roomClass = "mixed-border";
+
   return (
-    <div className="meeting-card">
-      {/* 🔹 Cabeçalho com título e ID */}
+    <div className={`meeting-card ${roomClass}`}>
+      {/* 🔹 Cabeçalho com título e ID da reunião */}
       <div className="meeting-card-header">
         <h4>{meeting.title}</h4>
         <span className="meeting-id">ID: {meeting.id}</span>
       </div>
 
-      {/* 🔹 Corpo do card com dados principais */}
+      {/* 🔹 Corpo do card com informações da reunião */}
       <div className="meeting-card-body">
         <p>
           <strong>Data:</strong> {formatDateBR(meeting.meetingDate)}
@@ -47,17 +57,13 @@ export default function MeetingCard({
           <strong>Local:</strong> {meeting.meetingRoom}
         </p>
         <p>
-          <strong>Responsável (ID):</strong> {meeting.userId}
-        </p>
-                <p>
-          <strong>Responsável (Nome):</strong> {meeting.userName}
+          <strong>Responsável:</strong> {meeting.userName}
         </p>
       </div>
 
       {/* 🔹 Ações visíveis apenas para o usuário dono da reunião */}
       {canModify && (
         <div className="meeting-card-actions">
-          {/* ✏️ Botão Editar */}
           {onEdit && (
             <button
               type="button"
@@ -69,7 +75,6 @@ export default function MeetingCard({
             </button>
           )}
 
-          {/* 🗑️ Botão Excluir */}
           {onDelete && (
             <button
               type="button"

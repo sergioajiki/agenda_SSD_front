@@ -62,18 +62,25 @@ export default function MonthlyCalendar({
 
   // 🔹 Ao clicar em uma célula do calendário
   const handleDayClick = (dateStr: string) => {
-    setLocalSelectedDate(dateStr);      // 🟢 ALTERADO — garante borda visível
+    setLocalSelectedDate(dateStr);      //
     if (onDayClick) onDayClick(dateStr);
   };
+
+  const formattedMonth =
+    currentDate
+      .toLocaleString("pt-BR", { month: "long" }) // "novembro"
+      .charAt(0)
+      .toUpperCase() +
+    currentDate
+      .toLocaleString("pt-BR", { month: "long", year: "numeric" })
+      .slice(1); // "Novembro de 2025"
 
   return (
     <div className="calendar-container">
       {/* ===== Cabeçalho do calendário (título + botões de navegação) ===== */}
       <div className="calendar-header">
-        <button onClick={handlePrevMonth}>◀</button>
-        <h2>
-          {currentDate.toLocaleString("pt-BR", { month: "long", year: "numeric" })}
-        </h2>
+        <button onClick={handlePrevMonth}>◀</button>        
+          <h2>{formattedMonth || "Carregando..."}</h2>     
         <button onClick={handleNextMonth}>▶</button>
       </div>
 
@@ -117,7 +124,7 @@ export default function MonthlyCalendar({
             <div
               key={day}
               className={cellClass}
-              onClick={() => handleDayClick(dateStr)}   // 🟢 ALTERADO — usa função unificada
+              onClick={() => handleDayClick(dateStr)}
             >
               {/* Número do dia */}
               <div className="calendar-day-number">{day}</div>
