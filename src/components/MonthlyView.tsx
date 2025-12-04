@@ -1,8 +1,8 @@
 "use client";
 
 import { MeetingResponse } from "@/models/Meetings";
-import "./styles/MonthlyCalendar.css";
 import { useEffect, useState } from "react";
+import "./styles/MonthlyView.css";
 
 type MonthlyCalendarProps = {
   meetings: MeetingResponse[];             // Lista de todas as reuniões recebidas do backend

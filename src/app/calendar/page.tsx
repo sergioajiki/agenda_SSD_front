@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import MonthlyCalendar from "@/components/MonthlyCalendar";
-import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
+import MonthlyCalendar from "@/components/MonthlyView";
+import WeeklyCalendar2v from "@/components/WeeklyView";
 import MeetingForm from "@/components/MeetingForm";
 import MeetingCard from "@/components/MeetingCard";
 import LoginForm from "@/components/LoginForm";
