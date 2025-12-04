@@ -13,9 +13,9 @@ import { useState } from "react";
  * ===================================================================
  */
 
-export function useFlotingMessage() {
+export function useFloatingMessage() {
     /** Estado com texto e tipo da mensagem */
-    const [floatingMessage, setFlotingMessage] = useState<
+    const [floatingMessage, setFloatingMessage] = useState<
         {
             text: string;
             type: "success" | "error" | "warning" | "info";
@@ -29,8 +29,8 @@ export function useFlotingMessage() {
         type: "success" | "error" | "warning" | "info" = "info",
         duration = 3000
     ) => {
-        setFlotingMessage({ text, type });
-        setTimeout(() => setFlotingMessage(null), duration);
+        setFloatingMessage({ text, type });
+        setTimeout(() => setFloatingMessage(null), duration);
     };
     return { floatingMessage, showMessage };
 }
