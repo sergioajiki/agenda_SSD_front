@@ -1,0 +1,26 @@
+/* =======================================================
+   🔹 Coluna Direita — Cards das Reuniões
+   ======================================================= */
+.calendar-right-column {
+  width: 270px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+/* Título da data */
+.calendar-right-column h3 {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Container dos cards */
+.meeting-cards-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}

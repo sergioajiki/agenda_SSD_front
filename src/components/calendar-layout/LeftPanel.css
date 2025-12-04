@@ -1,0 +1,90 @@
+/* =======================================================
+   🔹 Coluna Esquerda — Login, Cadastro e Formulário
+   ======================================================= */
+.calendar-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.app-logo {
+  align-self: center;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Container de autenticação */
+.auth-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Botão alternar login/cadastro */
+.switch-auth-button {
+  background: none;
+  color: #0066cc;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.switch-auth-button:hover {
+  color: #004a99;
+}
+
+/* Dados do usuário logado */
+.logged-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Botão logout */
+.btn-logout {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-logout:hover {
+  background-color: #c82333;
+}
+
+/* =======================================================
+   🔹 Alternância entre visões (mensal / semanal)
+   ======================================================= */
+.calendar-toggle {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+/* Botões de alternância */
+.calendar-toggle button {
+  flex: 1;
+  margin: 0 3px;
+  padding: 6px;
+  background: #e4e4e4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.calendar-toggle button.active {
+  background: #007bff;
+  color: white;
+}

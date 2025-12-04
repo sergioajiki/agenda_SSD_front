@@ -10,7 +10,7 @@ type MonthlyCalendarProps = {
   selectedDate?: string;                   // Data atualmente selecionada (para destacar visualmente)
 };
 
-export default function MonthlyCalendar({
+export default function MonthlyView({
   meetings,
   onDayClick,
   selectedDate,

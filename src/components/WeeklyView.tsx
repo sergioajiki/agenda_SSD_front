@@ -19,7 +19,7 @@ type WeeklyCalendarProps = {
   onDayClick?: (dateStr: string) => void;
 };
 
-export default function WeeklyCalendar2v({ meetings, onDayClick }: WeeklyCalendarProps) {
+export default function WeeklyView({ meetings, onDayClick }: WeeklyCalendarProps) {
 
   /**
    * 🔹 Estado que mantém o primeiro dia da semana exibida.
