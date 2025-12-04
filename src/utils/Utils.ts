@@ -1,31 +1,75 @@
-// Função para formatar a data no formato dd-MM-yyyy
-export const formatDateToDDMMYYYY = (date: Date): string => {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-};
-
-// Função para formatar a data no formato yyyy-MM-dd (para enviar ao backend)
-export const formatDateToYYYYMMDD = (date: Date): string => {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-};
+/**
+ * Normaliza uma string de data, convertendo delimitadores
+ * como "/", "." ou múltiplos hífens para um formato padrão "dd-MM-yyyy".
+ */
+function normalizeDateString(dateStr: string): string {
+    return dateStr
+        .replace(/[\/\.]+/g, "-") // troca "/" e "." por "-"
+        .replace(/-+/g, "-")       // evita múltiplos hífens seguidos
+        .trim();
+}
 
 /**
- * Converte uma string no formato dd-MM-yyyy para um objeto Date.
- * Exemplo: "02-09-2025" -> Date(2025-09-02)
+ * Função genérica para formatar datas.
+ * Aceita formatos "dd-MM-yyyy" ou "yyyy-MM-dd".
+ */
+function formatDate(date: Date, format: "dd-MM-yyyy" | "yyyy-MM-dd"): string {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return format
+        .replace("dd", day)
+        .replace("MM", month)
+        .replace("yyyy", String(year));
+}
+
+/** 
+ * Formata a data no padrão dd-MM-yyyy 
+ * (usado para exibir no formulário e no MeetingCard)
+ */
+export const formatDateToDDMMYYYY = (date: Date): string =>
+    formatDate(date, "dd-MM-yyyy");
+
+/**
+ * Formata a data no padrão yyyy-MM-dd
+ * (usado para enviar ao backend)
+ */
+export const formatDateToYYYYMMDD = (date: Date): string =>
+    formatDate(date, "yyyy-MM-dd");
+
+
+/**
+ * Converte uma string dd-MM-yyyy ou dd/MM/yyyy em objeto Date.
+ * Exemplo: "02-09-2025" -> new Date(2025, 8, 2)
  */
 export function parseDDMMYYYYtoDate(dateStr: string): Date {
-    // Normaliza delimitadores (substitui / por -)
-    const normalized = dateStr.replace(/\//g, "-");
+    // Normaliza delimitadores
+    const normalized = normalizeDateString(dateStr);
+
+    // Divide em partes
     const [day, month, year] = normalized.split("-").map(Number);
 
-    if (!day || !month || !year || year < 1000) {
-        throw new Error("Data inválida: formato esperado dd-MM-yyyy ou dd/MM/yyyy");
+    // Validações essenciais
+    if (!day || !month || !year) {
+        throw new Error("Data inválida: formato esperado dd-MM-yyyy.");
+    }
+    if (day < 1 || day > 31) {
+        throw new Error("Dia inválido (1-31).");
+    }
+    if (month < 1 || month > 12) {
+        throw new Error("Mês inválido (1-12).");
+    }
+    if (year < 1000) {
+        throw new Error("Ano inválido.");
     }
 
-    return new Date(year, month - 1, day); // mês começa em 0 no JS
+    const date = new Date(year, month - 1, day);
+
+    // Validação final do objeto Date
+    if (isNaN(date.getTime())) {
+        throw new Error("Data inválida.");
+    }
+
+    return date;
 }
