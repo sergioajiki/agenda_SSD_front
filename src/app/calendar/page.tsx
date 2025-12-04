@@ -2,16 +2,20 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+
 import MeetingForm from "@/components/MeetingForm";
 import MonthlyCalendar from "@/components/MonthlyCalendar";
 import WeeklyCalendar2v from "@/components/WeeklyCalendar2v";
 import MeetingCard from "@/components/MeetingCard";
 import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
-import FloatingMessage from "@/components/FloatingMessage"; // ✅ NOVO
+import FloatingMessage from "@/components/FloatingMessage";
+
 import { getMeetings, deleteMeeting } from "@/services/meetingService";
+
 import { MeetingResponse } from "@/models/Meetings";
 import { LoginResponse } from "@/models/Auth";
+
 import "./styles/Page.css";
 
 /** 🔹 Tipo de usuário autenticado */
