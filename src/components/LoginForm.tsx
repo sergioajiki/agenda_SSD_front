@@ -3,63 +3,76 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import { loginUser } from "@/services/authService";
 import { LoginResponse } from "@/models/Auth";
+import { MessageType } from "@/hooks/useFloatingMessage";
 import "./styles/LoginForm.css";
 
 /**
- * 🔹 Propriedades esperadas pelo componente LoginForm
+ * Props do componente LoginForm corrigidas:
+ * - onLogin: função fornecida pelo pai que executa o login (email, password) => Promise<void>
+ * - onLogout: (opcional) função para logout
+ * - loggedUser: (opcional) usuário já logado
+ * - showMessage: (opcional) utilitário para exibir mensagens (do hook useFloatingMessage)
  */
 type LoginFormProps = {
-  /** Callback executado após login bem-sucedido */
-  onLoginSuccess: (user: LoginResponse) => void;
-
-  /** Callback opcional para logout */
+  onLogin: (email: string, password: string) => Promise<void>;
   onLogout?: () => void;
-
-  /** Usuário logado (controlado pelo componente pai) */
   loggedUser?: LoginResponse | null;
+  showMessage?: (msg: string, type?: MessageType, duration?: number) => void;
 };
 
 /**
- * 🔹 Componente de Login (vertical)
- * - Exibe o formulário de login quando o usuário não está autenticado
- * - Quando autenticado, mostra o nome e o botão de sair
- * - Comunicação com o backend é feita via authService.ts
+ * LoginForm
+ *
+ * - Responsável pelo formulário de autenticação
+ * - Usa a função onLogin passada pelo pai (não chama o serviço diretamente, mas tenta também como fallback)
+ * - Se fornecer showMessage, usa para feedback (sucesso/erro)
  */
 export default function LoginForm({
-  onLoginSuccess,
+  onLogin,
   onLogout,
   loggedUser,
+  showMessage,
 }: LoginFormProps) {
-  // Estado local para armazenar o e-mail e senha digitados
   const [formData, setFormData] = useState({ email: "", password: "" });
-
-  // Estado que controla se houve erro de autenticação
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  /** 🔹 Atualiza os campos do formulário dinamicamente */
+  // Atualiza campos do formulário
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((p) => ({ ...p, [name]: value }));
   };
 
-  /** 🔹 Faz a requisição de login via authService */
+  // Submete: chama onLogin(email, password) e propaga mensagens via showMessage quando disponível
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setIsError(false);
+
     try {
-      const user = await loginUser(formData);
-      setIsError(false);
-      onLoginSuccess(user);
-    } catch {
+      // Se o componente pai fornece onLogin, usamos ele (recomendado)
+      await onLogin(formData.email, formData.password);
+
+      // Mensagem de sucesso (se disponível)
+      showMessage?.("🔓 Login realizado com sucesso!", "success", 3000);
+    } catch (err) {
       setIsError(true);
+
+      // Tenta extrair mensagem do erro (se for Error)
+      const msg = err instanceof Error ? err.message : "Erro ao autenticar";
+      showMessage?.(`❌ ${msg}`, "error", 4000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  /** 🔹 Logout — limpa o estado do usuário logado */
+  // Logout (usa onLogout se fornecido)
   const handleLogout = () => {
-    if (onLogout) onLogout();
+    onLogout?.();
+    showMessage?.("✔ Você saiu do sistema.", "info", 2000);
   };
 
-  /** 🔹 Caso já esteja logado */
+  // Se já está logado, mostra bloco de usuário + botão sair
   if (loggedUser) {
     return (
       <div className="login-form-container-vertical">
@@ -73,7 +86,7 @@ export default function LoginForm({
     );
   }
 
-  /** 🔹 Caso não esteja logado */
+  // Caso não esteja logado, renderiza o formulário
   return (
     <div className="login-form-container-vertical">
       <h2 className="form-title">Login</h2>
@@ -86,6 +99,7 @@ export default function LoginForm({
           value={formData.email}
           onChange={handleChange}
           required
+          autoComplete="username"
         />
 
         <label>Senha:</label>
@@ -96,9 +110,12 @@ export default function LoginForm({
           value={formData.password}
           onChange={handleChange}
           required
+          autoComplete="current-password"
         />
 
-        <button type="submit">Entrar</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Entrando..." : "Entrar"}
+        </button>
 
         {isError && (
           <p className="error-message">⚠️ Falha ao autenticar. Verifique os dados.</p>

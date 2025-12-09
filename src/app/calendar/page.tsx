@@ -6,15 +6,22 @@ import CenterPanel from "@/components/calendar-layout/CenterPanel";
 import RightPanel from "@/components/calendar-layout/RightPanel";
 import FloatingMessage from "@/components/FloatingMessage";
 
+import { loginUser } from "@/services/authService";
+
 import { useFloatingMessage } from "@/hooks/useFloatingMessage";
 import { useAuth } from "@/hooks/useAuth";
 import { useMeetings } from "@/hooks/useMeetings";
 import { useState } from "react";
 
 export default function CalendarPage() {
+  /* 🔹 Hook de mensagens flutuantes (global) */
   const { floatingMessage, showMessage } = useFloatingMessage();
-  const { user, login, logout, showRegister, toggleRegister } = useAuth(showMessage);
 
+  /* 🔹 Hook de autenticação */
+  const { user, logout, showRegister, toggleRegister, setUser } =
+    useAuth(showMessage);
+
+  /* 🔹 Hook de reuniões */
   const {
     meetings,
     selectedDate,
@@ -25,10 +32,28 @@ export default function CalendarPage() {
     handleDayClick,
     handleDelete,
     handleEdit,
-    fetchMeetings
+    fetchMeetings,
   } = useMeetings(user?.id, showMessage);
 
+  /* 🔹 Alternância entre mensal/semanal */
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
+
+  /**
+   * 🔥 LOGIN ALINHADO AO LoginForm
+   * (email: string, password: string) => Promise<void>
+   */
+  const login = async (email: string, password: string): Promise<void> => {
+    try {
+      const userData = await loginUser({ email, password });
+
+      setUser(userData);
+
+      showMessage("Login realizado com sucesso!", "success");
+    } catch {
+      showMessage("Erro ao realizar login", "error");
+      throw new Error("Login failed");
+    }
+  };
 
   return (
     <CalendarLayout
@@ -48,7 +73,13 @@ export default function CalendarPage() {
           showMessage={showMessage}
         />
       }
-      center={<CenterPanel view={view} meetings={meetings} onDayClick={handleDayClick} />}
+      center={
+        <CenterPanel
+          view={view}
+          meetings={meetings}
+          onDayClick={handleDayClick}
+        />
+      }
       right={
         <RightPanel
           selectedDate={selectedDate}
@@ -60,9 +91,15 @@ export default function CalendarPage() {
         />
       }
       updateNotice={showUpdateNotice}
-      floatingMessage={floatingMessage && (
-        <FloatingMessage text={floatingMessage.text} type={floatingMessage.type} duration={3000} />
-      )}
+      floatingMessage={
+        floatingMessage && (
+          <FloatingMessage
+            text={floatingMessage.text}
+            type={floatingMessage.type}
+            duration={3000}
+          />
+        )
+      }
     />
   );
 }

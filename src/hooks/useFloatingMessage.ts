@@ -12,6 +12,7 @@ import { useState } from "react";
  * É exibida por 3 segundos no topo da tela.
  * ===================================================================
  */
+export type MessageType = "success" | "error" | "warning" | "info";
 
 export function useFloatingMessage() {
     /** Estado com texto e tipo da mensagem */
