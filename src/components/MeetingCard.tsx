@@ -4,34 +4,34 @@ import { MeetingResponse } from "@/models/Meetings";
 import "./styles/MeetingCard.css";
 
 interface MeetingCardProps {
-  meeting: MeetingResponse;             // Dados da reunião
-  userId?: number | null;               // ID do usuário logado (para validação)
-  onDelete?: (id: number) => void;      // Função para excluir reunião
-  onEdit?: (meeting: MeetingResponse) => void; // Função para editar reunião
+  meeting: MeetingResponse;
+  userId?: number | null;
+  userRole?: string | null;       
+  onDelete?: (id: number) => void;
+  onEdit?: (meeting: MeetingResponse) => void;
 }
 
 export default function MeetingCard({
   meeting,
   userId,
+  userRole,        
   onDelete,
   onEdit,
 }: MeetingCardProps) {
 
-  /** 🔹 Converte a data do formato YYYY-MM-DD para DD/MM/YYYY */
+  /* Formata data */
   const formatDateBR = (dateStr: string) => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
     return `${day}/${month}/${year}`;
   };
 
-  /** 🔹 Apenas o criador da reunião pode editar/excluir */
-  const canModify = !!userId && userId === meeting.userId;
+  /* Permissões */
+  const isOwner = userId === meeting.userId;
+  const isAdmin = userRole === "ADMIN";
+  const canModify = isOwner || isAdmin;
 
-  /** ===========================================================
-   * 🔹 Define classes visuais conforme a sala da reunião
-   * - Mantém o mesmo padrão de cores usado no calendário mensal
-   * =========================================================== */
-  /** 🔹 Define classe conforme a sala da reunião */
+  /* Classe visual da sala */
   let roomClass = "";
   if (meeting.meetingRoom === "APOIO") roomClass = "apoio-border";
   else if (meeting.meetingRoom === "CIEGES") roomClass = "cieges-border";
@@ -39,29 +39,20 @@ export default function MeetingCard({
 
   return (
     <div className={`meeting-card ${roomClass}`}>
-      {/* 🔹 Cabeçalho com título e ID da reunião */}
+      
       <div className="meeting-card-header">
         <h4>{meeting.title}</h4>
         <span className="meeting-id">ID: {meeting.id}</span>
       </div>
 
-      {/* 🔹 Corpo do card com informações da reunião */}
       <div className="meeting-card-body">
-        <p>
-          <strong>Data:</strong> {formatDateBR(meeting.meetingDate)}
-        </p>
-        <p>
-          <strong>Horário:</strong> {meeting.timeStart} - {meeting.timeEnd}
-        </p>
-        <p>
-          <strong>Local:</strong> {meeting.meetingRoom}
-        </p>
-        <p>
-          <strong>Responsável:</strong> {meeting.userName}
-        </p>
+        <p><strong>Data:</strong> {formatDateBR(meeting.meetingDate)}</p>
+        <p><strong>Horário:</strong> {meeting.timeStart} - {meeting.timeEnd}</p>
+        <p><strong>Local:</strong> {meeting.meetingRoom}</p>
+        <p><strong>Responsável:</strong> {meeting.userName}</p>
       </div>
 
-      {/* 🔹 Ações visíveis apenas para o usuário dono da reunião */}
+      {/* Botões só para Owner OU Admin */}
       {canModify && (
         <div className="meeting-card-actions">
           {onEdit && (

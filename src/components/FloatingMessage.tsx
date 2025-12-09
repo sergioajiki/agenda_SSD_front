@@ -16,7 +16,7 @@ type FloatingMessageProps = {
 };
 
 /**
- * 🔹 Componente de Mensagem Flutuante
+ * Componente de Mensagem Flutuante
  * - Exibe notificações temporárias no topo central da tela
  * - Desaparece automaticamente com animação suave
  */

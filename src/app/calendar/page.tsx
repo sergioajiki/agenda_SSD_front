@@ -54,6 +54,7 @@ export default function CalendarPage() {
           selectedDate={selectedDate}
           selectedMeetings={selectedMeetings}
           userId={user?.id}
+          userRole={user?.role}
           onDelete={handleDelete}
           onEdit={handleEdit}
         />
