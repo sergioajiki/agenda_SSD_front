@@ -2,7 +2,7 @@ export type LoginResponse = {
   id: number;       // Identificador único do usuário
   name: string;     // Nome completo do usuário
   email: string;    // Endereço de e-mail cadastrado
-  role: string;     // Função (ex: ADMIN, USER, etc.)
+  role: "ADMIN" | "USER";     // Função (ex: ADMIN, USER, etc.)
 };
 
 export type LoginRequest = {

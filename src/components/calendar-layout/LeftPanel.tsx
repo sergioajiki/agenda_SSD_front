@@ -43,6 +43,7 @@ export default function LeftPanel({
   fetchMeetings,
   showMessage,
 }: LeftPanelProps) {
+  console.log("LEFTPANEL USER:", user);
   return (
     <>
       <Image
@@ -67,16 +68,13 @@ export default function LeftPanel({
 
       {/* Área de autenticação — passamos onLogin e showMessage para o LoginForm */}
       <div className="auth-section">
-        {!user ? (
-          <LoginForm onLogin={login} onLogout={logout} loggedUser={null} showMessage={showMessage} />
-        ) : (
-          <div className="logged-user-info">
-            <p>👤 {user.name}</p>
-            <button className="btn-logout" onClick={logout}>
-              Sair
-            </button>
-          </div>
-        )}
+        <LoginForm
+          onLogin={login}
+          onLogout={logout}
+          loggedUser={user}
+          showMessage={showMessage}
+        />
+
       </div>
 
       {/* Formulário de Reunião */}

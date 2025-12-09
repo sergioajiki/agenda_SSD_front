@@ -20,5 +20,5 @@ export interface UserResponse {
     name: string;
     email: string;
     matricula: string;
-    //role: "ADMIN" | "USER";
+    role: "ADMIN" | "USER";
 }

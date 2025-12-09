@@ -139,7 +139,6 @@ export default function MeetingForm({
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: "", type: "" }), 3000);
   };
-
   return (
     <div className="meeting-form-container">
       <h3>{editMeeting ? "Editar Reunião" : "Agendar Reunião"}</h3>

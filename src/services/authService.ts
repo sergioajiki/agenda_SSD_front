@@ -13,6 +13,7 @@ export const loginUser = async (
 ): Promise<LoginResponse> => {
   try {
     const response = await api.post<LoginResponse>("/api/user/login", credentials);
+    console.log(response.data.role)
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError<ApiErrorResponse>(error)) {

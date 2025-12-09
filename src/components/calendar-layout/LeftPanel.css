@@ -88,3 +88,27 @@
   background: #007bff;
   color: white;
 }
+
+/* Container horizontal dos botões */
+.logged-user-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Botão Monitoring – mesmo estilo do logout, só muda a cor */
+.btn-monitoring {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-monitoring:hover {
+  background-color: #0062cc;
+}
