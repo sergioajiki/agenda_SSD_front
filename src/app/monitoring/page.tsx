@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/services/api"; // ⬅️ Usa a API configurada no axios
 import "./styles/Monitoring.css";
 
 /**
@@ -42,13 +42,23 @@ export default function Monitoring() {
     try {
       setLoading(true);
 
-      // Monta a URL conforme o filtro de usuário
+      /**
+       * 📌 Monta a URL conforme o filtro:
+       * - Se houver ID de usuário, filtra por ele
+       * - Caso contrário, busca todos os logs
+       * 
+       * ✔ Agora usando rotas relativas
+       * ✔ Sem localhost
+       * ✔ Compatível com o baseURL do api.ts
+       */
       const url =
         filterUser !== ""
-          ? `http://localhost:8080/api/logs/user/${filterUser}`
-          : `http://localhost:8080/api/logs`;
+          ? `/api/logs/user/${filterUser}`
+          : `/api/logs`;
 
-      const response = await axios.get<LogUpdateDto[]>(url);
+      // Faz a requisição usando a instância api configurada
+      const response = await api.get<LogUpdateDto[]>(url);
+
       setLogs(response.data);
       setLastUpdate(new Date());
       setError(null);
@@ -60,11 +70,15 @@ export default function Monitoring() {
   };
 
   /** =======================================================
-   * 🔹 Executa a busca inicial e configura o polling
+   * 🔹 Primeira requisição e configuração do refresh automático
    * ======================================================= */
   useEffect(() => {
-    fetchLogs(); // primeira carga
-    const interval = setInterval(fetchLogs, refreshInterval); // polling
+    fetchLogs(); // Carregamento inicial
+
+    // Atualiza os logs automaticamente a cada 30s
+    const interval = setInterval(fetchLogs, refreshInterval);
+
+    // Limpeza do intervalo ao desmontar
     return () => clearInterval(interval);
   }, [filterUser]);
 
