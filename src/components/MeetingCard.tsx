@@ -1,6 +1,7 @@
 "use client";
 
 import { MeetingResponse } from "@/models/Meetings";
+import { getRoomBorderClass } from "@/utils/roomStyles";
 import "./styles/MeetingCard.css";
 
 interface MeetingCardProps {
@@ -32,10 +33,7 @@ export default function MeetingCard({
   const canModify = isOwner || isAdmin;
 
   /* Classe visual da sala */
-  let roomClass = "";
-  if (meeting.meetingRoom === "APOIO") roomClass = "apoio-border";
-  else if (meeting.meetingRoom === "CIEGES") roomClass = "cieges-border";
-  else roomClass = "mixed-border";
+  const roomClass = getRoomBorderClass(meeting.meetingRoom);
 
   return (
     <div className={`meeting-card ${roomClass}`}>

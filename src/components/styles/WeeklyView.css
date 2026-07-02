@@ -148,7 +148,14 @@
   color: #fff;
 }
 
-/* 🔷 Sala MISTA (APOIO + CIEGES no mesmo horário) */
+/* 🟢 Sala WEB */
+.web-room {
+  background-color: #66d999;
+  border: 1px solid #00753a;
+  color: #fff;
+}
+
+/* 🔷 Sala MISTA (mais de uma sala no mesmo horário) */
 .mixed-room {
   background: linear-gradient(90deg, #ffb3b3 50%, #99c9ff 50%);
   border: 1px solid #004aad;

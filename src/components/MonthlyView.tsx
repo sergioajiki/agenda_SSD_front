@@ -2,6 +2,7 @@
 
 import { MeetingResponse } from "@/models/Meetings";
 import { useEffect, useState } from "react";
+import { getCellRoomClass } from "@/utils/roomStyles";
 import "./styles/MonthlyView.css";
 
 type MonthlyCalendarProps = {
@@ -105,15 +106,10 @@ export default function MonthlyView({
           const dailyMeetings = getMeetingsForDay(day);
           const isToday = dateStr === today; // destaca o dia atual
 
-          // 🔹 Verifica salas
-          const hasApoio = dailyMeetings.some((m) => m.meetingRoom === "APOIO");
-          const hasCieges = dailyMeetings.some((m) => m.meetingRoom === "CIEGES");
-
-          // 🔹 Define classes de cor com base na sala e estado
+          // 🔹 Define classes de cor com base nas salas presentes no dia
           let cellClass = "calendar-cell";
-          if (hasApoio && hasCieges) cellClass += " mixed-room";
-          else if (hasApoio) cellClass += " apoio-room";
-          else if (hasCieges) cellClass += " cieges-room";
+          const roomClass = getCellRoomClass(dailyMeetings.map((m) => m.meetingRoom));
+          if (roomClass) cellClass += ` ${roomClass}`;
           if (isToday) cellClass += " today";
 
           // 🟢 NOVO — aplica borda azul na célula selecionada

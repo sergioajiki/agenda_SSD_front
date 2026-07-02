@@ -111,6 +111,12 @@ div.meeting-card {
   box-shadow: 0 0 8px rgba(0, 68, 204, 0.45);
 }
 
+/* 🟢 Sala WEB — verde */
+.meeting-card.web-border {
+  border: 3px solid #00994d !important;
+  box-shadow: 0 0 8px rgba(0, 153, 77, 0.45);
+}
+
 /* 🟣 Mista — roxa */
 .meeting-card.mixed-border {
   border: 3px solid #6f42c1 !important;

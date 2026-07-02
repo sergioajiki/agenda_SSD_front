@@ -25,7 +25,7 @@ export default function LoginForm({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
+    setFormData((p) => ({ ...p, [name]: value }));1
   };
 
   const handleSubmit = async (e: FormEvent) => {

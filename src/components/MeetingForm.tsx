@@ -214,9 +214,9 @@ export default function MeetingForm({
           required
           disabled={isBlocked}
         >
-          {/* 🏢 Aqui serão adicionadas as outras opções de sala futuramente */}
           <option value="APOIO">APOIO</option>
           <option value="CIEGES">CIEGES</option>
+          <option value="SALA WEB">SALA WEB</option>
         </select>
 
 

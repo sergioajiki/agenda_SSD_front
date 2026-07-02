@@ -11,6 +11,7 @@ import {
   ymd,
   generateHours
 } from "@/utils/dateUtils";
+import { getCellRoomClass } from "@/utils/roomStyles";
 
 import "./styles/WeeklyView.css";
 
@@ -149,20 +150,11 @@ export default function WeeklyView({ meetings, onDayClick }: WeeklyCalendarProps
                 // 🔹 Reuniões que ocupam aquele horário
                 const cellMeetings = getMeetingsAt(dateStr, time);
 
-                /** 
-                 * 🔹 Cores por sala:
-                 * - apoio-room → azul
-                 * - cieges-room → verde
-                 * - mixed-room → roxo (reuniões sobrepostas)
-                 */
+                // 🔹 Cor da célula conforme a(s) sala(s) com reunião naquele horário
                 let cellClass = "calendar-cell2v";
 
-                const hasApoio = cellMeetings.some((m) => m.meetingRoom === "APOIO");
-                const hasCieges = cellMeetings.some((m) => m.meetingRoom === "CIEGES");
-
-                if (hasApoio && hasCieges) cellClass += " mixed-room";
-                else if (hasApoio) cellClass += " apoio-room";
-                else if (hasCieges) cellClass += " cieges-room";
+                const roomClass = getCellRoomClass(cellMeetings.map((m) => m.meetingRoom));
+                if (roomClass) cellClass += ` ${roomClass}`;
 
                 if (dateStr === today) cellClass += " today";
 

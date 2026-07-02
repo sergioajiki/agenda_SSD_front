@@ -125,7 +125,13 @@
   border: 2px solid #0044cc;
 }
 
-/* 🔹 Ambas as salas (metade vermelha / metade azul) */
+/* 🔹 Sala WEB (verde) */
+.calendar-cell.web-room {
+  background-color: #b3ffcc;
+  border: 2px solid #00994d;
+}
+
+/* 🔹 Mais de uma sala no mesmo dia */
 .calendar-cell.mixed-room {
   background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
   border: 2px solid #333;
