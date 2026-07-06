@@ -155,10 +155,44 @@
   color: #fff;
 }
 
-/* 🔷 Sala MISTA (mais de uma sala no mesmo horário) */
+/* 🔷 Sala MISTA (mais de uma sala no mesmo horário, combinação não mapeada) */
 .mixed-room {
   background: linear-gradient(90deg, #ffb3b3 50%, #99c9ff 50%);
   border: 1px solid #004aad;
+  color: #fff;
+}
+
+/* 🔴🔵 APOIO + CIEGES */
+.mixed-apoio-cieges {
+  background: linear-gradient(90deg, #ffb3b3 50%, #99c9ff 50%);
+  border: 1px solid #004aad;
+  color: #fff;
+}
+
+/* 🔴🟢 APOIO + SALA WEB */
+.mixed-apoio-web {
+  background: linear-gradient(90deg, #ffb3b3 50%, #66d999 50%);
+  border: 1px solid #00753a;
+  color: #fff;
+}
+
+/* 🔵🟢 CIEGES + SALA WEB */
+.mixed-cieges-web {
+  background: linear-gradient(90deg, #99c9ff 50%, #66d999 50%);
+  border: 1px solid #004aad;
+  color: #fff;
+}
+
+/* 🔴🔵🟢 APOIO + CIEGES + SALA WEB */
+.mixed-all {
+  background: linear-gradient(
+    90deg,
+    #ffb3b3 33.33%,
+    #99c9ff 33.33%,
+    #99c9ff 66.66%,
+    #66d999 66.66%
+  );
+  border: 1px solid #333;
   color: #fff;
 }
 

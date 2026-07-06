@@ -20,12 +20,27 @@ export function getRoomBorderClass(room: string): string {
 }
 
 /**
+ * Combinações conhecidas de salas -> classe de mistura específica.
+ * A chave é a lista de salas (reconhecidas) ordenada e unida por "+".
+ */
+const MIXED_CELL_CLASS: Record<string, string> = {
+  "APOIO+CIEGES": "mixed-apoio-cieges",
+  "APOIO+SALA WEB": "mixed-apoio-web",
+  "CIEGES+SALA WEB": "mixed-cieges-web",
+  "APOIO+CIEGES+SALA WEB": "mixed-all",
+};
+
+/**
  * Classe de fundo/borda para uma célula do calendário (mensal/semanal) que pode
  * conter reuniões de mais de uma sala no mesmo dia/horário.
  */
 export function getCellRoomClass(rooms: string[]): string {
   const distinctRooms = Array.from(new Set(rooms));
   if (distinctRooms.length === 0) return "";
-  if (distinctRooms.length > 1) return "mixed-room";
+  if (distinctRooms.length > 1) {
+    const knownRooms = distinctRooms.filter((room) => room in ROOM_CELL_CLASS);
+    const key = knownRooms.sort().join("+");
+    return MIXED_CELL_CLASS[key] ?? "mixed-room";
+  }
   return ROOM_CELL_CLASS[distinctRooms[0]] ?? "mixed-room";
 }

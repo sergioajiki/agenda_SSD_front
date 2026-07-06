@@ -4,6 +4,8 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { loginUser } from "@/services/authService";
 import { LoginResponse } from "@/models/Auth";
 import { MessageType } from "@/hooks/useFloatingMessage";
+// Se o editor marcar erro ts(2882) aqui, é falso positivo do TS embutido do
+// editor (não do projeto) — ver .vscode/settings.json (typescript.tsdk).
 import "./styles/LoginForm.css";
 
 type LoginFormProps = {

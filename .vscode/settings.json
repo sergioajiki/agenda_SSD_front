@@ -1,3 +1,8 @@
 {
-    "js/ts.tsdk.path": "node_modules\\typescript\\lib"
+    // Força o editor a usar o TypeScript instalado em node_modules (versão do projeto)
+    // em vez do TypeScript embutido no editor. Sem isso, o language server do editor
+    // pode reportar diagnósticos que não existem na versão real do projeto
+    // (ex.: falso erro ts(2882) em imports de CSS como "./styles/LoginForm.css").
+    // Após alterar, use "TypeScript: Select TypeScript Version" > "Use Workspace Version".
+    "typescript.tsdk": "node_modules/typescript/lib"
 }

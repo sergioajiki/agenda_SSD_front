@@ -127,13 +127,43 @@
 
 /* 🔹 Sala WEB (verde) */
 .calendar-cell.web-room {
-  background-color: #b3ffcc;
-  border: 2px solid #00994d;
+  background-color: #2cd665;
+  border: 2px solid #20e784;
 }
 
-/* 🔹 Mais de uma sala no mesmo dia */
+/* 🔹 Mais de uma sala no mesmo dia (combinação não mapeada) */
 .calendar-cell.mixed-room {
   background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
+  border: 2px solid #333;
+}
+
+/* 🔴🔵 APOIO + CIEGES */
+.calendar-cell.mixed-apoio-cieges {
+  background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
+  border: 2px solid #333;
+}
+
+/* 🔴🟢 APOIO + SALA WEB */
+.calendar-cell.mixed-apoio-web {
+  background: linear-gradient(to right, #ffb3b3 50%, #2cd665 50%);
+  border: 2px solid #333;
+}
+
+/* 🔵🟢 CIEGES + SALA WEB */
+.calendar-cell.mixed-cieges-web {
+  background: linear-gradient(to right, #b3d1ff 50%, #2cd665 50%);
+  border: 2px solid #333;
+}
+
+/* 🔴🔵🟢 APOIO + CIEGES + SALA WEB */
+.calendar-cell.mixed-all {
+  background: linear-gradient(
+    to right,
+    #ffb3b3 33.33%,
+    #b3d1ff 33.33%,
+    #b3d1ff 66.66%,
+    #2cd665 66.66%
+  );
   border: 2px solid #333;
 }
 
