@@ -2,7 +2,7 @@
 
 import CalendarLayout from "@/components/calendar-layout/CalendarLayout";
 import TopBar from "@/components/calendar-layout/TopBar";
-import LeftPanel from "@/components/calendar-layout/LeftPanel";
+import MeetingModal from "@/components/calendar-layout/MeetingModal";
 import CenterPanel from "@/components/calendar-layout/CenterPanel";
 import RightPanel from "@/components/calendar-layout/RightPanel";
 import FloatingMessage from "@/components/FloatingMessage";
@@ -38,6 +38,15 @@ export default function CalendarPage() {
   /* 🔹 Alternância entre mensal/semanal */
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
 
+  /* 🔹 Controla a abertura do modal de nova reunião (edição abre via editingMeeting) */
+  const [isNewMeetingOpen, setIsNewMeetingOpen] = useState(false);
+  const isMeetingModalOpen = isNewMeetingOpen || !!editingMeeting;
+
+  const closeMeetingModal = () => {
+    setIsNewMeetingOpen(false);
+    setEditingMeeting(null);
+  };
+
   /**
    * 🔥 LOGIN ALINHADO AO LoginForm
    * (email: string, password: string) => Promise<void>
@@ -64,16 +73,7 @@ export default function CalendarPage() {
           logout={logout}
           view={view}
           setView={setView}
-          showMessage={showMessage}
-        />
-      }
-      left={
-        <LeftPanel
-          user={user}
-          selectedDate={selectedDate}
-          editingMeeting={editingMeeting}
-          setEditingMeeting={setEditingMeeting}
-          fetchMeetings={fetchMeetings}
+          onNewMeeting={() => setIsNewMeetingOpen(true)}
           showMessage={showMessage}
         />
       }
@@ -93,6 +93,22 @@ export default function CalendarPage() {
           onDelete={handleDelete}
           onEdit={handleEdit}
         />
+      }
+      modal={
+        isMeetingModalOpen && (
+          <MeetingModal
+            onClose={closeMeetingModal}
+            onMeetingAdded={() => {
+              fetchMeetings(true);
+              showMessage("✅ Reunião cadastrada com sucesso!", "success");
+              closeMeetingModal();
+            }}
+            isBlocked={!user}
+            userId={user?.id}
+            editMeeting={editingMeeting}
+            selectedDate={selectedDate}
+          />
+        )
       }
       updateNotice={showUpdateNotice}
       floatingMessage={

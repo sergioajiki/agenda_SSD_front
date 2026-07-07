@@ -14,6 +14,8 @@ type TopBarProps = {
   view: "monthly" | "weekly";
   setView: (v: "monthly" | "weekly") => void;
 
+  onNewMeeting: () => void;
+
   showMessage: (msg: string, type?: MessageType, duration?: number) => void;
 };
 
@@ -23,6 +25,7 @@ export default function TopBar({
   logout,
   view,
   setView,
+  onNewMeeting,
   showMessage,
 }: TopBarProps) {
   return (
@@ -51,6 +54,10 @@ export default function TopBar({
           Agenda Semanal
         </button>
       </div>
+
+      <button className="btn-new-meeting" onClick={onNewMeeting}>
+        + Nova Reunião
+      </button>
 
       <div className="topbar-spacer" />
 

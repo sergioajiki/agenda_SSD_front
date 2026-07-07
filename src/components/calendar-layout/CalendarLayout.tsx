@@ -6,35 +6,36 @@ import "./CalendarLayout.css"; // Estilos específicos do layout do calendário
 
 /**
  * Tipagem das propriedades recebidas pelo componente CalendarLayout.
- * Este layout é responsável por distribuir a tela em três colunas:
- * - Esquerda: informações do usuário, botões, navegação.
+ * Este layout é responsável por distribuir a tela em:
+ * - Topo: logo, navegação, login e atalho para nova reunião.
  * - Centro: calendário mensal/semanal.
  * - Direita: detalhes e ações sobre reuniões do dia selecionado.
- * 
+ *
  * Também recebe:
+ * - modal: conteúdo sobreposto (ex.: formulário de nova reunião).
  * - updateNotice: booleano que controla o aviso de atualização.
  * - floatingMessage: componente para exibir mensagens flutuantes globais.
  */
 type CalendarLayoutProps = {
     top?: React.ReactNode;          // Conteúdo da barra superior (logo, navegação, login)
-    left: React.ReactNode;          // Conteúdo da coluna esquerda
     center: React.ReactNode;        // Conteúdo da coluna central (calendário)
     right: React.ReactNode;         // Conteúdo da coluna direita (lista de reuniões)
+    modal?: React.ReactNode;        // Conteúdo sobreposto (ex.: modal de nova reunião)
     updateNotice?: boolean;         // Indica se o aviso "Atualizando..." deve aparecer
     floatingMessage?: React.ReactNode; // Mensagem flutuante global (toast)
 };
 
 /**
  * 🔹 Componente principal de layout do calendário.
- * Estrutura a página em 3 áreas verticais + mensagens globais.
- * 
+ * Estrutura a página em barra superior + 2 colunas + mensagens globais.
+ *
  * Cada painel é recebido como prop e distribuído na página.
  */
 export default function CalendarLayout({
     top,
-    left,
     center,
     right,
+    modal,
     updateNotice,
     floatingMessage
 }: CalendarLayoutProps) {
@@ -46,15 +47,8 @@ export default function CalendarLayout({
             */}
             {top}
 
-            {/* 🔹 Container principal que divide a página em 3 colunas */}
+            {/* 🔹 Container principal que divide a página em colunas */}
             <div className="calendar-layout">
-
-                {/* 🔹 Coluna Esquerda
-                    - Formulário de criação/edição de reuniões
-                */}
-                <div className="calendar-left-column">
-                    {left}
-                </div>
 
                 {/* 🔹 Coluna Central
                     - Exibe o calendário propriamente dito
@@ -90,6 +84,9 @@ export default function CalendarLayout({
                 Ex.: "Reunião criada!", "Erro ao salvar", etc.
             */}
             {floatingMessage}
+
+            {/* 🔹 Modal sobreposto (ex.: formulário de nova reunião) */}
+            {modal}
         </div>
     );
 }

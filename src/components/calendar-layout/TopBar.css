@@ -50,6 +50,22 @@
   background: #0069d9;
 }
 
+/* Botão que abre o modal de nova reunião */
+.btn-new-meeting {
+  padding: 8px 14px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.btn-new-meeting:hover {
+  background: #218838;
+}
+
 .topbar-spacer {
   flex: 1;
 }

@@ -50,6 +50,15 @@ export default function MeetingForm({
   };
   const allTimes = generateTimeOptions();
 
+  /** 🔹 Limpa os campos do formulário (não notifica o pai) */
+  const clearFields = () => {
+    setTitle("");
+    setMeetingRoom("APOIO");
+    setMeetingDate("");
+    setTimeStart("");
+    setTimeEnd("");
+  };
+
   /** 🔹 Quando entra em modo edição, preenche os campos com os dados da reunião */
   useEffect(() => {
     if (editMeeting) {
@@ -59,7 +68,7 @@ export default function MeetingForm({
       setTimeStart(editMeeting.timeStart?.substring(0, 5) || "");
       setTimeEnd(editMeeting.timeEnd?.substring(0, 5) || "");
     } else {
-      resetForm(); // limpa tudo se não estiver editando
+      clearFields(); // limpa tudo se não estiver editando
     }
   }, [editMeeting]);
 
@@ -70,13 +79,14 @@ export default function MeetingForm({
     }
   }, [selectedDate, editMeeting]);
 
-  /** 🔹 Reseta o formulário */
+  /** 🔹 Reseta o formulário após salvar (não notifica o pai) */
   const resetForm = () => {
-    setTitle("");
-    setMeetingRoom("APOIO");
-    setMeetingDate("");
-    setTimeStart("");
-    setTimeEnd("");
+    clearFields();
+  };
+
+  /** 🔹 Cancela a edição em andamento — limpa e avisa o pai */
+  const cancelEdit = () => {
+    clearFields();
     if (onCancelEdit) onCancelEdit();
   };
 
@@ -226,7 +236,7 @@ export default function MeetingForm({
               {editMeeting ? "Atualizar" : "Cadastrar"}
             </button>
             {editMeeting && (
-              <button type="button" className="btn-cancel" onClick={resetForm}>
+              <button type="button" className="btn-cancel" onClick={cancelEdit}>
                 Cancelar
               </button>
             )}
