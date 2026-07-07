@@ -153,11 +153,10 @@
 .meeting-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   background-color: #fff;
   color: #222;
-  border-left: 3px solid;
-  padding: 2px 5px;
+  padding: 2px 5px 2px 3px;
   margin-bottom: 3px;
   font-size: 0.72em;
   border-radius: 3px;
@@ -165,6 +164,14 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Bloco de cor da sala — maior que uma borda fina para ficar mais legível */
+.meeting-room-swatch {
+  width: 8px;
+  height: 15px;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .meeting-time {

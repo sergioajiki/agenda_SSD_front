@@ -18,7 +18,7 @@ const ROOM_CELL_CLASS: Record<string, string> = {
 const ROOM_COLOR: Record<string, string> = {
   APOIO: "#dc2626",
   CIEGES: "#2563eb",
-  "SALA WEB": "#d97706",
+  "SALA WEB": "#0d9488",
 };
 
 /** Classe de borda para um card de reunião (uma única sala). */
