@@ -1,13 +1,13 @@
 "use client";
 
 import { MeetingResponse } from "@/models/Meetings";
-import { getRoomBorderClass } from "@/utils/roomStyles";
+import { getRoomBorderClass, getRoomColor } from "@/utils/roomStyles";
 import "./styles/MeetingCard.css";
 
 interface MeetingCardProps {
   meeting: MeetingResponse;
   userId?: number | null;
-  userRole?: string | null;       
+  userRole?: string | null;
   onDelete?: (id: number) => void;
   onEdit?: (meeting: MeetingResponse) => void;
 }
@@ -15,17 +15,10 @@ interface MeetingCardProps {
 export default function MeetingCard({
   meeting,
   userId,
-  userRole,        
+  userRole,
   onDelete,
   onEdit,
 }: MeetingCardProps) {
-
-  /* Formata data */
-  const formatDateBR = (dateStr: string) => {
-    if (!dateStr) return "";
-    const [year, month, day] = dateStr.split("-");
-    return `${day}/${month}/${year}`;
-  };
 
   /* Permissões */
   const isOwner = userId === meeting.userId;
@@ -34,48 +27,74 @@ export default function MeetingCard({
 
   /* Classe visual da sala */
   const roomClass = getRoomBorderClass(meeting.meetingRoom);
+  const roomColor = getRoomColor(meeting.meetingRoom);
+
+  /* Reunião que já começou (mesma regra usada para bloquear edição) */
+  const isPast =
+    new Date(`${meeting.meetingDate}T${meeting.timeStart}`) <= new Date();
+
+  const handleDeleteClick = () => {
+    if (window.confirm(`Excluir a reunião "${meeting.title}"?`)) {
+      onDelete?.(meeting.id);
+    }
+  };
 
   return (
-    <div className={`meeting-card ${roomClass}`}>
-      
-      <div className="meeting-card-header">
-        <h4>{meeting.title}</h4>
-        <span className="meeting-id">ID: {meeting.id}</span>
+    <div
+      className={`meeting-card ${roomClass}${isPast ? " meeting-card--past" : ""}`}
+    >
+      <div className="meeting-card-top">
+        <span className="meeting-card-time">
+          {meeting.timeStart} – {meeting.timeEnd}
+        </span>
+        <span className="meeting-card-room">
+          <span
+            className="meeting-card-dot"
+            style={{ backgroundColor: roomColor }}
+          />
+          {meeting.meetingRoom}
+        </span>
       </div>
 
-      <div className="meeting-card-body">
-        <p><strong>Data:</strong> {formatDateBR(meeting.meetingDate)}</p>
-        <p><strong>Horário:</strong> {meeting.timeStart} - {meeting.timeEnd}</p>
-        <p><strong>Local:</strong> {meeting.meetingRoom}</p>
-        <p><strong>Marcado por:</strong> {meeting.userName}</p>
+      <p className="meeting-card-title">{meeting.title}</p>
+
+      <div className="meeting-card-footer">
+        <span className="meeting-card-owner">Marcado por {meeting.userName}</span>
+
+        {/* Ícones só para Owner OU Admin */}
+        {canModify && (
+          <div className="meeting-card-icons">
+            {onEdit && (
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={() => onEdit(meeting)}
+                disabled={isPast}
+                title={
+                  isPast
+                    ? "Não é possível editar uma reunião que já começou"
+                    : "Editar reunião"
+                }
+                aria-label="Editar reunião"
+              >
+                ✏️
+              </button>
+            )}
+
+            {onDelete && (
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={handleDeleteClick}
+                title="Excluir reunião"
+                aria-label="Excluir reunião"
+              >
+                🗑️
+              </button>
+            )}
+          </div>
+        )}
       </div>
-
-      {/* Botões só para Owner OU Admin */}
-      {canModify && (
-        <div className="meeting-card-actions">
-          {onEdit && (
-            <button
-              type="button"
-              className="btn-edit"
-              onClick={() => onEdit(meeting)}
-              title="Editar reunião"
-            >
-              ✏️ Editar
-            </button>
-          )}
-
-          {onDelete && (
-            <button
-              type="button"
-              className="btn-delete"
-              onClick={() => onDelete(meeting.id)}
-              title="Excluir reunião"
-            >
-              🗑️ Excluir
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 }

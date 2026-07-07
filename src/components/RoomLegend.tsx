@@ -1,21 +1,24 @@
+import { getRoomColor } from "@/utils/roomStyles";
 import "./styles/RoomLegend.css";
 
-const ROOMS = [
-  { label: "Apoio", color: "#dc2626" },
-  { label: "CIEGES", color: "#2563eb" },
-  { label: "Sala Web", color: "#d97706" },
-];
+const ROOMS = ["APOIO", "CIEGES", "SALA WEB"];
+
+const ROOM_LABEL: Record<string, string> = {
+  APOIO: "Apoio",
+  CIEGES: "CIEGES",
+  "SALA WEB": "Sala Web",
+};
 
 export default function RoomLegend() {
   return (
     <div className="room-legend">
       {ROOMS.map((room) => (
-        <span className="room-legend-item" key={room.label}>
+        <span className="room-legend-item" key={room}>
           <span
             className="room-legend-dot"
-            style={{ backgroundColor: room.color }}
+            style={{ backgroundColor: getRoomColor(room) }}
           />
-          {room.label}
+          {ROOM_LABEL[room]}
         </span>
       ))}
     </div>

@@ -14,9 +14,21 @@ const ROOM_CELL_CLASS: Record<string, string> = {
   "SALA WEB": "web-room",
 };
 
+/** Cor sólida de cada sala — usada em elementos que não podem depender de classe CSS (ex.: bolinha da legenda). */
+const ROOM_COLOR: Record<string, string> = {
+  APOIO: "#dc2626",
+  CIEGES: "#2563eb",
+  "SALA WEB": "#d97706",
+};
+
 /** Classe de borda para um card de reunião (uma única sala). */
 export function getRoomBorderClass(room: string): string {
   return ROOM_BORDER_CLASS[room] ?? "mixed-border";
+}
+
+/** Cor sólida para a sala (bolinha de legenda, cartões). */
+export function getRoomColor(room: string): string {
+  return ROOM_COLOR[room] ?? "#6f42c1";
 }
 
 /**

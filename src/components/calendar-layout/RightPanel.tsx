@@ -21,13 +21,18 @@ export default function RightPanel({
   onDelete,
   onEdit
 }: Props) {
+  /* Ordena por horário de início, do mais cedo pro mais tarde */
+  const sortedMeetings = [...selectedMeetings].sort((a, b) =>
+    a.timeStart.localeCompare(b.timeStart)
+  );
+
   return (
     <>
       <h3>Reuniões de {selectedDate.split("-").reverse().join("/")}</h3>
 
       <div className="meeting-cards-grid">
-        {selectedMeetings.length > 0 ? (
-          selectedMeetings.map((m) => (
+        {sortedMeetings.length > 0 ? (
+          sortedMeetings.map((m) => (
             <MeetingCard 
               key={m.id} 
               meeting={m} 
