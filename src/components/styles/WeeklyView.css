@@ -12,8 +12,9 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  max-height: 830px; /* 🔹 Limita a altura total da agenda */
-  overflow: hidden;  /* 🔹 Impede rolagem externa */
+  flex: 1;         /* 🔹 Preenche o espaço vertical restante da tela */
+  min-height: 0;    /* 🔹 Permite encolher e deixar a grade rolar por dentro */
+  overflow: hidden;  /* 🔹 Impede rolagem externa — quem rola é a grade */
 }
 
 /* ===========================================================
@@ -84,6 +85,7 @@
    =========================================================== */
 .calendar-body2v {
   flex-grow: 1;
+  min-height: 0;      /* 🔹 Sem isso o flex item não encolhe abaixo do conteúdo */
   overflow-y: auto;  /* ✅ Rolagem vertical interna */
   overflow-x: hidden;
   background: #fff;

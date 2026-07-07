@@ -2,10 +2,12 @@
    🔹 Coluna Central — Calendário
    ======================================================= */
 .calendar-center-column {
-
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     background: #f7f7f7;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

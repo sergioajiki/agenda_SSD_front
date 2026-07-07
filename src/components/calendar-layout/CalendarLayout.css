@@ -11,6 +11,13 @@
     padding: 20px;
 }
 
+/* Na agenda semanal a grade de horários já rola por dentro — trava a página
+   na altura da tela pra não sobrar uma segunda barra de rolagem por fora. */
+.calendar-page:has(.weekly-calendar2v) {
+    height: 100vh;
+    overflow: hidden;
+}
+
 /* Container geral do layout (2 colunas) */
 .calendar-layout {
     display: grid;
@@ -19,6 +26,11 @@
     gap: 20px;
     width: 100%;
     max-width: 1650px;
+}
+
+.calendar-page:has(.weekly-calendar2v) .calendar-layout {
+    flex: 1;
+    min-height: 0;
 }
 
 /* =======================================================
