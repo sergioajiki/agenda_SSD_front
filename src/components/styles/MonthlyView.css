@@ -113,64 +113,28 @@
   z-index: 5;
 }
 
-/* 🔹 Sala APOIO (vermelho) */
-.calendar-cell.apoio-room {
-  background-color: #fca5a5;
-  border: 2px solid #dc2626;
+/* Cabeçalho da célula: número do dia + bolinhas das salas do dia */
+.calendar-day-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
-/* 🔹 Sala CIEGES (azul) */
-.calendar-cell.cieges-room {
-  background-color: #93c5fd;
-  border: 2px solid #2563eb;
-}
-
-/* 🔹 Sala WEB (âmbar) */
-.calendar-cell.web-room {
-  background-color: #fde68a;
-  border: 2px solid #d97706;
-}
-
-/* 🔹 Mais de uma sala no mesmo dia (combinação não mapeada) */
-.calendar-cell.mixed-room {
-  background: linear-gradient(to right, #fca5a5 50%, #93c5fd 50%);
-  border: 2px solid #333;
-}
-
-/* 🔴🔵 APOIO + CIEGES */
-.calendar-cell.mixed-apoio-cieges {
-  background: linear-gradient(to right, #fca5a5 50%, #93c5fd 50%);
-  border: 2px solid #333;
-}
-
-/* 🔴🟡 APOIO + SALA WEB */
-.calendar-cell.mixed-apoio-web {
-  background: linear-gradient(to right, #fca5a5 50%, #fde68a 50%);
-  border: 2px solid #333;
-}
-
-/* 🔵🟡 CIEGES + SALA WEB */
-.calendar-cell.mixed-cieges-web {
-  background: linear-gradient(to right, #93c5fd 50%, #fde68a 50%);
-  border: 2px solid #333;
-}
-
-/* 🔴🔵🟡 APOIO + CIEGES + SALA WEB */
-.calendar-cell.mixed-all {
-  background: linear-gradient(
-    to right,
-    #fca5a5 33.33%,
-    #93c5fd 33.33%,
-    #93c5fd 66.66%,
-    #fde68a 66.66%
-  );
-  border: 2px solid #333;
-}
-
-/* Número do dia */
 .calendar-day-number {
   font-weight: bold;
-  margin-bottom: 4px;
+}
+
+.day-room-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.day-room-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* Lista das reuniões resumidas */
@@ -181,11 +145,26 @@
 }
 
 .meeting-item {
-  background-color: rgba(255, 255, 255, 0.8);
-  color: #003366;
-  padding: 2px 4px;
-  margin-bottom: 2px;
-  font-size: 0.75em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fff;
+  color: #222;
+  border-left: 3px solid;
+  padding: 2px 5px;
+  margin-bottom: 3px;
+  font-size: 0.72em;
   border-radius: 3px;
-  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meeting-time {
+  font-family: "Courier New", Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
+  font-size: 0.9em;
+  flex-shrink: 0;
 }

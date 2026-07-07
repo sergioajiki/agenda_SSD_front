@@ -2,8 +2,11 @@
 
 import { MeetingResponse } from "@/models/Meetings";
 import { useEffect, useState } from "react";
-import { getCellRoomClass } from "@/utils/roomStyles";
+import { getRoomColor } from "@/utils/roomStyles";
 import "./styles/MonthlyView.css";
+
+/** Ordem canônica das salas, igual à legenda */
+const ROOM_ORDER = ["APOIO", "CIEGES", "SALA WEB"];
 
 type MonthlyCalendarProps = {
   meetings: MeetingResponse[];             // Lista de todas as reuniões recebidas do backend
@@ -106,15 +109,17 @@ export default function MonthlyView({
           const dailyMeetings = getMeetingsForDay(day);
           const isToday = dateStr === today; // destaca o dia atual
 
-          // 🔹 Define classes de cor com base nas salas presentes no dia
           let cellClass = "calendar-cell";
-          const roomClass = getCellRoomClass(dailyMeetings.map((m) => m.meetingRoom));
-          if (roomClass) cellClass += ` ${roomClass}`;
           if (isToday) cellClass += " today";
 
           // 🟢 NOVO — aplica borda azul na célula selecionada
           const isSelected = localSelectedDate === dateStr;
           if (isSelected) cellClass += " selected";
+
+          // 🔹 Salas presentes no dia, na ordem da legenda — vira bolinha ao lado do número
+          const roomsToday = ROOM_ORDER.filter((room) =>
+            dailyMeetings.some((m) => m.meetingRoom === room)
+          );
 
           return (
             <div
@@ -122,13 +127,30 @@ export default function MonthlyView({
               className={cellClass}
               onClick={() => handleDayClick(dateStr)}
             >
-              {/* Número do dia */}
-              <div className="calendar-day-number">{day}</div>
+              <div className="calendar-day-head">
+                <span className="calendar-day-number">{day}</span>
+                {roomsToday.length > 0 && (
+                  <span className="day-room-dots">
+                    {roomsToday.map((room) => (
+                      <span
+                        key={room}
+                        className="day-room-dot"
+                        style={{ backgroundColor: getRoomColor(room) }}
+                      />
+                    ))}
+                  </span>
+                )}
+              </div>
 
               {/* Lista resumida das reuniões do dia */}
               <ul className="meeting-list">
                 {dailyMeetings.map((m) => (
-                  <li key={m.id} className="meeting-item">
+                  <li
+                    key={m.id}
+                    className="meeting-item"
+                    style={{ borderLeftColor: getRoomColor(m.meetingRoom) }}
+                  >
+                    <span className="meeting-time">{m.timeStart}</span>
                     {m.title}
                   </li>
                 ))}
