@@ -54,7 +54,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: #fff;
+  background: #dfdfdff3;
   transition: 0.2s;
   border-radius: 4px;
   position: relative;
@@ -91,7 +91,7 @@
 
 /* Células vazias (antes do 1º dia) */
 .calendar-cell.empty {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5fb;
 }
 
 /* Destaque do dia atual */
@@ -150,34 +150,28 @@
   margin: 0;
 }
 
+/* Reunião com fundo sólido na cor da sala — mais área de cor, melhor
+   visibilidade a distância (ex.: agenda exibida num videowall). */
 .meeting-item {
   display: flex;
   align-items: center;
   gap: 5px;
-  background-color: #fff;
-  color: #222;
-  padding: 2px 5px 2px 3px;
+  color: #fff;
+  font-weight: 600;
+  padding: 2px 6px;
   margin-bottom: 3px;
   font-size: 0.72em;
   border-radius: 3px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Bloco de cor da sala — maior que uma borda fina para ficar mais legível */
-.meeting-room-swatch {
-  width: 8px;
-  height: 15px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
 .meeting-time {
   font-family: "Courier New", Courier, monospace;
   font-variant-numeric: tabular-nums;
-  opacity: 0.65;
+  opacity: 0.85;
   font-size: 0.9em;
   flex-shrink: 0;
 }

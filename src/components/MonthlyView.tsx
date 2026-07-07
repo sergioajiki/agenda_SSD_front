@@ -155,11 +155,11 @@ export default function MonthlyView({
               {/* Lista resumida das reuniões do dia */}
               <ul className="meeting-list">
                 {visibleMeetings.map((m) => (
-                  <li key={m.id} className="meeting-item">
-                    <span
-                      className="meeting-room-swatch"
-                      style={{ backgroundColor: getRoomColor(m.meetingRoom) }}
-                    />
+                  <li
+                    key={m.id}
+                    className="meeting-item"
+                    style={{ backgroundColor: getRoomColor(m.meetingRoom) }}
+                  >
                     <span className="meeting-time">{m.timeStart}</span>
                     {m.title}
                   </li>
