@@ -8,6 +8,9 @@ import "./styles/MonthlyView.css";
 /** Ordem canônica das salas, igual à legenda */
 const ROOM_ORDER = ["APOIO", "CIEGES", "SALA WEB"];
 
+/** Quantas reuniões mostrar direto na célula antes de resumir em "+N" */
+const MAX_VISIBLE_MEETINGS = 3;
+
 type MonthlyCalendarProps = {
   meetings: MeetingResponse[];             // Lista de todas as reuniões recebidas do backend
   onDayClick?: (dateStr: string) => void;  // Callback ao clicar em um dia (ex: atualizar cards)
@@ -121,6 +124,13 @@ export default function MonthlyView({
             dailyMeetings.some((m) => m.meetingRoom === room)
           );
 
+          // 🔹 Ordena por horário e resume o excesso em "+N"
+          const sortedMeetings = [...dailyMeetings].sort((a, b) =>
+            a.timeStart.localeCompare(b.timeStart)
+          );
+          const visibleMeetings = sortedMeetings.slice(0, MAX_VISIBLE_MEETINGS);
+          const hiddenCount = sortedMeetings.length - visibleMeetings.length;
+
           return (
             <div
               key={day}
@@ -144,7 +154,7 @@ export default function MonthlyView({
 
               {/* Lista resumida das reuniões do dia */}
               <ul className="meeting-list">
-                {dailyMeetings.map((m) => (
+                {visibleMeetings.map((m) => (
                   <li
                     key={m.id}
                     className="meeting-item"
@@ -154,6 +164,11 @@ export default function MonthlyView({
                     {m.title}
                   </li>
                 ))}
+                {hiddenCount > 0 && (
+                  <li className="meeting-more">
+                    +{hiddenCount} reuni{hiddenCount > 1 ? "ões" : "ão"}
+                  </li>
+                )}
               </ul>
             </div>
           );

@@ -83,6 +83,12 @@
   background-color: #666;
 }
 
+/* Destaque ao passar o mouse (dias clicáveis, não as células vazias) */
+.calendar-cell:not(.empty):hover {
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+
 /* Células vazias (antes do 1º dia) */
 .calendar-cell.empty {
   background-color: #f0f0f0;
@@ -167,4 +173,13 @@
   opacity: 0.65;
   font-size: 0.9em;
   flex-shrink: 0;
+}
+
+/* "+N reuniões" quando o dia tem mais itens do que cabe */
+.meeting-more {
+  color: #1d4ed8;
+  font-size: 0.72em;
+  font-weight: bold;
+  padding: 2px 5px;
+  cursor: pointer;
 }
