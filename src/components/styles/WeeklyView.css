@@ -136,61 +136,61 @@
 
 /* 🔴 Sala APOIO */
 .apoio-room {
-  background-color: #ffb3b3;
-  border: 1px solid #c60000;
+  background-color: #fca5a5;
+  border: 1px solid #dc2626;
   color: #fff;
 }
 
 /* 🔵 Sala CIEGES */
 .cieges-room {
-  background-color: #99c9ff;
-  border: 1px solid #004aad;
+  background-color: #93c5fd;
+  border: 1px solid #2563eb;
   color: #fff;
 }
 
-/* 🟢 Sala WEB */
+/* 🟡 Sala WEB (âmbar) */
 .web-room {
-  background-color: #66d999;
-  border: 1px solid #00753a;
+  background-color: #fde68a;
+  border: 1px solid #d97706;
   color: #fff;
 }
 
 /* 🔷 Sala MISTA (mais de uma sala no mesmo horário, combinação não mapeada) */
 .mixed-room {
-  background: linear-gradient(90deg, #ffb3b3 50%, #99c9ff 50%);
-  border: 1px solid #004aad;
+  background: linear-gradient(90deg, #fca5a5 50%, #93c5fd 50%);
+  border: 1px solid #2563eb;
   color: #fff;
 }
 
 /* 🔴🔵 APOIO + CIEGES */
 .mixed-apoio-cieges {
-  background: linear-gradient(90deg, #ffb3b3 50%, #99c9ff 50%);
-  border: 1px solid #004aad;
+  background: linear-gradient(90deg, #fca5a5 50%, #93c5fd 50%);
+  border: 1px solid #2563eb;
   color: #fff;
 }
 
-/* 🔴🟢 APOIO + SALA WEB */
+/* 🔴🟡 APOIO + SALA WEB */
 .mixed-apoio-web {
-  background: linear-gradient(90deg, #ffb3b3 50%, #66d999 50%);
-  border: 1px solid #00753a;
+  background: linear-gradient(90deg, #fca5a5 50%, #fde68a 50%);
+  border: 1px solid #d97706;
   color: #fff;
 }
 
-/* 🔵🟢 CIEGES + SALA WEB */
+/* 🔵🟡 CIEGES + SALA WEB */
 .mixed-cieges-web {
-  background: linear-gradient(90deg, #99c9ff 50%, #66d999 50%);
-  border: 1px solid #004aad;
+  background: linear-gradient(90deg, #93c5fd 50%, #fde68a 50%);
+  border: 1px solid #2563eb;
   color: #fff;
 }
 
-/* 🔴🔵🟢 APOIO + CIEGES + SALA WEB */
+/* 🔴🔵🟡 APOIO + CIEGES + SALA WEB */
 .mixed-all {
   background: linear-gradient(
     90deg,
-    #ffb3b3 33.33%,
-    #99c9ff 33.33%,
-    #99c9ff 66.66%,
-    #66d999 66.66%
+    #fca5a5 33.33%,
+    #93c5fd 33.33%,
+    #93c5fd 66.66%,
+    #fde68a 66.66%
   );
   border: 1px solid #333;
   color: #fff;

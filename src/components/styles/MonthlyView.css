@@ -113,56 +113,56 @@
   z-index: 5;
 }
 
-/* 🔹 Sala APOIO (vermelha) */
+/* 🔹 Sala APOIO (vermelho) */
 .calendar-cell.apoio-room {
-  background-color: #ffb3b3;
-  border: 2px solid #cc0000;
+  background-color: #fca5a5;
+  border: 2px solid #dc2626;
 }
 
 /* 🔹 Sala CIEGES (azul) */
 .calendar-cell.cieges-room {
-  background-color: #b3d1ff;
-  border: 2px solid #0044cc;
+  background-color: #93c5fd;
+  border: 2px solid #2563eb;
 }
 
-/* 🔹 Sala WEB (verde) */
+/* 🔹 Sala WEB (âmbar) */
 .calendar-cell.web-room {
-  background-color: #2cd665;
-  border: 2px solid #20e784;
+  background-color: #fde68a;
+  border: 2px solid #d97706;
 }
 
 /* 🔹 Mais de uma sala no mesmo dia (combinação não mapeada) */
 .calendar-cell.mixed-room {
-  background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
+  background: linear-gradient(to right, #fca5a5 50%, #93c5fd 50%);
   border: 2px solid #333;
 }
 
 /* 🔴🔵 APOIO + CIEGES */
 .calendar-cell.mixed-apoio-cieges {
-  background: linear-gradient(to right, #ffb3b3 50%, #b3d1ff 50%);
+  background: linear-gradient(to right, #fca5a5 50%, #93c5fd 50%);
   border: 2px solid #333;
 }
 
-/* 🔴🟢 APOIO + SALA WEB */
+/* 🔴🟡 APOIO + SALA WEB */
 .calendar-cell.mixed-apoio-web {
-  background: linear-gradient(to right, #ffb3b3 50%, #2cd665 50%);
+  background: linear-gradient(to right, #fca5a5 50%, #fde68a 50%);
   border: 2px solid #333;
 }
 
-/* 🔵🟢 CIEGES + SALA WEB */
+/* 🔵🟡 CIEGES + SALA WEB */
 .calendar-cell.mixed-cieges-web {
-  background: linear-gradient(to right, #b3d1ff 50%, #2cd665 50%);
+  background: linear-gradient(to right, #93c5fd 50%, #fde68a 50%);
   border: 2px solid #333;
 }
 
-/* 🔴🔵🟢 APOIO + CIEGES + SALA WEB */
+/* 🔴🔵🟡 APOIO + CIEGES + SALA WEB */
 .calendar-cell.mixed-all {
   background: linear-gradient(
     to right,
-    #ffb3b3 33.33%,
-    #b3d1ff 33.33%,
-    #b3d1ff 66.66%,
-    #2cd665 66.66%
+    #fca5a5 33.33%,
+    #93c5fd 33.33%,
+    #93c5fd 66.66%,
+    #fde68a 66.66%
   );
   border: 2px solid #333;
 }

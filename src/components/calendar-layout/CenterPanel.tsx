@@ -1,7 +1,8 @@
-"use client"; 
+"use client";
 
 import MonthlyCalendar from "@/components/MonthlyView";
 import WeeklyCalendar from "@/components/WeeklyView";
+import RoomLegend from "@/components/RoomLegend";
 
 import "./CenterPanel.css";
 
@@ -27,17 +28,24 @@ type Props = {
  */
 export default function CenterPanel({ view, meetings, onDayClick }: Props) {
 
-  // 🔹 Se a view for "monthly", renderiza o calendário mensal
-  // 🔹 Caso contrário, renderiza o semanal
-  return view === "monthly" ? (
-    <MonthlyCalendar
-      meetings={meetings}     // Passa as reuniões para o calendário mensal
-      onDayClick={onDayClick} // Passa a função ao clicar no dia
-    />
-  ) : (
-    <WeeklyCalendar
-      meetings={meetings}     // Mesmo props, mas agora para o calendário semanal
-      onDayClick={onDayClick}
-    />
+  // 🔹 A legenda de salas fica fixa acima do calendário, nas duas visões
+  return (
+    <>
+      <RoomLegend />
+
+      {/* 🔹 Se a view for "monthly", renderiza o calendário mensal */}
+      {/* 🔹 Caso contrário, renderiza o semanal */}
+      {view === "monthly" ? (
+        <MonthlyCalendar
+          meetings={meetings}     // Passa as reuniões para o calendário mensal
+          onDayClick={onDayClick} // Passa a função ao clicar no dia
+        />
+      ) : (
+        <WeeklyCalendar
+          meetings={meetings}     // Mesmo props, mas agora para o calendário semanal
+          onDayClick={onDayClick}
+        />
+      )}
+    </>
   );
 }

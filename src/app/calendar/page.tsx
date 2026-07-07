@@ -73,7 +73,13 @@ export default function CalendarPage() {
           logout={logout}
           view={view}
           setView={setView}
-          onNewMeeting={() => setIsNewMeetingOpen(true)}
+          onNewMeeting={() => {
+            if (!user) {
+              showMessage("⚠️ Faça login para agendar uma reunião.", "warning");
+              return;
+            }
+            setIsNewMeetingOpen(true);
+          }}
           showMessage={showMessage}
         />
       }
