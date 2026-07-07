@@ -47,7 +47,7 @@ export default function MeetingCard({
         <p><strong>Data:</strong> {formatDateBR(meeting.meetingDate)}</p>
         <p><strong>Horário:</strong> {meeting.timeStart} - {meeting.timeEnd}</p>
         <p><strong>Local:</strong> {meeting.meetingRoom}</p>
-        <p><strong>Responsável:</strong> {meeting.userName}</p>
+        <p><strong>Marcado por:</strong> {meeting.userName}</p>
       </div>
 
       {/* Botões só para Owner OU Admin */}
