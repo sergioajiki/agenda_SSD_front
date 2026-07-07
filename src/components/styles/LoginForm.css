@@ -84,6 +84,13 @@
   font-size: 14px;
 }
 
+.logged-user-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
 .btn-logout {
   background-color: #dc3545;
   color: white;
@@ -98,6 +105,22 @@
 
 .btn-logout:hover {
   background-color: #b52b27;
+}
+
+.btn-monitoring {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-monitoring:hover {
+  background-color: #0062cc;
 }
 
 /* ===========================================================
