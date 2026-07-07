@@ -1,6 +1,4 @@
 "use client";
-import Image from "next/image";
-import LoginForm from "@/components/LoginForm";
 import MeetingForm from "@/components/MeetingForm";
 import { LoginResponse } from "@/models/Auth";
 import { MessageType } from "@/hooks/useFloatingMessage";
@@ -12,13 +10,6 @@ import "./LeftPanel.css";
  */
 type LeftPanelProps = {
   user: LoginResponse | null;
-  login: (email: string, password: string) => Promise<void>; // compatível com LoginForm
-  logout: () => void;
-  showRegister: boolean;
-  toggleRegister: () => void;
-
-  view: "monthly" | "weekly";
-  setView: (v: "monthly" | "weekly") => void;
 
   selectedDate: string;
   editingMeeting: any;
@@ -31,64 +22,23 @@ type LeftPanelProps = {
 
 export default function LeftPanel({
   user,
-  login,
-  logout,
-  showRegister,
-  toggleRegister,
-  view,
-  setView,
   selectedDate,
   editingMeeting,
   setEditingMeeting,
   fetchMeetings,
   showMessage,
 }: LeftPanelProps) {
-  console.log("LEFTPANEL USER:", user);
   return (
-    <>
-      <Image
-        src="/governo-do-estado-de-ms.png"
-        alt="Logo Governo do Estado de MS"
-        className="app-logo"
-        width={160}
-        height={80}
-        priority
-      />
-
-      {/* Alternância de calendário */}
-      <div className="calendar-toggle">
-        <button className={view === "monthly" ? "active" : ""} onClick={() => setView("monthly")}>
-          Calendário Mensal
-        </button>
-
-        <button className={view === "weekly" ? "active" : ""} onClick={() => setView("weekly")}>
-          Agenda Semanal
-        </button>
-      </div>
-
-      {/* Área de autenticação — passamos onLogin e showMessage para o LoginForm */}
-      <div className="auth-section">
-        <LoginForm
-          onLogin={login}
-          onLogout={logout}
-          loggedUser={user}
-          showMessage={showMessage}
-        />
-
-      </div>
-
-      {/* Formulário de Reunião */}
-      <MeetingForm
-        onMeetingAdded={() => {
-          fetchMeetings(true);
-          showMessage("✅ Reunião cadastrada com sucesso!", "success");
-        }}
-        isBlocked={!user}
-        userId={user?.id}
-        editMeeting={editingMeeting}
-        onCancelEdit={() => setEditingMeeting(null)}
-        selectedDate={selectedDate}
-      />
-    </>
+    <MeetingForm
+      onMeetingAdded={() => {
+        fetchMeetings(true);
+        showMessage("✅ Reunião cadastrada com sucesso!", "success");
+      }}
+      isBlocked={!user}
+      userId={user?.id}
+      editMeeting={editingMeeting}
+      onCancelEdit={() => setEditingMeeting(null)}
+      selectedDate={selectedDate}
+    />
   );
 }

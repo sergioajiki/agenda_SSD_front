@@ -1,0 +1,112 @@
+/* =======================================================
+   🔹 Barra superior — logo, alternância mês/semana e login
+   ======================================================= */
+.calendar-topbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1650px;
+  padding: 8px 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+}
+
+.topbar-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Alternância entre visões (mensal / semanal) */
+.calendar-topbar .calendar-toggle {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+
+.calendar-topbar .calendar-toggle button {
+  padding: 8px 14px;
+  background: #e4e4e4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.calendar-topbar .calendar-toggle button:hover {
+  background: #d5d5d5;
+}
+
+.calendar-topbar .calendar-toggle button.active {
+  background: #007bff;
+  color: white;
+}
+
+.calendar-topbar .calendar-toggle button.active:hover {
+  background: #0069d9;
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* =======================================================
+   🔹 Login compacto (uma linha, sem rótulos)
+   ======================================================= */
+.topbar-auth .login-form-container-vertical {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.topbar-auth .form-title {
+  display: none;
+}
+
+.topbar-auth .login-form-vertical {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+}
+
+.topbar-auth .login-form-vertical label {
+  display: none;
+}
+
+.topbar-auth .login-form-vertical input {
+  width: 150px;
+}
+
+.topbar-auth .login-form-vertical button {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.topbar-auth .logged-user-info {
+  flex-direction: row;
+  width: auto;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .topbar-spacer {
+    display: none;
+  }
+
+  .topbar-auth {
+    width: 100%;
+  }
+
+  .topbar-auth .login-form-vertical {
+    flex-wrap: wrap;
+  }
+}

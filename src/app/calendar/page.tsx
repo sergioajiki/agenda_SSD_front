@@ -1,6 +1,7 @@
 "use client";
 
 import CalendarLayout from "@/components/calendar-layout/CalendarLayout";
+import TopBar from "@/components/calendar-layout/TopBar";
 import LeftPanel from "@/components/calendar-layout/LeftPanel";
 import CenterPanel from "@/components/calendar-layout/CenterPanel";
 import RightPanel from "@/components/calendar-layout/RightPanel";
@@ -18,8 +19,7 @@ export default function CalendarPage() {
   const { floatingMessage, showMessage } = useFloatingMessage();
 
   /* 🔹 Hook de autenticação */
-  const { user, logout, showRegister, toggleRegister, setUser } =
-    useAuth(showMessage);
+  const { user, logout, setUser } = useAuth(showMessage);
 
   /* 🔹 Hook de reuniões */
   const {
@@ -57,15 +57,19 @@ export default function CalendarPage() {
 
   return (
     <CalendarLayout
-      left={
-        <LeftPanel
+      top={
+        <TopBar
           user={user}
           login={login}
           logout={logout}
-          showRegister={showRegister}
-          toggleRegister={toggleRegister}
           view={view}
           setView={setView}
+          showMessage={showMessage}
+        />
+      }
+      left={
+        <LeftPanel
+          user={user}
           selectedDate={selectedDate}
           editingMeeting={editingMeeting}
           setEditingMeeting={setEditingMeeting}

@@ -16,6 +16,7 @@ import "./CalendarLayout.css"; // Estilos específicos do layout do calendário
  * - floatingMessage: componente para exibir mensagens flutuantes globais.
  */
 type CalendarLayoutProps = {
+    top?: React.ReactNode;          // Conteúdo da barra superior (logo, navegação, login)
     left: React.ReactNode;          // Conteúdo da coluna esquerda
     center: React.ReactNode;        // Conteúdo da coluna central (calendário)
     right: React.ReactNode;         // Conteúdo da coluna direita (lista de reuniões)
@@ -30,6 +31,7 @@ type CalendarLayoutProps = {
  * Cada painel é recebido como prop e distribuído na página.
  */
 export default function CalendarLayout({
+    top,
     left,
     center,
     right,
@@ -38,14 +40,16 @@ export default function CalendarLayout({
 }: CalendarLayoutProps) {
     return (
         <div className="calendar-page">
-            
+
+            {/* 🔹 Barra superior
+                - Logo, alternância Mensal / Semanal e login
+            */}
+            {top}
+
             {/* 🔹 Container principal que divide a página em 3 colunas */}
             <div className="calendar-layout">
 
                 {/* 🔹 Coluna Esquerda
-                    - Geralmente exibe dados de usuário
-                    - Botões de login/logout, registrar
-                    - Filtro entre visão Mensal / Semanal
                     - Formulário de criação/edição de reuniões
                 */}
                 <div className="calendar-left-column">
