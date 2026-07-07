@@ -3,6 +3,7 @@
 import { MeetingResponse } from "@/models/Meetings";
 import { useEffect, useState } from "react";
 import { getRoomColor } from "@/utils/roomStyles";
+import MarqueeTitle from "./MarqueeTitle";
 import "./styles/MonthlyView.css";
 
 /** Ordem canônica das salas, igual à legenda */
@@ -161,7 +162,7 @@ export default function MonthlyView({
                     style={{ backgroundColor: getRoomColor(m.meetingRoom) }}
                   >
                     <span className="meeting-time">{m.timeStart}</span>
-                    {m.title}
+                    <MarqueeTitle text={m.title} />
                   </li>
                 ))}
                 {hiddenCount > 0 && (

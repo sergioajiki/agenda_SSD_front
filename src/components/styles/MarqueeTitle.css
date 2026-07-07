@@ -1,0 +1,40 @@
+/* =======================================================
+   🔹 Texto com efeito de letreiro no hover (título de reunião)
+   ======================================================= */
+.marquee-viewport {
+  display: inline-block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  vertical-align: middle;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* A animação só existe quando o texto realmente ultrapassa a largura
+   disponível (classe marquee-overflow, aplicada via JS). O gatilho do
+   hover fica no elemento pai — ver comentário em MarqueeTitle.tsx. */
+.meeting-item:hover .marquee-text.marquee-overflow {
+  animation: marquee-scroll 4s linear 0.35s 1 both;
+}
+
+@keyframes marquee-scroll {
+  0%,
+  12% {
+    transform: translateX(0);
+  }
+  82%,
+  100% {
+    transform: translateX(var(--marquee-dist, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meeting-item:hover .marquee-text.marquee-overflow {
+    animation: none;
+  }
+}
