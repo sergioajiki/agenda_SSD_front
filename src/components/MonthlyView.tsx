@@ -114,6 +114,11 @@ export default function MonthlyView({
           const visibleMeetings = sortedMeetings.slice(0, MAX_VISIBLE_MEETINGS);
           const hiddenCount = sortedMeetings.length - visibleMeetings.length;
 
+          // 🔹 Com 1 ou 2 reuniões sobra espaço na célula: o título quebra em
+          // várias linhas. Com 3 (o limite antes do "+N"), cada uma fica numa
+          // linha só com letreiro, senão não caberiam as três.
+          const useWrapMode = visibleMeetings.length <= 2;
+
           return (
             <div
               key={day}
@@ -140,11 +145,15 @@ export default function MonthlyView({
                 {visibleMeetings.map((m) => (
                   <li
                     key={m.id}
-                    className="meeting-item"
+                    className={`meeting-item${useWrapMode ? " meeting-item--wrap" : ""}`}
                     style={{ backgroundColor: getRoomColor(m.meetingRoom) }}
                   >
                     <span className="meeting-time">{m.timeStart}</span>
-                    <MarqueeTitle text={m.title} />
+                    {useWrapMode ? (
+                      <span className="meeting-title-wrap">{m.title}</span>
+                    ) : (
+                      <MarqueeTitle text={m.title} />
+                    )}
                   </li>
                 ))}
                 {hiddenCount > 0 && (

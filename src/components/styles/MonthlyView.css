@@ -150,6 +150,18 @@
   overflow: hidden;
 }
 
+/* Com 1 ou 2 reuniões no dia, o título quebra em várias linhas em vez de
+   cortar numa linha só — sobra espaço na célula pra isso. */
+.meeting-item.meeting-item--wrap {
+  align-items: flex-start;
+}
+
+.meeting-title-wrap {
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+}
+
 .meeting-time {
   font-family: "Courier New", Courier, monospace;
   font-variant-numeric: tabular-nums;
