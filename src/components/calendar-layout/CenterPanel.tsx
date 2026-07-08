@@ -10,7 +10,9 @@ import "./CenterPanel.css";
  * Tipagem das props recebidas pelo CenterPanel.
  *
  * - view: controla se a visualização será "monthly" (mensal) ou "weekly" (semanal).
- * - meetings: lista de reuniões carregadas do backend (já filtrada por sala, se houver filtro).
+ * - meetings: lista completa de reuniões (sem filtro de sala) — o próprio
+ *   calendário decide o que exibir com base em `selectedRoom`, pra manter
+ *   os indicadores de "tem outra reunião aqui" mesmo com o filtro ativo.
  * - onDayClick: função disparada quando um dia é clicado no calendário.
  * - selectedRoom / onRoomToggle: filtro por sala, controlado via clique na legenda.
  */
@@ -48,11 +50,13 @@ export default function CenterPanel({
         <MonthlyCalendar
           meetings={meetings}     // Passa as reuniões para o calendário mensal
           onDayClick={onDayClick} // Passa a função ao clicar no dia
+          selectedRoom={selectedRoom}
         />
       ) : (
         <WeeklyCalendar
           meetings={meetings}     // Mesmo props, mas agora para o calendário semanal
           onDayClick={onDayClick}
+          selectedRoom={selectedRoom}
         />
       )}
     </>

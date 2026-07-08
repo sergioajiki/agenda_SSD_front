@@ -16,12 +16,14 @@ type MonthlyCalendarProps = {
   meetings: MeetingResponse[];             // Lista de todas as reuniões recebidas do backend
   onDayClick?: (dateStr: string) => void;  // Callback ao clicar em um dia (ex: atualizar cards)
   selectedDate?: string;                   // Data atualmente selecionada (para destacar visualmente)
+  selectedRoom?: string | null;            // Filtro de sala ativo (via legenda) — só afeta a lista de itens, não as bolinhas
 };
 
 export default function MonthlyView({
   meetings,
   onDayClick,
   selectedDate,
+  selectedRoom = null,
 }: MonthlyCalendarProps) {
   // 🔹 Estado de controle da data base do calendário (mês atual exibido)
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -120,13 +122,20 @@ export default function MonthlyView({
           const isSelected = localSelectedDate === dateStr;
           if (isSelected) cellClass += " selected";
 
-          // 🔹 Salas presentes no dia, na ordem da legenda — vira bolinha ao lado do número
+          // 🔹 Salas presentes no dia, na ordem da legenda — vira bolinha ao lado do número.
+          // Usa sempre TODAS as reuniões do dia, mesmo com filtro de sala ativo, pra
+          // continuar indicando que há outras reuniões marcadas naquele dia.
           const roomsToday = ROOM_ORDER.filter((room) =>
             dailyMeetings.some((m) => m.meetingRoom === room)
           );
 
+          // 🔹 A lista de itens exibida, sim, respeita o filtro de sala
+          const roomFilteredMeetings = selectedRoom
+            ? dailyMeetings.filter((m) => m.meetingRoom === selectedRoom)
+            : dailyMeetings;
+
           // 🔹 Ordena por horário e resume o excesso em "+N"
-          const sortedMeetings = [...dailyMeetings].sort((a, b) =>
+          const sortedMeetings = [...roomFilteredMeetings].sort((a, b) =>
             a.timeStart.localeCompare(b.timeStart)
           );
           const visibleMeetings = sortedMeetings.slice(0, MAX_VISIBLE_MEETINGS);

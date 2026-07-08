@@ -43,9 +43,6 @@ export default function CalendarPage() {
   const toggleRoomFilter = (room: string) => {
     setSelectedRoom((prev) => (prev === room ? null : room));
   };
-  const displayedMeetings = selectedRoom
-    ? meetings.filter((m) => m.meetingRoom === selectedRoom)
-    : meetings;
   const displayedSelectedMeetings = selectedRoom
     ? selectedMeetings.filter((m) => m.meetingRoom === selectedRoom)
     : selectedMeetings;
@@ -98,7 +95,7 @@ export default function CalendarPage() {
       center={
         <CenterPanel
           view={view}
-          meetings={displayedMeetings}
+          meetings={meetings}
           onDayClick={handleDayClick}
           selectedRoom={selectedRoom}
           onRoomToggle={toggleRoomFilter}

@@ -18,9 +18,14 @@ import "./styles/WeeklyView.css";
 type WeeklyCalendarProps = {
   meetings: MeetingResponse[];
   onDayClick?: (dateStr: string) => void;
+  selectedRoom?: string | null; // Filtro de sala ativo (via legenda) — só afeta os títulos exibidos, não a cor da célula
 };
 
-export default function WeeklyView({ meetings, onDayClick }: WeeklyCalendarProps) {
+export default function WeeklyView({
+  meetings,
+  onDayClick,
+  selectedRoom = null,
+}: WeeklyCalendarProps) {
 
   /**
    * 🔹 Estado que mantém o primeiro dia da semana exibida.
@@ -150,13 +155,19 @@ export default function WeeklyView({ meetings, onDayClick }: WeeklyCalendarProps
                 // 🔹 Reuniões que ocupam aquele horário
                 const cellMeetings = getMeetingsAt(dateStr, time);
 
-                // 🔹 Cor da célula conforme a(s) sala(s) com reunião naquele horário
+                // 🔹 Cor da célula considera TODAS as salas do horário, mesmo com
+                // filtro ativo — continua indicando que há outra reunião ali
                 let cellClass = "calendar-cell2v";
 
                 const roomClass = getCellRoomClass(cellMeetings.map((m) => m.meetingRoom));
                 if (roomClass) cellClass += ` ${roomClass}`;
 
                 if (dateStr === today) cellClass += " today";
+
+                // 🔹 Só os títulos exibidos respeitam o filtro de sala
+                const visibleCellMeetings = selectedRoom
+                  ? cellMeetings.filter((m) => m.meetingRoom === selectedRoom)
+                  : cellMeetings;
 
                 return (
                   <div
@@ -165,7 +176,7 @@ export default function WeeklyView({ meetings, onDayClick }: WeeklyCalendarProps
                     onClick={() => onDayClick?.(dateStr)}
                   >
                     {/* Exibe o título das reuniões */}
-                    {cellMeetings.map((m) => (
+                    {visibleCellMeetings.map((m) => (
                       <div key={m.id} className="meeting-title">
                         {m.title}
                       </div>
