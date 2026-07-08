@@ -47,8 +47,9 @@
 }
 
 .room-legend-month-label {
-  min-width: 130px;
+  min-width: 150px;
   text-align: center;
+  font-size: 17px;
 }
 
 .room-legend-item {
