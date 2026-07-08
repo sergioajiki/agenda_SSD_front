@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Read(//c/Users/espses/.claude/jobs/e1f8aea4/tmp/**)",
+      "Bash(node measure-legend2.js)"
     ]
   }
 }

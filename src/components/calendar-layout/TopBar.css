@@ -70,13 +70,14 @@
 
 /* Botão que abre o modal de nova reunião */
 .btn-new-meeting {
-  padding: 8px 14px;
+  padding: 11px 16px;
   background: #28a745;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  font-size: inherit;
   white-space: nowrap;
 }
 
