@@ -56,7 +56,7 @@ export default function TopBar({
       </div>
 
       <button className="btn-new-meeting" onClick={onNewMeeting}>
-        + Nova Reunião
+        + Agendar Reunião
       </button>
 
       <div className="topbar-spacer" />

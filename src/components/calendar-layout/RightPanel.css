@@ -2,7 +2,6 @@
    🔹 Coluna Direita — Cards das Reuniões
    ======================================================= */
 .calendar-right-column {
-  width: 270px;
   min-height: 0;
   background: #f8f9fa;
   border-radius: 8px;

@@ -59,7 +59,12 @@ export default function Monitoring() {
       // Faz a requisição usando a instância api configurada
       const response = await api.get<LogUpdateDto[]>(url);
 
-      setLogs(response.data);
+      // 🔹 Ordena pela data/hora da atualização, mais recente primeiro
+      const sortedLogs = [...response.data].sort(
+        (a, b) => new Date(b.logDateTime).getTime() - new Date(a.logDateTime).getTime()
+      );
+
+      setLogs(sortedLogs);
       setLastUpdate(new Date());
       setError(null);
     } catch (err) {
