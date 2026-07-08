@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import MonthlyCalendar from "@/components/MonthlyView";
 import WeeklyCalendar from "@/components/WeeklyView";
 import RoomLegend from "@/components/RoomLegend";
@@ -38,11 +39,39 @@ export default function CenterPanel({
   selectedRoom,
   onRoomToggle,
 }: Props) {
+  // 🔹 Mês exibido no calendário mensal — mora aqui pra poder ser controlado
+  // pela navegação que agora vive na barra da legenda.
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const handlePrevMonth = () => {
+    setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const formattedMonth =
+    currentDate
+      .toLocaleString("pt-BR", { month: "long" }) // "novembro"
+      .charAt(0)
+      .toUpperCase() +
+    currentDate
+      .toLocaleString("pt-BR", { month: "long", year: "numeric" })
+      .slice(1); // "Novembro de 2025"
 
   // 🔹 A legenda de salas fica fixa acima do calendário, nas duas visões
   return (
     <>
-      <RoomLegend selectedRoom={selectedRoom} onToggle={onRoomToggle} />
+      <RoomLegend
+        selectedRoom={selectedRoom}
+        onToggle={onRoomToggle}
+        monthNav={
+          view === "monthly"
+            ? { label: formattedMonth, onPrev: handlePrevMonth, onNext: handleNextMonth }
+            : undefined
+        }
+      />
 
       {/* 🔹 Se a view for "monthly", renderiza o calendário mensal */}
       {/* 🔹 Caso contrário, renderiza o semanal */}
@@ -51,6 +80,7 @@ export default function CenterPanel({
           meetings={meetings}     // Passa as reuniões para o calendário mensal
           onDayClick={onDayClick} // Passa a função ao clicar no dia
           selectedRoom={selectedRoom}
+          currentDate={currentDate}
         />
       ) : (
         <WeeklyCalendar

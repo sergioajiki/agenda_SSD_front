@@ -4,6 +4,7 @@
 .room-legend {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
   background: #ffffff;
@@ -13,6 +14,41 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   font-size: 13px;
   color: #333;
+}
+
+.room-legend-rooms {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Navegação de mês — só aparece na visão mensal */
+.room-legend-month-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.room-legend-month-nav button {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.15s;
+}
+
+.room-legend-month-nav button:hover {
+  background-color: #f2f2f2;
+}
+
+.room-legend-month-label {
+  min-width: 130px;
+  text-align: center;
 }
 
 .room-legend-item {

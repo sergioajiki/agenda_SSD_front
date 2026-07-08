@@ -17,6 +17,7 @@ type MonthlyCalendarProps = {
   onDayClick?: (dateStr: string) => void;  // Callback ao clicar em um dia (ex: atualizar cards)
   selectedDate?: string;                   // Data atualmente selecionada (para destacar visualmente)
   selectedRoom?: string | null;            // Filtro de sala ativo (via legenda) — só afeta a lista de itens, não as bolinhas
+  currentDate: Date;                       // Mês atualmente exibido — controlado pelo CenterPanel (nav mora na legenda)
 };
 
 export default function MonthlyView({
@@ -24,10 +25,8 @@ export default function MonthlyView({
   onDayClick,
   selectedDate,
   selectedRoom = null,
+  currentDate,
 }: MonthlyCalendarProps) {
-  // 🔹 Estado de controle da data base do calendário (mês atual exibido)
-  const [currentDate, setCurrentDate] = useState(new Date());
-
   // 🔹 Estado interno para armazenar a data clicada (para destacar visualmente)
   const [localSelectedDate, setLocalSelectedDate] = useState<string | null>(null);
 
@@ -60,40 +59,14 @@ export default function MonthlyView({
     return meetings.filter((m) => m.meetingDate === dateStr);
   };
 
-  // 🔹 Navega para o mês anterior
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
-  };
-
-  // 🔹 Navega para o próximo mês
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
-  };
-
   // 🔹 Ao clicar em uma célula do calendário
   const handleDayClick = (dateStr: string) => {
     setLocalSelectedDate(dateStr);      //
     if (onDayClick) onDayClick(dateStr);
   };
 
-  const formattedMonth =
-    currentDate
-      .toLocaleString("pt-BR", { month: "long" }) // "novembro"
-      .charAt(0)
-      .toUpperCase() +
-    currentDate
-      .toLocaleString("pt-BR", { month: "long", year: "numeric" })
-      .slice(1); // "Novembro de 2025"
-
   return (
     <div className="calendar-container">
-      {/* ===== Cabeçalho do calendário (título + botões de navegação) ===== */}
-      <div className="calendar-header">
-        <button onClick={handlePrevMonth}>◀</button>        
-          <h2>{formattedMonth || "Carregando..."}</h2>     
-        <button onClick={handleNextMonth}>▶</button>
-      </div>
-
       {/* ===== Estrutura de grade 7xN ===== */}
       <div className="calendar-grid">
         {/* Cabeçalho com dias da semana */}
