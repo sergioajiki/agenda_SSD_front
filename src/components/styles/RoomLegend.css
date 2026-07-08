@@ -52,6 +52,12 @@
   font-size: 17px;
 }
 
+/* Botão "Hoje" — separado um pouco mais das setas, já que é uma ação
+   diferente (reset) das de navegação (avançar/voltar). */
+.room-legend-today {
+  margin-left: 4px;
+}
+
 .room-legend-item {
   display: flex;
   align-items: center;

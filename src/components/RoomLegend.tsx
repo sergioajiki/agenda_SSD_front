@@ -13,6 +13,7 @@ type MonthNav = {
   label: string;
   onPrev: () => void;
   onNext: () => void;
+  onToday: () => void;
 };
 
 type RoomLegendProps = {
@@ -68,6 +69,13 @@ export default function RoomLegend({ selectedRoom, onToggle, monthNav }: RoomLeg
             aria-label="Próximo mês"
           >
             ▶
+          </button>
+          <button
+            type="button"
+            className="room-legend-today"
+            onClick={monthNav.onToday}
+          >
+            Hoje
           </button>
         </div>
       )}

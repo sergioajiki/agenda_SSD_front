@@ -6,11 +6,8 @@ import { getRoomColor } from "@/utils/roomStyles";
 import MarqueeTitle from "./MarqueeTitle";
 import "./styles/MonthlyView.css";
 
-/** Ordem canônica das salas, igual à legenda */
-const ROOM_ORDER = ["APOIO", "CIEGES", "SALA WEB"];
-
 /** Quantas reuniões mostrar direto na célula antes de resumir em "+N" */
-const MAX_VISIBLE_MEETINGS = 3;
+const MAX_VISIBLE_MEETINGS = 4;
 
 type MonthlyCalendarProps = {
   meetings: MeetingResponse[];             // Lista de todas as reuniões recebidas do backend
@@ -95,11 +92,12 @@ export default function MonthlyView({
           const isSelected = localSelectedDate === dateStr;
           if (isSelected) cellClass += " selected";
 
-          // 🔹 Salas presentes no dia, na ordem da legenda — vira bolinha ao lado do número.
-          // Usa sempre TODAS as reuniões do dia, mesmo com filtro de sala ativo, pra
-          // continuar indicando que há outras reuniões marcadas naquele dia.
-          const roomsToday = ROOM_ORDER.filter((room) =>
-            dailyMeetings.some((m) => m.meetingRoom === room)
+          // 🔹 Uma bolinha por reunião do dia, na ordem dos horários — vira o
+          // grupo de bolinhas ao lado do número. Usa sempre TODAS as reuniões
+          // do dia, mesmo com filtro de sala ativo, pra continuar indicando
+          // que há outras reuniões marcadas naquele dia.
+          const meetingDotsToday = [...dailyMeetings].sort((a, b) =>
+            a.timeStart.localeCompare(b.timeStart)
           );
 
           // 🔹 A lista de itens exibida, sim, respeita o filtro de sala
@@ -127,13 +125,13 @@ export default function MonthlyView({
             >
               <div className="calendar-day-head">
                 <span className="calendar-day-number">{day}</span>
-                {roomsToday.length > 0 && (
+                {meetingDotsToday.length > 0 && (
                   <span className="day-room-dots">
-                    {roomsToday.map((room) => (
+                    {meetingDotsToday.map((m) => (
                       <span
-                        key={room}
+                        key={m.id}
                         className="day-room-dot"
-                        style={{ backgroundColor: getRoomColor(room) }}
+                        style={{ backgroundColor: getRoomColor(m.meetingRoom) }}
                       />
                     ))}
                   </span>

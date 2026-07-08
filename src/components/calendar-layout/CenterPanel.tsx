@@ -51,6 +51,10 @@ export default function CenterPanel({
     setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
+  const handleGoToToday = () => {
+    setCurrentDate(new Date());
+  };
+
   const formattedMonth =
     currentDate
       .toLocaleString("pt-BR", { month: "long" }) // "novembro"
@@ -68,7 +72,12 @@ export default function CenterPanel({
         onToggle={onRoomToggle}
         monthNav={
           view === "monthly"
-            ? { label: formattedMonth, onPrev: handlePrevMonth, onNext: handleNextMonth }
+            ? {
+                label: formattedMonth,
+                onPrev: handlePrevMonth,
+                onNext: handleNextMonth,
+                onToday: handleGoToToday,
+              }
             : undefined
         }
       />
