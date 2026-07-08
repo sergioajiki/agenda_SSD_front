@@ -20,6 +20,30 @@
   align-items: center;
   gap: 6px;
   font-weight: bold;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: background-color 0.15s, opacity 0.15s, border-color 0.15s;
+}
+
+.room-legend-item:hover {
+  background-color: #f2f2f2;
+}
+
+/* Sala escolhida — a agenda está filtrada por ela */
+.room-legend-item.selected {
+  background-color: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+/* Demais salas, enquanto o filtro está ativo */
+.room-legend-item.dimmed {
+  opacity: 0.45;
 }
 
 .room-legend-dot {

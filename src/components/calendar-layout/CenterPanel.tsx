@@ -8,30 +8,39 @@ import "./CenterPanel.css";
 
 /**
  * Tipagem das props recebidas pelo CenterPanel.
- * 
+ *
  * - view: controla se a visualização será "monthly" (mensal) ou "weekly" (semanal).
- * - meetings: lista de reuniões carregadas do backend.
+ * - meetings: lista de reuniões carregadas do backend (já filtrada por sala, se houver filtro).
  * - onDayClick: função disparada quando um dia é clicado no calendário.
+ * - selectedRoom / onRoomToggle: filtro por sala, controlado via clique na legenda.
  */
 type Props = {
   view: "monthly" | "weekly";   // Qual visualização deve ser exibida
   meetings: any[];              // Lista de reuniões (pode tipar depois com interface)
   onDayClick: (date: string) => void; // Callback acionado ao clicar em um dia
+  selectedRoom: string | null;
+  onRoomToggle: (room: string) => void;
 };
 
 /**
  * 🔹 CenterPanel
- * 
+ *
  * Este componente funciona como um "switch" entre o calendário mensal e semanal.
  * Ele NÃO contém lógica interna — apenas decide qual componente exibir,
  * baseado no estado externo `view`.
  */
-export default function CenterPanel({ view, meetings, onDayClick }: Props) {
+export default function CenterPanel({
+  view,
+  meetings,
+  onDayClick,
+  selectedRoom,
+  onRoomToggle,
+}: Props) {
 
   // 🔹 A legenda de salas fica fixa acima do calendário, nas duas visões
   return (
     <>
-      <RoomLegend />
+      <RoomLegend selectedRoom={selectedRoom} onToggle={onRoomToggle} />
 
       {/* 🔹 Se a view for "monthly", renderiza o calendário mensal */}
       {/* 🔹 Caso contrário, renderiza o semanal */}

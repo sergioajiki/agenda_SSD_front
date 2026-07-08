@@ -38,6 +38,18 @@ export default function CalendarPage() {
   /* 🔹 Alternância entre mensal/semanal */
   const [view, setView] = useState<"monthly" | "weekly">("monthly");
 
+  /* 🔹 Filtro por sala — ativado clicando numa sala da legenda */
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const toggleRoomFilter = (room: string) => {
+    setSelectedRoom((prev) => (prev === room ? null : room));
+  };
+  const displayedMeetings = selectedRoom
+    ? meetings.filter((m) => m.meetingRoom === selectedRoom)
+    : meetings;
+  const displayedSelectedMeetings = selectedRoom
+    ? selectedMeetings.filter((m) => m.meetingRoom === selectedRoom)
+    : selectedMeetings;
+
   /* 🔹 Controla a abertura do modal de nova reunião (edição abre via editingMeeting) */
   const [isNewMeetingOpen, setIsNewMeetingOpen] = useState(false);
   const isMeetingModalOpen = isNewMeetingOpen || !!editingMeeting;
@@ -86,14 +98,16 @@ export default function CalendarPage() {
       center={
         <CenterPanel
           view={view}
-          meetings={meetings}
+          meetings={displayedMeetings}
           onDayClick={handleDayClick}
+          selectedRoom={selectedRoom}
+          onRoomToggle={toggleRoomFilter}
         />
       }
       right={
         <RightPanel
           selectedDate={selectedDate}
-          selectedMeetings={selectedMeetings}
+          selectedMeetings={displayedSelectedMeetings}
           userId={user?.id}
           userRole={user?.role}
           onDelete={handleDelete}

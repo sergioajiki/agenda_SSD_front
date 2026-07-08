@@ -31,10 +31,10 @@ export default function TopBar({
   return (
     <header className="calendar-topbar">
       <Image
-        src="/governo-do-estado-de-ms.png"
-        alt="Logo Governo do Estado de MS"
+        src="/logotipo_ssd_no_background.png"
+        alt="Logo SSD"
         className="topbar-logo"
-        width={120}
+        width={130}
         height={60}
         priority
       />
