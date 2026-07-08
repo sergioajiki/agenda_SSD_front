@@ -20,34 +20,52 @@
   object-fit: contain;
 }
 
-/* Alternância entre visões (mensal / semanal) */
-.calendar-topbar .calendar-toggle {
-  display: flex;
-  gap: 8px;
-  margin: 0;
-}
-
-.calendar-topbar .calendar-toggle button {
-  padding: 8px 14px;
+/* Alternância entre visões (mensal / semanal) — controle segmentado */
+.seg-toggle {
+  position: relative;
+  display: inline-flex;
   background: #e4e4e4;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  white-space: nowrap;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
-.calendar-topbar .calendar-toggle button:hover {
-  background: #d5d5d5;
-}
-
-.calendar-topbar .calendar-toggle button.active {
+.seg-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  width: calc(50% - 3px);
   background: #007bff;
-  color: white;
+  border-radius: 6px;
+  transition: transform 0.25s ease;
+  z-index: 0;
 }
 
-.calendar-topbar .calendar-toggle button.active:hover {
-  background: #0069d9;
+.seg-toggle.second .seg-thumb {
+  transform: translateX(calc(100% + 2px));
+}
+
+.seg-option {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  font-weight: bold;
+  font-size: inherit;
+  font-family: inherit;
+  color: #333;
+  cursor: pointer;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.seg-option.active {
+  color: #fff;
 }
 
 /* Botão que abre o modal de nova reunião */

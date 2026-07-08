@@ -1,21 +1,18 @@
 /* =======================================================
    🔹 Estrutura geral da página (layout principal)
    ======================================================= */
+/* A página fica travada na altura da tela nas duas visões (mês e semana) —
+   quem rola, quando precisa, é a coluna do calendário por dentro, nunca a
+   página inteira. Evita o "salto" de tamanho ao trocar entre as duas. */
 .calendar-page {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
     background: #f5f5f5;
-    min-height: 100vh;
-    padding: 10px 20px 20px;
-}
-
-/* Na agenda semanal a grade de horários já rola por dentro — trava a página
-   na altura da tela pra não sobrar uma segunda barra de rolagem por fora. */
-.calendar-page:has(.weekly-calendar2v) {
     height: 100vh;
     overflow: hidden;
+    padding: 10px 20px 20px;
 }
 
 /* Container geral do layout (2 colunas) */
@@ -26,9 +23,6 @@
     gap: 20px;
     width: 100%;
     max-width: 1650px;
-}
-
-.calendar-page:has(.weekly-calendar2v) .calendar-layout {
     flex: 1;
     min-height: 0;
 }

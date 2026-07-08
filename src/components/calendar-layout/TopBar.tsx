@@ -39,19 +39,22 @@ export default function TopBar({
         priority
       />
 
-      <div className="calendar-toggle">
+      <div className={`seg-toggle${view === "weekly" ? " second" : ""}`}>
+        <span className="seg-thumb" />
         <button
-          className={view === "monthly" ? "active" : ""}
+          type="button"
+          className={`seg-option${view === "monthly" ? " active" : ""}`}
           onClick={() => setView("monthly")}
         >
-          Calendário Mensal
+          Mensal
         </button>
 
         <button
-          className={view === "weekly" ? "active" : ""}
+          type="button"
+          className={`seg-option${view === "weekly" ? " active" : ""}`}
           onClick={() => setView("weekly")}
         >
-          Agenda Semanal
+          Semanal
         </button>
       </div>
 
