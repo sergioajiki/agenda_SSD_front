@@ -46,7 +46,6 @@ export default function LoginForm({
       setIsLoading(false);
     }
   };
-  console.log("logged in LoginForm", loggedUser?.role)
   const handleLogout = () => {
     onLogout?.();
     showMessage?.("✔ Você saiu do sistema.", "info", 2000);

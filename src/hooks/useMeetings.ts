@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getMeetings, deleteMeeting } from "@/services/meetingService";
 import { MeetingResponse } from "@/models/Meetings";
+import { MessageType } from "@/hooks/useFloatingMessage";
 
 /**
  * ================================================================================
@@ -20,7 +21,7 @@ import { MeetingResponse } from "@/models/Meetings";
 
 export function useMeetings(
   userId: number | undefined,
-  showMessage: (msg: string, type?: any) => void
+  showMessage: (msg: string, type?: MessageType) => void
 ) {
   /**
    * 📌 Lista completa das reuniões trazidas do backend

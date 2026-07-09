@@ -4,6 +4,7 @@ import { useState } from "react";
 import MonthlyCalendar from "@/components/MonthlyView";
 import WeeklyCalendar from "@/components/WeeklyView";
 import RoomLegend from "@/components/RoomLegend";
+import { MeetingResponse } from "@/models/Meetings";
 
 import "./CenterPanel.css";
 
@@ -19,7 +20,7 @@ import "./CenterPanel.css";
  */
 type Props = {
   view: "monthly" | "weekly";   // Qual visualização deve ser exibida
-  meetings: any[];              // Lista de reuniões (pode tipar depois com interface)
+  meetings: MeetingResponse[];  // Lista de reuniões
   onDayClick: (date: string) => void; // Callback acionado ao clicar em um dia
   selectedRoom: string | null;
   onRoomToggle: (room: string) => void;

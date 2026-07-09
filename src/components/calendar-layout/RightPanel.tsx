@@ -1,16 +1,17 @@
 "use client";
 
 import MeetingCard from "@/components/MeetingCard";
+import { MeetingResponse } from "@/models/Meetings";
 
 import "./RightPanel.css"
 
 type Props = {
   selectedDate: string;
-  selectedMeetings: any[];
+  selectedMeetings: MeetingResponse[];
   userId: number | undefined;
   userRole?: string | undefined;    // <-- ADICIONADO
   onDelete: (id: number) => void;
-  onEdit: (m: any) => void;
+  onEdit: (m: MeetingResponse) => void;
 };
 
 export default function RightPanel({
