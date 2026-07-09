@@ -12,8 +12,6 @@ export const createMeeting = async (meeting: MeetingRequest): Promise<MeetingRes
             const apiDetail = error.response?.data?.detail;
             const apiMessage = error.response?.data?.message;
 
-            console.error("Erro ao cadastrar reunião", error.response?.data || error.message);
-
             throw new Error(apiDetail || apiMessage || "Erro desconhecido ao cadastrar reunião");
         }
 
@@ -36,8 +34,6 @@ export const getMeetings = async (): Promise<MeetingResponse[]> => {
         if (axios.isAxiosError<ApiErrorResponse>(error)) {
             const apiDetail = error.response?.data?.detail;
             const apiMessage = error.response?.data?.message;
-
-            console.error("Erro ao carregar reuniões", error.response?.data || error.message);
 
             throw new Error(apiDetail || apiMessage || "Erro desconhecido ao carregar reuniões");
         }
@@ -64,8 +60,6 @@ export const deleteMeeting = async (id: number, requestingUserId: number): Promi
         if (axios.isAxiosError<ApiErrorResponse>(error)) {
             const apiDetail = error.response?.data?.detail;
             const apiMessage = error.response?.data?.message;
-
-            console.error("Erro ao excluir reunião", error.response?.data || error.message);
 
             throw new Error(apiDetail || apiMessage || "Erro desconhecido ao excluir reunião");
         }
@@ -98,8 +92,6 @@ export const updateMeeting = async (
     if (axios.isAxiosError<ApiErrorResponse>(error)) {
       const apiDetail = error.response?.data?.detail;
       const apiMessage = error.response?.data?.message;
-
-      console.error("Erro ao atualizar reunião", error.response?.data || error.message);
 
       throw new Error(apiDetail || apiMessage || "Erro desconhecido ao atualizar reunião");
     }
