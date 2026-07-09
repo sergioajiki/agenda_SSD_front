@@ -61,16 +61,9 @@ export default function CalendarPage() {
    * (email: string, password: string) => Promise<void>
    */
   const login = async (email: string, password: string): Promise<void> => {
-    try {
-      const userData = await loginUser({ email, password });
-
-      setUser(userData);
-
-      showMessage("Login realizado com sucesso!", "success");
-    } catch {
-      showMessage("Erro ao realizar login", "error");
-      throw new Error("Login failed");
-    }
+    const userData = await loginUser({ email, password });
+    setUser(userData);
+    showMessage("Login realizado com sucesso!", "success");
   };
 
   return (

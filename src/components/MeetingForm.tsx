@@ -155,8 +155,9 @@ export default function MeetingForm({
 
       <form onSubmit={handleSubmit} className="meeting-form">
         {/* 🔹 Campo de título */}
-        <label>Título</label>
+        <label htmlFor="meetingTitle">Título</label>
         <input
+          id="meetingTitle"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -165,8 +166,9 @@ export default function MeetingForm({
         />
 
         {/* 🔹 Campo de data (mínimo = hoje) */}
-        <label>Data</label>
+        <label htmlFor="meetingDate">Data</label>
         <input
+          id="meetingDate"
           type="date"
           value={meetingDate}
           min={todayDate}
@@ -178,8 +180,9 @@ export default function MeetingForm({
         {/* 🔹 Seleção de horários */}
         <div className="time-row">
           <div className="time-field">
-            <label>Início</label>
+            <label htmlFor="meetingTimeStart">Início</label>
             <select
+              id="meetingTimeStart"
               value={timeStart}
               onChange={(e) => {
                 setTimeStart(e.target.value);
@@ -198,8 +201,9 @@ export default function MeetingForm({
           </div>
 
           <div className="time-field">
-            <label>Término</label>
+            <label htmlFor="meetingTimeEnd">Término</label>
             <select
+              id="meetingTimeEnd"
               value={timeEnd}
               onChange={(e) => setTimeEnd(e.target.value)}
               disabled={isBlocked || !timeStart}

@@ -85,8 +85,9 @@ export default function LoginForm({
       <h2 className="form-title">Login</h2>
 
       <form onSubmit={handleSubmit} className="login-form-vertical">
-        <label>Email:</label>
+        <label htmlFor="loginEmail">Email:</label>
         <input
+          id="loginEmail"
           type="email"
           name="email"
           placeholder="Digite seu email"
@@ -96,8 +97,9 @@ export default function LoginForm({
           autoComplete="username"
         />
 
-        <label>Senha:</label>
+        <label htmlFor="loginPassword">Senha:</label>
         <input
+          id="loginPassword"
           type="password"
           name="password"
           placeholder="Digite sua senha"

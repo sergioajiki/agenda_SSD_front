@@ -75,8 +75,9 @@ export function useMeetings(
 
         setSelectedDate(dateToUse);
         setSelectedMeetings(data.filter((m) => m.meetingDate === dateToUse));
-      } catch {
-        showMessage("❌ Erro ao carregar reuniões.", "error");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Erro ao carregar reuniões.";
+        showMessage(`❌ ${msg}`, "error");
       }
     },
     [selectedDate]
@@ -140,8 +141,9 @@ export function useMeetings(
       await deleteMeeting(id, userId);
       await fetchMeetings(true);
       showMessage("🗑️ Reunião excluída com sucesso!", "success");
-    } catch {
-      showMessage("❌ Erro ao excluir reunião.", "error");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao excluir reunião.";
+      showMessage(`❌ ${msg}`, "error");
     }
   };
 
