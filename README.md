@@ -41,7 +41,7 @@ Pré-requisito: uma instância da API backend acessível (este repositório é s
    npm run dev
    ```
 
-4. Acesse [http://localhost:3000/calendar](http://localhost:3000/calendar) — a agenda é o ponto de entrada real da aplicação (a rota `/` ainda é a página padrão do `create-next-app` e não foi customizada).
+4. Acesse [http://localhost:3000](http://localhost:3000) — a rota `/` redireciona automaticamente para `/calendar`, o ponto de entrada real da aplicação.
 
 ## Scripts
 
@@ -66,7 +66,7 @@ src/
 │  ├─ MeetingCard.tsx / MeetingForm.tsx  # cartão de reunião e formulário de agendamento
 │  └─ MarqueeTitle.tsx   # efeito de letreiro para títulos longos
 ├─ hooks/           # useAuth, useMeetings, useFloatingMessage
-├─ services/         # chamadas à API (meetingService, authService, healthService)
+├─ services/         # chamadas à API (meetingService, authService, userService, healthService)
 ├─ models/           # tipos TypeScript compartilhados
 └─ utils/            # roomStyles (mapeamento cor/sala) e utilitários de data
 ```

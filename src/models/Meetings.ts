@@ -4,7 +4,6 @@ export interface MeetingRequest {
     timeStart: string;
     timeEnd: string;
     meetingRoom: string;
-    userId: number;
 }
 
 export interface MeetingResponse {

@@ -114,20 +114,20 @@ export default function MeetingForm({
       return;
     }
 
-    // Monta objeto para enviar ao backend
+    // Monta objeto para enviar ao backend — o dono da reunião é resolvido no
+    // back a partir do token de quem está logado, não precisa mandar userId aqui.
     const meeting: MeetingRequest = {
       title,
       meetingRoom,
       meetingDate,
       timeStart,
       timeEnd,
-      userId,
     };
 
     try {
       // Se estiver editando, atualiza
       if (editMeeting) {
-        await updateMeeting(editMeeting.id, meeting, userId);
+        await updateMeeting(editMeeting.id, meeting);
         setTempMessage("✅ Reunião atualizada com sucesso!", "success");
       }
       // Caso contrário, cria nova

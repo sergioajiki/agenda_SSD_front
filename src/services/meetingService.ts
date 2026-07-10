@@ -48,14 +48,14 @@ export const getMeetings = async (): Promise<MeetingResponse[]> => {
 
 /**
  * Exclui uma reunião existente.
+ * O back identifica quem está chamando pelo token (Authorization: Bearer),
+ * anexado automaticamente pelo interceptor em services/api.ts — não precisa
+ * mais informar o usuário na chamada.
  * @param id ID da reunião
- * @param requestingUserId ID do usuário autenticado
  */
-export const deleteMeeting = async (id: number, requestingUserId: number): Promise<void> => {
+export const deleteMeeting = async (id: number): Promise<void> => {
     try {
-        await api.delete(`/api/meeting/${id}`, {
-            params: { requestingUserId }
-        });
+        await api.delete(`/api/meeting/${id}`);
     } catch (error: unknown) {
         if (axios.isAxiosError<ApiErrorResponse>(error)) {
             const apiDetail = error.response?.data?.detail;
@@ -74,19 +74,17 @@ export const deleteMeeting = async (id: number, requestingUserId: number): Promi
 
 /**
  * Atualiza uma reunião existente.
+ * A verificação de permissão (dono ou ADMIN) é feita no back a partir do
+ * usuário autenticado pelo token, não mais por um parâmetro enviado aqui.
  * @param id ID da reunião a ser atualizada
  * @param meeting Dados atualizados da reunião
- * @param requestingUserId ID do usuário autenticado (para verificação de permissão)
  */
 export const updateMeeting = async (
   id: number,
-  meeting: MeetingRequest,
-  requestingUserId: number
+  meeting: MeetingRequest
 ): Promise<MeetingResponse> => {
   try {
-    const response = await api.put<MeetingResponse>(`/api/meeting/${id}`, meeting, {
-      params: { requestingUserId },
-    });
+    const response = await api.put<MeetingResponse>(`/api/meeting/${id}`, meeting);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError<ApiErrorResponse>(error)) {

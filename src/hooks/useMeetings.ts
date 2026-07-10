@@ -138,7 +138,7 @@ export function useMeetings(
     }
 
     try {
-      await deleteMeeting(id, userId);
+      await deleteMeeting(id);
       await fetchMeetings(true);
       showMessage("🗑️ Reunião excluída com sucesso!", "success");
     } catch (err) {

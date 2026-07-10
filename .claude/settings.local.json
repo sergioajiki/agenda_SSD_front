@@ -3,7 +3,13 @@
     "allow": [
       "Bash(npx tsc *)",
       "Read(//c/Users/espses/.claude/jobs/e1f8aea4/tmp/**)",
-      "Bash(node measure-legend2.js)"
+      "Bash(node measure-legend2.js)",
+      "Bash(curl -s http://localhost:8080/api/meeting)",
+      "Bash(./mvnw -q clean compile)",
+      "PowerShell(Get-CimInstance *)",
+      "Bash(curl *)",
+      "Bash(cp \"C:/Users/espses/AppData/Local/Temp/claude/C--Users-sergioa-Desenvolvimento-agenda-ssd-front/14478b25-c33b-43e9-bd94-6fb5389994e8/scratchpad/e2e-fast.js\" /tmp/pw-test/e2e-fast.js)",
+      "Bash(time node e2e-fast.js)"
     ]
   }
 }
