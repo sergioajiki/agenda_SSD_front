@@ -9,7 +9,12 @@
       "PowerShell(Get-CimInstance *)",
       "Bash(curl *)",
       "Bash(cp \"C:/Users/espses/AppData/Local/Temp/claude/C--Users-sergioa-Desenvolvimento-agenda-ssd-front/14478b25-c33b-43e9-bd94-6fb5389994e8/scratchpad/e2e-fast.js\" /tmp/pw-test/e2e-fast.js)",
-      "Bash(time node e2e-fast.js)"
+      "Bash(time node e2e-fast.js)",
+      "Bash(java -cp /c/Users/sergioa/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar org.h2.tools.Shell -url 'jdbc:h2:file:./data/agendadb;MODE=LEGACY' -user sa -password '' -sql 'ALTER TABLE users ALTER COLUMN matricula SET NULL;')",
+      "Bash(java -cp /c/Users/sergioa/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar org.h2.tools.Shell -url 'jdbc:h2:file:./data/agendadb;MODE=LEGACY' -user sa -password '' -sql 'SELECT COLUMN_NAME, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='\\\\''USERS'\\\\'';')",
+      "Bash(cp \"C:/Users/espses/AppData/Local/Temp/claude/C--Users-sergioa-Desenvolvimento-agenda-ssd-front/14478b25-c33b-43e9-bd94-6fb5389994e8/scratchpad/e2e-usermgmt.js\" /tmp/pw-test/e2e-usermgmt.js)",
+      "Bash(node e2e-usermgmt.js)",
+      "Bash(java -cp /c/Users/sergioa/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar org.h2.tools.Shell -url 'jdbc:h2:file:./data/agendadb;MODE=LEGACY' -user sa -password '' -sql 'DELETE FROM users WHERE id IN \\(19, 20\\); SELECT id, name, email FROM users ORDER BY id;')"
     ]
   }
 }

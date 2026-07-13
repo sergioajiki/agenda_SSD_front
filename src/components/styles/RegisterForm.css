@@ -69,6 +69,78 @@
 }
 
 /* ===========================================================
+   🔹 Dica sobre a senha temporária (dentro do formulário)
+   =========================================================== */
+.register-hint {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+/* ===========================================================
+   🔹 Credenciais geradas (email + senha temporária)
+   =========================================================== */
+.register-credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  background: #ffffff;
+  border: 1px dashed #28a745;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.register-credentials label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.register-credentials p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #222;
+}
+
+.register-credentials-password {
+  font-family: "Courier New", monospace;
+  font-size: 16px !important;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  color: #003366 !important;
+}
+
+.register-container > button {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.register-container > button:hover {
+  background: #1e7e34;
+}
+
+.register-container > button.register-secondary {
+  background: #ffffff;
+  color: #003366;
+  border: 1px solid #003366;
+}
+
+.register-container > button.register-secondary:hover {
+  background: #eef3fa;
+}
+
+/* ===========================================================
    🔹 Mensagens de status
    =========================================================== */
 .register-message {

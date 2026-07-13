@@ -4,6 +4,7 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { loginUser } from "@/services/authService";
 import { LoginResponse } from "@/models/Auth";
 import { MessageType } from "@/hooks/useFloatingMessage";
+import AccountModal from "@/components/AccountModal";
 // Se o editor marcar erro ts(2882) aqui, é falso positivo do TS embutido do
 // editor (não do projeto) — ver .vscode/settings.json (typescript.tsdk).
 import "./styles/LoginForm.css";
@@ -24,6 +25,7 @@ export default function LoginForm({
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [showAccountModal, setShowAccountModal] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,6 +53,15 @@ export default function LoginForm({
     showMessage?.("✔ Você saiu do sistema.", "info", 2000);
   };
 
+  // Trocar o próprio e-mail invalida o token atual (o JWT usa o e-mail como
+  // subject) — desloga de verdade e pede pra entrar de novo com o e-mail novo,
+  // em vez de deixar a sessão quebrada silenciosamente nas próximas chamadas.
+  const handleEmailChanged = () => {
+    setShowAccountModal(false);
+    onLogout?.();
+    showMessage?.("✔ E-mail atualizado! Faça login novamente.", "info", 4000);
+  };
+
   // ============================================================
   // 🔹 SE O USUÁRIO JÁ ESTÁ LOGADO
   // ============================================================
@@ -67,12 +78,23 @@ export default function LoginForm({
       </button>
     )}
 
+    <button className="btn-account" onClick={() => setShowAccountModal(true)}>
+      Minha conta
+    </button>
+
     <button className="btn-logout" onClick={handleLogout}>
       Sair
     </button>
   </div>
 </div>
 
+        {showAccountModal && (
+          <AccountModal
+            loggedUser={loggedUser}
+            onClose={() => setShowAccountModal(false)}
+            onEmailChanged={handleEmailChanged}
+          />
+        )}
       </div>
     );
   }

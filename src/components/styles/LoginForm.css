@@ -123,6 +123,22 @@
   background-color: #0062cc;
 }
 
+.btn-account {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-account:hover {
+  background-color: #565e64;
+}
+
 /* ===========================================================
    🔹 Mensagens
    =========================================================== */

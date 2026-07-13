@@ -1,0 +1,153 @@
+/* =======================================================
+   🔹 Modal "Minha conta"
+   ======================================================= */
+.account-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.account-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
+.account-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.account-modal-close:hover {
+  color: #333;
+}
+
+.account-modal .form-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #003366;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.account-forced-notice {
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+  margin: 0 0 14px;
+}
+
+/* =======================================================
+   🔹 Abas (Meus dados / Trocar senha) — só um formulário
+   por vez, cada um com seu próprio "senha atual".
+   ======================================================= */
+.account-modal-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.account-modal-tabs button {
+  background: #ffffff;
+  color: #003366;
+  border: 1px solid #003366;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.account-modal-tabs button:hover {
+  background: #eef3fa;
+}
+
+.account-modal-tabs button.active {
+  background: #003366;
+  color: #ffffff;
+}
+
+/* =======================================================
+   🔹 Formulários (dados / senha)
+   ======================================================= */
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-form label {
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+}
+
+.account-form input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.account-form button {
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+
+.account-form button:hover:not(:disabled) {
+  background: #004a99;
+}
+
+.account-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =======================================================
+   🔹 Mensagens de status
+   ======================================================= */
+.account-message {
+  font-size: 13px;
+  text-align: center;
+  margin: 4px 0 0;
+}
+
+.account-message.success {
+  color: #007b00;
+}
+
+.account-message.error {
+  color: #cc0000;
+}

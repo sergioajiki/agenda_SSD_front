@@ -1,0 +1,337 @@
+/* =======================================================
+   🔹 Barra de ferramentas (busca + novo usuário)
+   ======================================================= */
+.user-management-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.user-management-toggle-form {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  white-space: nowrap;
+}
+
+.user-management-toggle-form:hover {
+  background: #1e7e34;
+}
+
+/* =======================================================
+   🔹 Barra de busca
+   ======================================================= */
+.user-management-search {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.user-management-search input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 260px;
+}
+
+.user-management-search button {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.user-management-search button:hover {
+  background: #0056b3;
+}
+
+/* =======================================================
+   🔹 Mensagem de status (troca de role)
+   ======================================================= */
+.user-management-status {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.user-management-status.success {
+  color: #155724;
+}
+
+.user-management-status.error {
+  color: #c00;
+}
+
+.user-management-error {
+  color: #c00;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* =======================================================
+   🔹 Tabela de usuários
+   ======================================================= */
+.user-management-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.user-management-table th {
+  background: #003366;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.user-management-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  font-size: 13px;
+}
+
+.user-management-table select {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.user-row-disabled {
+  opacity: 0.55;
+}
+
+/* =======================================================
+   🔹 Pill de status (Ativo / Inativo)
+   ======================================================= */
+.user-status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.user-status-pill.active {
+  background: #e7fbe7;
+  color: #155724;
+}
+
+.user-status-pill.inactive {
+  background: #f1f1f1;
+  color: #666;
+}
+
+/* =======================================================
+   🔹 Botões de desativar/reativar
+   ======================================================= */
+.btn-deactivate,
+.btn-reactivate {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-deactivate {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-deactivate:hover:not(:disabled) {
+  background: #b52b27;
+}
+
+.btn-reactivate {
+  background: #007bff;
+  color: white;
+}
+
+.btn-reactivate:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.btn-deactivate:disabled,
+.btn-reactivate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.user-management-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.btn-reset-password {
+  border: 1px solid #6c757d;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  background: #ffffff;
+  color: #6c757d;
+}
+
+.btn-reset-password:hover:not(:disabled) {
+  background: #f1f1f1;
+}
+
+.btn-reset-password:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =======================================================
+   🔹 Modal "senha resetada" (mostra a senha temporária uma vez)
+   ======================================================= */
+.reset-password-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.reset-password-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reset-password-modal .form-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #003366;
+  margin: 0;
+  text-align: center;
+}
+
+.reset-password-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.reset-password-close:hover {
+  color: #333;
+}
+
+.reset-password-message {
+  font-size: 13px;
+  color: #007b00;
+  text-align: center;
+  margin: 0;
+}
+
+.reset-password-credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f8f9fa;
+  border: 1px dashed #28a745;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.reset-password-credentials label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.reset-password-credentials p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #222;
+}
+
+.reset-password-credentials-value {
+  font-family: "Courier New", monospace;
+  font-size: 16px !important;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  color: #003366 !important;
+}
+
+.reset-password-copy {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.reset-password-copy:hover {
+  background: #1e7e34;
+}
+
+/* =======================================================
+   🔹 Responsividade básica
+   ======================================================= */
+@media (max-width: 768px) {
+  .user-management-table th,
+  .user-management-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .user-management-search {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .user-management-search input {
+    width: 100%;
+  }
+}

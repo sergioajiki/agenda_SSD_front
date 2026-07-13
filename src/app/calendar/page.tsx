@@ -6,6 +6,7 @@ import MeetingModal from "@/components/calendar-layout/MeetingModal";
 import CenterPanel from "@/components/calendar-layout/CenterPanel";
 import RightPanel from "@/components/calendar-layout/RightPanel";
 import FloatingMessage from "@/components/FloatingMessage";
+import ForcedPasswordChangeModal from "@/components/ForcedPasswordChangeModal";
 
 import { loginUser } from "@/services/authService";
 
@@ -67,6 +68,15 @@ export default function CalendarPage() {
   };
 
   return (
+    <>
+    {user?.mustChangePassword && (
+      <ForcedPasswordChangeModal
+        onSuccess={() => {
+          setUser({ ...user, mustChangePassword: false });
+          showMessage("✅ Senha definida! Você já pode usar o sistema.", "success");
+        }}
+      />
+    )}
     <CalendarLayout
       top={
         <TopBar
@@ -131,5 +141,6 @@ export default function CalendarPage() {
         )
       }
     />
+    </>
   );
 }

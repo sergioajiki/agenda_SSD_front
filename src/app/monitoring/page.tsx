@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "@/services/api"; // ⬅️ Usa a API configurada no axios
+import UserManagement from "@/components/UserManagement";
+import { getStoredAuth } from "@/utils/authStorage";
 import "./styles/Monitoring.css";
 
 /**
@@ -25,6 +28,25 @@ type LogUpdateDto = {
  * com atualização automática a cada 30 segundos.
  */
 export default function Monitoring() {
+  const router = useRouter();
+
+  // 🔹 Rota antes era 100% pública por URL — agora só ADMIN logado entra.
+  // "null" = ainda checando, "true"/"false" = resultado da checagem.
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const auth = getStoredAuth();
+    if (!auth || auth.role !== "ADMIN") {
+      router.replace("/calendar");
+      setIsAuthorized(false);
+      return;
+    }
+    setIsAuthorized(true);
+  }, [router]);
+
+  // 🔹 Aba ativa: logs de auditoria ou gestão de acessos
+  const [activeTab, setActiveTab] = useState<"logs" | "users">("logs");
+
   // Lista de logs retornada pela API
   const [logs, setLogs] = useState<LogUpdateDto[]>([]);
 
@@ -78,6 +100,8 @@ export default function Monitoring() {
    * 🔹 Primeira requisição e configuração do refresh automático
    * ======================================================= */
   useEffect(() => {
+    if (!isAuthorized) return; // não busca nada antes de confirmar que é ADMIN
+
     fetchLogs(); // Carregamento inicial
 
     // Atualiza os logs automaticamente a cada 30s
@@ -85,72 +109,102 @@ export default function Monitoring() {
 
     // Limpeza do intervalo ao desmontar
     return () => clearInterval(interval);
-  }, [filterUser]);
+  }, [filterUser, isAuthorized]);
 
   /** =======================================================
    * 🔹 Interface principal
    * ======================================================= */
+  if (!isAuthorized) {
+    return (
+      <div className="monitoring-page">
+        <p>Verificando acesso...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="monitoring-page">
       <h1>📋 Monitoramento de Atualizações</h1>
 
-      {/* 🔹 Filtros de busca */}
-      <div className="monitoring-filters">
-        <input
-          type="number"
-          placeholder="Filtrar por ID de usuário"
-          value={filterUser}
-          onChange={(e) =>
-            setFilterUser(e.target.value ? Number(e.target.value) : "")
-          }
-        />
-        <button onClick={fetchLogs}>🔄 Atualizar</button>
+      {/* 🔹 Abas: logs de auditoria x gestão de acessos */}
+      <div className="monitoring-tabs">
+        <button
+          className={activeTab === "logs" ? "active" : ""}
+          onClick={() => setActiveTab("logs")}
+        >
+          Logs
+        </button>
+        <button
+          className={activeTab === "users" ? "active" : ""}
+          onClick={() => setActiveTab("users")}
+        >
+          Usuários
+        </button>
       </div>
 
-      {/* 🔹 Última atualização */}
-      {lastUpdate && (
-        <p className="monitoring-last-update">
-          Última atualização: {lastUpdate.toLocaleTimeString("pt-BR")}
-        </p>
-      )}
-
-      {/* 🔹 Conteúdo principal */}
-      {loading ? (
-        <p>Carregando logs...</p>
-      ) : error ? (
-        <p className="monitoring-error">{error}</p>
-      ) : logs.length === 0 ? (
-        <p>Sem registros encontrados.</p>
+      {activeTab === "users" ? (
+        <UserManagement />
       ) : (
-        <table className="monitoring-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Data/Hora</th>
-              <th>Usuário</th>
-              <th>Ação</th>
-              <th>Reunião</th>
-              <th>Campos Alterados</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map((log) => (
-              <tr key={log.id} className={`action-${log.action.toLowerCase()}`}>
-                <td>{log.id}</td>
-                <td>
-                  {new Date(log.logDateTime).toLocaleString("pt-BR", {
-                    dateStyle: "short",
-                    timeStyle: "medium",
-                  })}
-                </td>
-                <td>{log.updatedBy?.name ?? "Desconhecido"}</td>
-                <td>{log.action}</td>
-                <td>{log.meetingId ?? "-"}</td>
-                <td>{log.changedFields}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          {/* 🔹 Filtros de busca */}
+          <div className="monitoring-filters">
+            <input
+              type="number"
+              placeholder="Filtrar por ID de usuário"
+              value={filterUser}
+              onChange={(e) =>
+                setFilterUser(e.target.value ? Number(e.target.value) : "")
+              }
+            />
+            <button onClick={fetchLogs}>🔄 Atualizar</button>
+          </div>
+
+          {/* 🔹 Última atualização */}
+          {lastUpdate && (
+            <p className="monitoring-last-update">
+              Última atualização: {lastUpdate.toLocaleTimeString("pt-BR")}
+            </p>
+          )}
+
+          {/* 🔹 Conteúdo principal */}
+          {loading ? (
+            <p>Carregando logs...</p>
+          ) : error ? (
+            <p className="monitoring-error">{error}</p>
+          ) : logs.length === 0 ? (
+            <p>Sem registros encontrados.</p>
+          ) : (
+            <table className="monitoring-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Data/Hora</th>
+                  <th>Usuário</th>
+                  <th>Ação</th>
+                  <th>Reunião</th>
+                  <th>Campos Alterados</th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs.map((log) => (
+                  <tr key={log.id} className={`action-${log.action.toLowerCase()}`}>
+                    <td>{log.id}</td>
+                    <td>
+                      {new Date(log.logDateTime).toLocaleString("pt-BR", {
+                        dateStyle: "short",
+                        timeStyle: "medium",
+                      })}
+                    </td>
+                    <td>{log.updatedBy?.name ?? "Desconhecido"}</td>
+                    <td>{log.action}</td>
+                    <td>{log.meetingId ?? "-"}</td>
+                    <td>{log.changedFields}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
     </div>
   );

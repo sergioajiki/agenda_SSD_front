@@ -19,6 +19,37 @@
 }
 
 /* =======================================================
+   🔹 Abas (Logs / Usuários)
+   ======================================================= */
+.monitoring-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.monitoring-tabs button {
+  background: #ffffff;
+  color: #003366;
+  border: 1px solid #003366;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.monitoring-tabs button:hover {
+  background: #eef3fa;
+}
+
+.monitoring-tabs button.active {
+  background: #003366;
+  color: #ffffff;
+}
+
+/* =======================================================
    🔹 Barra de filtros (usuário, botão)
    ======================================================= */
 .monitoring-filters {
