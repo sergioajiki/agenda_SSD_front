@@ -81,14 +81,19 @@
 }
 
 /* Destaque do dia atual */
+/* outline em vez de border: fica por fora da célula, sem tomar espaço do
+   border-box — evita que o conteúdo interno encolha (e a barra de rolagem
+   apareça antes da hora) só porque a borda ficou mais grossa ao selecionar. */
 .calendar-cell.today {
-  border: 2px solid #007bff;
+  outline: 2px solid #007bff;
+  outline-offset: 1px;
   background-color: #eaf3ff;
 }
 
 /* Célula selecionada (dia clicado) */
 .calendar-cell.selected {
-  border: 2px solid #007bff !important;
+  outline: 2px solid #007bff !important;
+  outline-offset: 1px;
   background-color: #e7f1ff;
 }
 
